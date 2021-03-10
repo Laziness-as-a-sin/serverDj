@@ -1,0 +1,121 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #F9FAFB;
+    display: flex;
+    flex-direction: column;
+}
+
+.head_top {
+    z-index: 9999;
+    position: fixed;
+    height: 64px;
+    width: 100%;
+    background: #3F51B5;
+}
+
+.main {
+    margin-top: 64px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+}
+
+.main_center{
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 920px;
+    height: 100%;
+    margin: auto;
+    /* padding-top: 12px; */
+    background: red;
+}
+
+.main_center_center{
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    height: 40%;
+    margin-top: 20%;
+    /* padding-top: 12px; */
+    background: orange;
+}
+
+.main_center_center_left{
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 50%;
+    height: 100%;
+    margin-left: 0;
+    /* padding-top: 12px; */
+    background: rgb(101, 145, 50);
+}
+
+.main_center_center_right{
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 50%;
+    height: 100%;
+    margin-left: 0;
+    /* padding-top: 12px; */
+    background: rgb(137, 50, 145);
+}
+
+.user_avatar{
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 200px;
+    height: 200px;
+    margin: 10px auto;
+    /* padding-top: 12px; */
+    background: rgb(222, 230, 114);
+}
+
+.user_description{
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 200px;
+    height: 100px;
+    margin: 10px auto;
+    /* padding-top: 12px; */
+    background: rgb(52, 150, 175);
+    text-align: center;
+}
+
+.main_center_center_left input{
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 250px;
+    /* height: 70px; */
+    margin: 10px auto;
+    /* padding-top: 12px; */
+    background: rgb(52, 150, 175);
+    text-align: center;
+} 
+
+.main_center_submit_btn{
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    width: 250px;
+    height: 100px;
+    margin: 10px auto;
+    /* padding-top: 12px; */
+    background: rgba(80, 55, 150, 0.568);
+    text-align: center;
+}

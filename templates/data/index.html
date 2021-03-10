@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {% load static %}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script> 
+{% endblock %}
+{%block title%}Main zone{%endblock%}
+{%block content%}
+    <h1>Title</h1>
+    <br>
+    <form id="index_form", class="index_form">
+        {{form}}
+    </form>
+    
+   	
+    <br>
+    
+    <div id="index_users_list"></div>
+    
+    <a href="{% url 'registration_profile' %}">Click here to register</a>
+{%endblock%}

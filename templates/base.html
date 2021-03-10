@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Document{%endblock%}</title>
+    {%block script%}
+    {%endblock%}
+</head>
+<body>
+    {% block content %}Content{%endblock%}
+
+</body>
+    
+</html>
