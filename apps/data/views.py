@@ -56,25 +56,60 @@ def getUserInfo(request):
         region_or_location = request.GET.get("id_region_or_location")
         region_relocation = request.GET.get("id_region_relocation")
 
-        edu_level = request.GET.get("id_edu_level")
+        edu_level = request.GET.getlist("id_edu_level")
         edu_profession = request.GET.get("id_edu_profession")
         experience = request.GET.get("id_experience")
         age = request.GET.get("id_age")
-        skills = request.GET.get("id_skills")
+        skills = request.GET.getlist("id_skills[]")
         disability = request.GET.getlist("id_disability[]")
-        print(request.GET.keys(), "******", disability)
         
         experience = request.GET.get("id_experience")
 
 
-        try:
-            prof = Profile.objects.exclude(disability__in = disability)
-            # temp = Profile.objects.filter(city = region_or_location, education= edu_level)
-            # people = Profile.objects.filter(Q(title__icontains = ) | 
-            #              Q(tags__icontains = )  |
-            #              Q(tags__title__icontains = search)).count()
-        except:
-            return JsonResponse({"success":False}, status=400)
+        #try:
+        prof = Profile.objects.exclude(disability__in = disability)
+
+        temp_dict = {"city":0, "education":0, "profession":0, "skills":0, "disability":0} 
+        users = Profile.objects.all()
+    
+        print(region_or_location, edu_level, edu_profession, skills, disability)
+        for user in users:
+            number_mismatches = 0
+            if user.city_id == int(region_or_location):
+                temp_dict["city"] += 1 
+            else:
+                number_mismatches += 1
+
+            if  set(list(map(int, edu_level))).issubset(user.education.values_list("id",  flat=True)):         
+                temp_dict["education"] += 1 
+            else:
+                number_mismatches += 1
+
+            if  int(edu_profession) in user.profession.values_list("id",  flat=True):
+                temp_dict["profession"] += 1 
+            else:
+                number_mismatches += 1
+
+            if set(list(map(int, skills))).issubset(user.skills.values_list("id",  flat=True)):
+                temp_dict["skills"] += 1 
+            else:
+                number_mismatches += 1
+
+            if not set(list(map(int, disability))).issubset(user.disability.values_list("id",  flat=True)):
+                temp_dict["disability"] += 1 
+            else:
+                number_mismatches += 1
+
+            if str(number_mismatches) not in temp_dict:
+                temp_dict[str(number_mismatches)] = 0
+            temp_dict[str(number_mismatches)] += 1
+        print(temp_dict)
+
+
+
+
+        #except:
+        #    return JsonResponse({"success":False}, status=400)
 
         user_info = {
             "prof_name": prof[1].name1,

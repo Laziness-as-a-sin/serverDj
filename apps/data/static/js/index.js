@@ -27,7 +27,6 @@ $(document).ready(function(){
     $(":input").on("change", function(e){
         e.preventDefault();
 
-        var id_edu_professioprof = $("#id_edu_profession").val();
         var id_disability = $("#id_disability").val();
         var id_region = $("#id_region").val();
         var id_region_or_location = $("#id_region_or_location").val();
@@ -36,8 +35,10 @@ $(document).ready(function(){
         var id_experience = $("#id_experience").val()
         var id_edu_level = $("#id_edu_level").val();
         var id_edu_profession = $("#id_edu_profession").val();
+        var id_skills = $("#id_skills").val();
 
-        var data = {id_edu_professioprof, id_disability, id_region, id_region_or_location, id_region_relocation, id_choices_edu_level, id_experience, id_edu_level, id_edu_profession};
+        var data = {id_disability, id_region, id_region_or_location, id_region_relocation, id_choices_edu_level, id_experience, id_edu_level, id_edu_profession, id_skills};
+        console.log(data)
         $.ajax({
             type : 'GET',
             url :  'get_user_info/',

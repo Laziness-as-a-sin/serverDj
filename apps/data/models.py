@@ -60,6 +60,7 @@ class Profile(models.Model):
     city = models.ForeignKey(City, on_delete=models.PROTECT, null=True)
     disability = models.ManyToManyField(Disability)
     skills = models.ManyToManyField(Skill)
+    profession = models.ManyToManyField(Profession)
     name1 = models.CharField('фамилия', max_length=200, blank=True)
     name2 = models.CharField('Имя', max_length=200, blank=True)
     name3 = models.CharField('отчество', max_length=200, blank=True)
