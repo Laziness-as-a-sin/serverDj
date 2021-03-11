@@ -72,6 +72,7 @@ def getUserInfo(request):
         temp_dict = {"city":0, "education":0, "profession":0, "skills":0, "disability":0} 
         users = Profile.objects.all()
     
+        number_mismatches_dict = [0] * 6
         print(region_or_location, edu_level, edu_profession, skills, disability)
         for user in users:
             number_mismatches = 0
@@ -95,15 +96,13 @@ def getUserInfo(request):
             else:
                 number_mismatches += 1
 
-            if not set(list(map(int, disability))).issubset(user.disability.values_list("id",  flat=True)):
+            if not set(list(map(int, disability))).issubset(user.disability.values_list("id",  flat=True)) or list(map(int, disability)) == []:
                 temp_dict["disability"] += 1 
             else:
                 number_mismatches += 1
 
-            if str(number_mismatches) not in temp_dict:
-                temp_dict[str(number_mismatches)] = 0
-            temp_dict[str(number_mismatches)] += 1
-        print(temp_dict)
+            number_mismatches_dict[number_mismatches] += 1
+        print(temp_dict, number_mismatches_dict)
 
 
 
@@ -112,9 +111,9 @@ def getUserInfo(request):
         #    return JsonResponse({"success":False}, status=400)
 
         user_info = {
-            "prof_name": prof[1].name1,
-            "prof_desc": prof[1].name2,
-            "suitable_people": prof.count()
+            "target_mismatches": temp_dict,
+            "prof_desc": number_mismatches_dict
         }
+        print(user_info)
         return JsonResponse({"user_info":user_info}, status=200)
     return JsonResponse({"success":False}, status=400)

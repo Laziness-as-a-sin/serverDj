@@ -47,7 +47,7 @@ class index_form(forms.Form):
     region_or_location = forms.ChoiceField(choices=choices_city,label=_("Город или район"), required=False)
 
 
-    relocation_check = forms.BooleanField(label=_("Возможеость переезда"), required=False)
+    relocation_check = forms.BooleanField(label=_("Возможность переезда"), required=False)
     region_relocation = forms.ChoiceField(choices=choices_city,label=_("Регион переезда"), required=False)
     
 
