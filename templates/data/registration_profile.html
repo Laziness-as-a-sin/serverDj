@@ -3,20 +3,18 @@
 {%block title%}Регистрация{%endblock%}
 
 {% block script %}
+    {%load crispy_forms_tags%}
     {%load static%}
-    <link rel="stylesheet" href="{% static 'css/registration_profile.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/registration_profile.css' %}"> {% endcomment %}
 {% endblock %}
 
 {%block content%}
-        <header class="head_top">
-        <!-- <div class="in_head_top"></div> -->
-    </header>
-    <main class="main">
-            <form id="user_registration" action="{% url 'registration_profile_form' %}" class="main_center" method="post">{% csrf_token %}
-                {{form}}
-                <input class="main_center_submit_btn" type="submit">
+    <div class
+            <form action="{% url 'registration_profile_form' %}" method="post">{% csrf_token %}
+                {{form|crispy}}
+                <input type="submit">
             </form>
-    </main> 
+
 {%endblock%}
 
                 {% comment %} <div class="main_center_center">

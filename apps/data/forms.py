@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 import datetime #for checking renewal date range.
 from django.contrib.auth.models import User
 from django.forms import MultipleChoiceField, BooleanField, IntegerField
-from .models import City, Education, Profession, Disability, Skill
+from .models import City, Education, Profession, Disability, Skill, WorkPlace
 from multiselectfield import MultiSelectField
 
 
@@ -72,3 +72,7 @@ class index_form(forms.Form):
     disability = MultipleChoiceField(choices = choices_disability, label=_("Ограничения"), required=False)
 
     
+class workPlace_form(forms.ModelForm):
+    class Meta:
+        model = WorkPlace
+        exclude = []

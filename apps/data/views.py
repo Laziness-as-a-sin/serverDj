@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.template.context_processors import csrf
 from .models import City, Profile, Profession, Disability
 from django.contrib.auth.models import User
-from .forms import reg_check, index_form
+from .forms import reg_check, index_form, workPlace_form
 from django.http import JsonResponse
 import logging
 from django.db.models import Q
@@ -13,13 +13,21 @@ def index(request):
     form = index_form(request.POST)
     return render(request, 'data/index.html', {'form': form})
 
+
 def sr(request):
     return HttpResponse("Здравствуй, Мир")
+
 
 def registration_profile(request):
     form = reg_check
 
     return render(request, 'data/registration_profile.html', {'form': form})
+
+
+def testPage(request):
+    form = reg_check
+
+    return render(request, 'data/test_page.html', {'form': workPlace_form})
 
 
 def registration_profile_form(request):
@@ -116,4 +124,18 @@ def getUserInfo(request):
         }
         print(user_info)
         return JsonResponse({"user_info":user_info}, status=200)
+    return JsonResponse({"success":False}, status=400)
+
+
+def testUpdate(request):
+    print("In 1")
+    if request.method == "GET" and request.is_ajax():
+
+        id_profession = request.GET.get("id_profession")
+        
+        profession = Profession.objects.get(pk=id_profession)
+        profession_disability = (list(map(int, profession.disability.values_list("id",  flat=True)))) 
+        print(profession_disability)
+
+        return JsonResponse({"user_info":profession_disability}, status=200)
     return JsonResponse({"success":False}, status=400)

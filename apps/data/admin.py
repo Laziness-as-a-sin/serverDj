@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Firm, Disability, Education, Profession, City, Skill, Profile
+from .models import Firm, Disability, Education, Profession, City, Skill, Profile, Schedule, WorkPlace, WorkExperience, EmploymentType
 
 # admin.site.register(User)
 admin.site.register(Firm)
@@ -9,5 +9,7 @@ admin.site.register(Education)
 admin.site.register(Profession)
 admin.site.register(City)
 admin.site.register(Skill)
-admin.site.register(Profile)
-
+admin.site.register(Schedule)
+admin.site.register(WorkPlace)
+admin.site.register(WorkExperience)
+admin.site.register(EmploymentType)

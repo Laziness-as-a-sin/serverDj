@@ -3,34 +3,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     {% load static %}
     {% load crispy_forms_tags %}
-    <link href="{% static 'css/index.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'js/index.js' %}"></script> 
 {% endblock %}
 {%block title%}Main zone{%endblock%}
 {%block content%}
-    <div class="container">
-        <!-- navbar -->  
-        <div class="row">
-            <nav class="navbar navbar-expand-lg fixed-top ">  
-                <a class="navbar-brand" href="#">Home</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">  
-                <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse " id="navbarSupportedContent">     <ul class="navbar-nav mr-4">
-                <li class="nav-item">
-                    <a class="nav-link" data-value="about" href="#">About</a>        </li>  
-                <li class="nav-item">
-                    <a class="nav-link " data-value="portfolio"href="#">Portfolio</a>    
-                </li>
-                <li class="nav-item"> 
-                    <a class="nav-link " data-value="blog" href="#">Blog</a>         </li>   
-                <li class="nav-item">  
-                <a class="nav-link " data-value="team" href="#">         Team</a>       </li>  
-                <li class="nav-item"> 
-                <a class="nav-link " data-value="contact" href="#">Contact</a>       </li> 
-                </ul> 
-            </div></nav>
-        </div>
         <div class="row">
             <div class="col-3">
                 <form id="index_form">
@@ -51,6 +27,6 @@
         
         <div id="index_users_list"></div>
         
-        <a href="{% url 'registration_profile' %}">Click here to register</a>
-    </div>
+        <a href="{% url 'registration_profile' %}">Click here to register</a><br>
+        <a href="{% url 'test_page' %}">Test page</a>
 {%endblock%}

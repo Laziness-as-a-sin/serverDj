@@ -9,11 +9,13 @@ class City(models.Model):
     def __str__(self):
         return self.name
 
+
 class Disability(models.Model):
     name = models.CharField('название ограничения', max_length=200)
 
     def __str__(self):
         return self.name
+
 
 class Skill(models.Model):
     name = models.CharField('название ключевого навыка', max_length=200)
@@ -28,6 +30,7 @@ class Education(models.Model):
     def __str__(self):
         return self.name
 
+
 class Profession(models.Model):
     def contact_default():
         return ""
@@ -40,6 +43,28 @@ class Profession(models.Model):
     def __str__(self):
         return self.name
     
+
+class WorkExperience(models.Model):
+    name = models.CharField('опыт работы', max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
+class EmploymentType(models.Model):
+    name = models.CharField('тип занятости', max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
+class Schedule(models.Model):
+    name = models.CharField('график работы', max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class Firm(models.Model):
     def contact_default():
         return ""
@@ -49,6 +74,28 @@ class Firm(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class WorkPlace(models.Model):
+    def contact_default():
+        return ""
+
+    name = models.CharField('Title work place', max_length=200, default=contact_default, blank=True)
+    firm = models.ForeignKey(Firm, verbose_name='фирма', on_delete=models.CASCADE, null=True)
+    city = models.ForeignKey(City, verbose_name='город', on_delete=models.PROTECT, null=True)
+    education = models.ForeignKey(Education, verbose_name='образование', on_delete=models.PROTECT, null=True)
+    profession = models.ForeignKey(Profession, verbose_name='профессия', on_delete=models.CASCADE, null=True)
+    work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
+    employment_type = models.ManyToManyField(EmploymentType, verbose_name='тип занятости', blank=True)
+    schedule = models.ManyToManyField(Schedule, verbose_name='график работы', blank=True)
+    skill = models.ManyToManyField(Skill, verbose_name='навыки', blank=True)
+    disability = models.ManyToManyField(Disability, verbose_name='ограничения', blank=True)
+    min_salary = models.IntegerField(verbose_name='минимальная зарплата', null=True)
+    max_salary = models.IntegerField(verbose_name='максимальная зарплата', null=True)
+
+    def __str__(self):
+        return self.name
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
