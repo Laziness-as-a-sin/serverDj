@@ -69,8 +69,9 @@ class Firm(models.Model):
     def contact_default():
         return ""
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     name = models.CharField('название фирмы', max_length=200)
-    discription = models.TextField('описание фирмы', default=contact_default)
+    description = models.TextField('описание фирмы', default=contact_default)
 
     def __str__(self):
         return self.name
@@ -103,11 +104,11 @@ class Profile(models.Model):
     location = models.CharField('адрес', max_length=30, blank=True)
     birth_date = models.DateField('дата рождения', null=True, blank=True)
     sex = models.IntegerField('пол', blank=True, default=1)
-    education = models.ManyToManyField(Education)
-    city = models.ForeignKey(City, on_delete=models.PROTECT, null=True)
-    disability = models.ManyToManyField(Disability)
-    skills = models.ManyToManyField(Skill)
-    profession = models.ManyToManyField(Profession)
+    education = models.ManyToManyField(Education, blank=True)
+    city = models.ForeignKey(City, on_delete=models.PROTECT, null=True, blank=True)
+    disability = models.ManyToManyField(Disability, blank=True)
+    skills = models.ManyToManyField(Skill, blank=True)
+    profession = models.ManyToManyField(Profession, blank=True)
     name1 = models.CharField('фамилия', max_length=200, blank=True)
     name2 = models.CharField('Имя', max_length=200, blank=True)
     name3 = models.CharField('отчество', max_length=200, blank=True)
@@ -116,11 +117,11 @@ class Profile(models.Model):
         return self.user.username
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()

@@ -5,18 +5,18 @@ from django.utils.translation import ugettext_lazy as _
 import datetime #for checking renewal date range.
 from django.contrib.auth.models import User
 from django.forms import MultipleChoiceField, BooleanField, IntegerField
-from .models import City, Education, Profession, Disability, Skill, WorkPlace
+from .models import City, Education, Profession, Disability, Skill, WorkPlace, Firm
 from multiselectfield import MultiSelectField
 
 
-class reg_check(forms.Form):
-    username = forms.CharField(max_length=200)
-    name1 = forms.CharField(help_text='фамилия', max_length=200)
-    name2 = forms.CharField(help_text='имя', max_length=200)
-    name3 = forms.CharField(help_text='отчество', max_length=200)
+class registration_profile_form(forms.Form):
+    username = forms.CharField(label='Логин', max_length=200)
+    name1 = forms.CharField(label='Фамилия', max_length=200)
+    name2 = forms.CharField(label='Имя', max_length=200)
+    name3 = forms.CharField(label='Отчество', max_length=200)
     email = forms.EmailField(max_length=200)
-    password = forms.CharField(max_length=200, widget=forms.PasswordInput)
-    password_repeat = forms.CharField(max_length=200, widget=forms.PasswordInput)
+    password = forms.CharField(label='Пароль', max_length=200, widget=forms.PasswordInput)
+    password_repeat = forms.CharField(label='Повторите пароль', max_length=200, widget=forms.PasswordInput)
 
     def clean_username(self):
         name = self.cleaned_data['username']
@@ -27,7 +27,7 @@ class reg_check(forms.Form):
         return name
 
     def clean(self):
-        cleaned_data = super(reg_check, self).clean()
+        cleaned_data = super(registration_profile_form, self).clean()
         pass1 = cleaned_data.get("password")
         pass2 = cleaned_data.get("password_repeat")
 
@@ -76,3 +76,31 @@ class workPlace_form(forms.ModelForm):
     class Meta:
         model = WorkPlace
         exclude = []
+
+
+class registration_firm_form(forms.ModelForm, forms.Form):
+    username = forms.CharField(max_length=200)
+    email = forms.EmailField(max_length=200)
+    password = forms.CharField(max_length=200, widget=forms.PasswordInput)
+    password_repeat = forms.CharField(max_length=200, widget=forms.PasswordInput)
+
+    class Meta:
+        model = Firm
+        exclude = ['user']
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        
+        if Firm.objects.filter(name=name):
+            raise ValidationError(_('Фирма с таким названием уже существует!'))
+        
+        return name
+
+    def clean(self):
+        cleaned_data = super(registration_firm_form, self).clean()
+        pass1 = cleaned_data.get("password")
+        pass2 = cleaned_data.get("password_repeat")
+
+        if pass1 != pass2:
+            msg = "Пароли должны совпадать!"
+            self.add_error('password', msg)

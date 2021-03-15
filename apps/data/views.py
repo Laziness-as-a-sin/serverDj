@@ -1,9 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.context_processors import csrf
-from .models import City, Profile, Profession, Disability
+from .models import City, Profile, Profession, Disability, Firm
 from django.contrib.auth.models import User
-from .forms import reg_check, index_form, workPlace_form
+from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form
 from django.http import JsonResponse
 import logging
 from django.db.models import Q
@@ -18,45 +18,40 @@ def sr(request):
     return HttpResponse("Здравствуй, Мир")
 
 
-def registration_profile(request):
-    form = reg_check
+# def registration_profile(request):
+#     form = registration_profile_form
 
-    return render(request, 'data/registration_profile.html', {'form': form})
+#     return render(request, 'data/registration_profile.html', {'form': form})
 
 
 def testPage(request):
-    form = reg_check
-
     return render(request, 'data/test_page.html', {'form': workPlace_form})
 
 
-def registration_profile_form(request):
-
+def registrationProfile(request):
     if request.method == 'POST':
-        # return HttpResponse(request.POST)
-        # # Создаем экземпляр формы и заполняем данными из запроса (связывание, binding):
-        form = reg_check(request.POST)
+        form = registration_profile_form(request.POST)
 
-        # Проверка валидности данных формы:
         if form.is_valid():
             
-            temp = User(username='Noname', email='example@mail.com', password = str(form.cleaned_data['password']))
-            temp.username = form.cleaned_data['username']
-            # temp.Profile.name1 = form.cleaned_data['name1']
-            # temp.Profile.name2 = form.cleaned_data['name2']
-            # temp.Profile.name3 = form.cleaned_data['name3']
-            temp.email = form.cleaned_data['email']
-            temp.save()
+            tempUser = User(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password = form.cleaned_data['password'])
+            tempUser.save()
+            tempUser.set_password(tempUser.password)
+            tempUser.save()
 
-            # Переход по адресу 'all-borrowed':
+            tempProfile = Profile(user=tempUser, name1=form.cleaned_data['name1'], name2=form.cleaned_data['name2'], name3=form.cleaned_data['name3'])
+            tempProfile.save()
+
             return HttpResponse("Save, sucsessfull!")
 
     # Если это GET (или какой-либо еще), создать форму по умолчанию.
     else:
-        form = reg_check
+        form = registration_profile_form
 
     return render(request, 'data/registration_profile.html', {'form': form})
-    
+    # return HttpResponse('In 1')
+
+
 def getUserInfo(request):
     if request.method == "GET" and request.is_ajax():
 
@@ -139,3 +134,32 @@ def testUpdate(request):
 
         return JsonResponse({"user_info":profession_disability}, status=200)
     return JsonResponse({"success":False}, status=400)
+
+
+def registrationFirm(request):
+    form = registration_firm_form
+    if request.method == 'POST':
+        # return HttpResponse(request.POST)
+        # # Создаем экземпляр формы и заполняем данными из запроса (связывание, binding):
+        form = registration_firm_form(request.POST)
+        # Проверка валидности данных формы:
+        if form.is_valid():
+            
+            tempUser = User(username='Noname', email='example@mail.com', password = str(form.cleaned_data['password']))
+            tempUser.username = form.cleaned_data['username']
+
+            tempUser.email = form.cleaned_data['email']
+            tempUser.save()
+            tempUser.set_password(tempUser.password)
+            tempUser.save()
+
+            tempFirm = Firm(user=tempUser, name=form.cleaned_data['name'], description=form.cleaned_data['description'])
+            tempFirm.save()
+
+            # Переход по адресу 'all-borrowed':
+            return HttpResponse("Save, sucsessfull!"+form.cleaned_data['username'])
+
+    # Если это GET (или какой-либо еще), создать форму по умолчанию.
+    else:
+        form = registration_firm_form
+    return render(request, 'data/registration_firm.html', {'form': form})

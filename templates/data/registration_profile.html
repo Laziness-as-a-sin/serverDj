@@ -9,12 +9,14 @@
 {% endblock %}
 
 {%block content%}
-    <div class
-            <form action="{% url 'registration_profile_form' %}" method="post">{% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <form action="{% url 'registration_profile' %}" method="post">{% csrf_token %}
                 {{form|crispy}}
                 <input type="submit">
             </form>
-
+        </div>
+    </div>
 {%endblock%}
 
                 {% comment %} <div class="main_center_center">

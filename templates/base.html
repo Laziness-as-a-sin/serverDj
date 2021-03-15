@@ -14,27 +14,45 @@
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div class="row">
-        <nav class="navbar navbar-expand-lg fixed-top ">  
-            <a class="navbar-brand" href="/">Home</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">  
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse " id="navbarSupportedContent">     <ul class="navbar-nav mr-4">
-            <li class="nav-item">
-                <a class="nav-link" data-value="about" href="#">About</a>        </li>  
-            <li class="nav-item">
-                <a class="nav-link " data-value="portfolio"href="#">Portfolio</a>    
-            </li>
-            <li class="nav-item"> 
-                <a class="nav-link " data-value="blog" href="#">Blog</a>         </li>   
-            <li class="nav-item">  
-            <a class="nav-link " data-value="team" href="#">         Team</a>       </li>  
-            <li class="nav-item"> 
-            <a class="nav-link " data-value="contact" href="#">Contact</a>       </li> 
-            </ul> 
-        </div></nav>
-    </div>
+    {%block header%}
+        <div class="row">
+            <nav class="navbar navbar-expand-lg fixed-top ">  
+                <a class="navbar-brand" href="/">Home</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">  
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">     <ul class="navbar-nav mr-4">
+                <li class="nav-item">
+                    <a class="nav-link" data-value="about" href="#">About</a>        </li>  
+                <li class="nav-item">
+                    <a class="nav-link " data-value="portfolio"href="#">Portfolio</a>    
+                </li>
+                <li class="nav-item"> 
+                    <a class="nav-link " data-value="blog" href="#">Blog</a>         </li>   
+                <li class="nav-item">  
+                <a class="nav-link " data-value="team" href="#">         Team</a>       </li>  
+                {% if user.is_authenticated %}
+                    {% if user.firm %}
+                        <li class="nav-item"> 
+                        <a class="nav-link " data-value="contact" href="#">{{user.firm.name}}</a>
+                    {% else %}
+                        {% if user.profile %}
+                            <li class="nav-item"> 
+                            <a class="nav-link " data-value="contact" href="#">{{user.profile.name1}}</a>
+                        {% else %}
+                            <li class="nav-item"> 
+                            <a class="nav-link " data-value="contact" href="#">{{user.username}}</a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <li class="nav-item"> 
+                    <a class="nav-link " data-value="contact" href="#">NoName</a>
+                {% endif %}
+                    </li> 
+                </ul> 
+            </div></nav>
+        </div>
+    {%endblock%}
     <div class="container">
         {% block content %}Content{%endblock%}
     </div>

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block script %}
+    {% load static %}
+    {% load crispy_forms_tags %}
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script> 
+{% endblock %}
+{%block title%}Main zone{%endblock%}
+{%block content%}
+        <div class="row">
+            <div class="col-3">
+            <form action="{% url 'registration_firm' %}" method="post">{% csrf_token %}
+                {{form|crispy}}
+                <input type="submit">
+            </form>
+
+            </div>
+        </div>
+        
+        <br>
+{%endblock%}
