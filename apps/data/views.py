@@ -1,12 +1,12 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import csrf
-from .models import City, Profile, Profession, Disability, Firm
+from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill
 from django.contrib.auth.models import User
 from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form
 from django.http import JsonResponse
-import logging
 from django.db.models import Q
+
 
 def index(request):
     usernames = User.objects.all().values("username")
@@ -163,3 +163,60 @@ def registrationFirm(request):
     else:
         form = registration_firm_form
     return render(request, 'data/registration_firm.html', {'form': form})
+
+
+def personalArea(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'firm'):
+            return redirect('firm/')
+        if hasattr(request.user, 'profile'):
+            return HttpResponse("Попал куда надо!)")
+        return HttpResponse("Как ты сюда попал?!!")
+    return HttpResponse("Как ты сюда попал?!")
+
+
+def personalAreaFirm(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'firm'):
+            print(request.method)
+            if request.method == 'POST':
+                print()
+                form = workPlace_form(request.POST)
+
+                if form.is_valid():
+                    tempWorkPlace = WorkPlace(name=form.cleaned_data['name'])
+                    
+                    tempWorkPlace.firm = request.user.firm
+                    tempWorkPlace.city = form.cleaned_data['city']
+                    tempWorkPlace.education = form.cleaned_data['education']
+                    tempWorkPlace.profession = form.cleaned_data['profession']
+                    tempWorkPlace.work_experience = form.cleaned_data['work_experience']
+                    tempWorkPlace.min_salary = form.cleaned_data['min_salary']
+                    tempWorkPlace.max_salary = form.cleaned_data['max_salary']
+                    tempWorkPlace.save()
+
+                    for temp in form.cleaned_data['employment_type']:
+                        employment_type = get_object_or_404(EmploymentType, name=temp)
+                        tempWorkPlace.employment_type.add(employment_type.id)
+
+                    for temp in form.cleaned_data['schedule']:
+                        schedule = get_object_or_404(Schedule, name=temp)
+                        tempWorkPlace.schedule.add(schedule.id)
+
+                    for temp in form.cleaned_data['skill']:
+                        skill = get_object_or_404(Skill, name=temp)
+                        tempWorkPlace.skill.add(skill.id)
+
+                    for temp in form.cleaned_data['disability']:
+                        disability = get_object_or_404(Disability, name=temp)
+                        tempWorkPlace.disability.add(disability.id)
+
+                    tempWorkPlace.save()
+                    
+                    return HttpResponse("Save, sucsessfull!")
+            
+            else:
+                form = workPlace_form
+            return render(request, 'data/personal_area_firm.html', {'form': form})
+        return HttpResponse("Как ты сюда попал?!!")
+    return HttpResponse("Как ты сюда попал?!")

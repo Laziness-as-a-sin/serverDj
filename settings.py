@@ -138,4 +138,4 @@ STATICFILES_DIRS = [
     'data/static',
 ]
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/data/personal_area/'

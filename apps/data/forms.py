@@ -75,7 +75,7 @@ class index_form(forms.Form):
 class workPlace_form(forms.ModelForm):
     class Meta:
         model = WorkPlace
-        exclude = []
+        exclude = ['firm']
 
 
 class registration_firm_form(forms.ModelForm, forms.Form):
