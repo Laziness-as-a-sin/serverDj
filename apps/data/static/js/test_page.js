@@ -1,12 +1,11 @@
 function addData(chart, label, data) {
     // chart.data.labels = label;
-
     chart.data.datasets[0].data = data;
     chart.update();  
 }
 
-$(document).ready(function(){
 
+$(document).ready(function(){
     $("#id_profession").on("change", function(e){
         e.preventDefault();
 
@@ -30,7 +29,5 @@ $(document).ready(function(){
                 console.log(response)
             }
         })
-
     })
-
  })

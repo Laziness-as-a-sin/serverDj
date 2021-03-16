@@ -18,12 +18,6 @@ def sr(request):
     return HttpResponse("Здравствуй, Мир")
 
 
-# def registration_profile(request):
-#     form = registration_profile_form
-
-#     return render(request, 'data/registration_profile.html', {'form': form})
-
-
 def testPage(request):
     return render(request, 'data/test_page.html', {'form': workPlace_form})
 
@@ -44,12 +38,10 @@ def registrationProfile(request):
 
             return HttpResponse("Save, sucsessfull!")
 
-    # Если это GET (или какой-либо еще), создать форму по умолчанию.
     else:
         form = registration_profile_form
 
     return render(request, 'data/registration_profile.html', {'form': form})
-    # return HttpResponse('In 1')
 
 
 def getUserInfo(request):
@@ -65,11 +57,9 @@ def getUserInfo(request):
         age = request.GET.get("id_age")
         skills = request.GET.getlist("id_skills[]")
         disability = request.GET.getlist("id_disability[]")
-        
+    
         experience = request.GET.get("id_experience")
 
-
-        #try:
         prof = Profile.objects.exclude(disability__in = disability)
 
         temp_dict = {"city":0, "education":0, "profession":0, "skills":0, "disability":0} 
@@ -107,17 +97,11 @@ def getUserInfo(request):
             number_mismatches_dict[number_mismatches] += 1
         print(temp_dict, number_mismatches_dict)
 
-
-
-
-        #except:
-        #    return JsonResponse({"success":False}, status=400)
-
         user_info = {
             "target_mismatches": temp_dict,
             "prof_desc": number_mismatches_dict
         }
-        print(user_info)
+
         return JsonResponse({"user_info":user_info}, status=200)
     return JsonResponse({"success":False}, status=400)
 
@@ -125,13 +109,9 @@ def getUserInfo(request):
 def testUpdate(request):
     print("In 1")
     if request.method == "GET" and request.is_ajax():
-
         id_profession = request.GET.get("id_profession")
-        
         profession = Profession.objects.get(pk=id_profession)
         profession_disability = (list(map(int, profession.disability.values_list("id",  flat=True)))) 
-        print(profession_disability)
-
         return JsonResponse({"user_info":profession_disability}, status=200)
     return JsonResponse({"success":False}, status=400)
 
@@ -139,12 +119,9 @@ def testUpdate(request):
 def registrationFirm(request):
     form = registration_firm_form
     if request.method == 'POST':
-        # return HttpResponse(request.POST)
-        # # Создаем экземпляр формы и заполняем данными из запроса (связывание, binding):
         form = registration_firm_form(request.POST)
-        # Проверка валидности данных формы:
+
         if form.is_valid():
-            
             tempUser = User(username='Noname', email='example@mail.com', password = str(form.cleaned_data['password']))
             tempUser.username = form.cleaned_data['username']
 
@@ -156,10 +133,8 @@ def registrationFirm(request):
             tempFirm = Firm(user=tempUser, name=form.cleaned_data['name'], description=form.cleaned_data['description'])
             tempFirm.save()
 
-            # Переход по адресу 'all-borrowed':
             return HttpResponse("Save, sucsessfull!"+form.cleaned_data['username'])
 
-    # Если это GET (или какой-либо еще), создать форму по умолчанию.
     else:
         form = registration_firm_form
     return render(request, 'data/registration_firm.html', {'form': form})
@@ -178,7 +153,6 @@ def personalArea(request):
 def personalAreaFirm(request):
     if request.user.is_authenticated:
         if hasattr(request.user, 'firm'):
-            print(request.method)
             if request.method == 'POST':
                 print()
                 form = workPlace_form(request.POST)
@@ -215,8 +189,57 @@ def personalAreaFirm(request):
                     
                     return HttpResponse("Save, sucsessfull!")
             
+
+            if request.method == "GET" and request.is_ajax():
+                city = request.GET.get("id_city", "")
+                education = request.GET.get("id_education")
+                profession = request.GET.get("id_profession")
+                skill = request.GET.getlist("id_skill[]")
+                disability = request.GET.getlist("id_disability[]") 
+
+                temp_dict = {"city":0, "education":0, "profession":0, "skill":0, "disability":0} 
+                users = Profile.objects.all()
+            
+                number_mismatches_dict = [0] * 6
+                print(city, education, profession, skill, disability)
+
+                for user in users:
+                    number_mismatches = 0
+                    if city and user.city_id == int(city):
+                        temp_dict["city"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if  set(list(map(int, education))).issubset(user.education.values_list("id",  flat=True)):         
+                        temp_dict["education"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if profession and int(profession) in user.profession.values_list("id",  flat=True):
+                            temp_dict["profession"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if set(list(map(int, skill))).issubset(user.skills.values_list("id",  flat=True)):
+                        temp_dict["skill"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if not set(list(map(int, disability))).issubset(user.disability.values_list("id",  flat=True)) or list(map(int, disability)) == []:
+                        temp_dict["disability"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    number_mismatches_dict[number_mismatches] += 1
+
+                user_info = {
+                    "target_mismatches": temp_dict,
+                    "prof_desc": number_mismatches_dict
+                }
+                return JsonResponse({"user_info":user_info}, status=200)
             else:
                 form = workPlace_form
             return render(request, 'data/personal_area_firm.html', {'form': form})
+
         return HttpResponse("Как ты сюда попал?!!")
     return HttpResponse("Как ты сюда попал?!")

@@ -83,7 +83,7 @@ class WorkPlace(models.Model):
 
     name = models.CharField('Title work place', max_length=200, default=contact_default, blank=True)
     firm = models.ForeignKey(Firm, verbose_name='фирма', on_delete=models.CASCADE, null=True)
-    city = models.ForeignKey(City, verbose_name='город', on_delete=models.PROTECT, null=True, blank=True)
+    city = models.ForeignKey(City, verbose_name='город', on_delete=models.PROTECT, null=True, blank=True, default=1)
     education = models.ForeignKey(Education, verbose_name='образование', on_delete=models.PROTECT, null=True)
     profession = models.ForeignKey(Profession, verbose_name='профессия', on_delete=models.CASCADE, null=True)
     work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
