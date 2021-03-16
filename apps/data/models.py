@@ -100,7 +100,7 @@ class WorkPlace(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    description = models.TextField('опыт', max_length=500, blank=True)
+    description = models.TextField('окортко о себе', max_length=500, blank=True)
     location = models.CharField('адрес', max_length=30, blank=True)
     birth_date = models.DateField('дата рождения', null=True, blank=True)
     sex = models.IntegerField('пол', blank=True, default=1)

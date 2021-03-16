@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 import datetime #for checking renewal date range.
 from django.contrib.auth.models import User
 from django.forms import MultipleChoiceField, BooleanField, IntegerField
-from .models import City, Education, Profession, Disability, Skill, WorkPlace, Firm
+from .models import City, Education, Profession, Disability, Skill, WorkPlace, Firm, Profile
 from multiselectfield import MultiSelectField
 
 
@@ -104,3 +104,9 @@ class registration_firm_form(forms.ModelForm, forms.Form):
         if pass1 != pass2:
             msg = "Пароли должны совпадать!"
             self.add_error('password', msg)
+
+
+class profile_form(forms.ModelForm):
+    class Meta:
+        model = Profile
+        exclude = ['user']

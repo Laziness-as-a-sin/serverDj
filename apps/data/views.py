@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import csrf
 from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill
 from django.contrib.auth.models import User
-from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form
+from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form
 from django.http import JsonResponse
 from django.db.models import Q
 
@@ -145,7 +145,7 @@ def personalArea(request):
         if hasattr(request.user, 'firm'):
             return redirect('firm/')
         if hasattr(request.user, 'profile'):
-            return HttpResponse("Попал куда надо!)")
+            return redirect('profile/')
         return HttpResponse("Как ты сюда попал?!!")
     return HttpResponse("Как ты сюда попал?!")
 
@@ -239,7 +239,67 @@ def personalAreaFirm(request):
                 return JsonResponse({"user_info":user_info}, status=200)
             else:
                 form = workPlace_form
+            
             return render(request, 'data/personal_area_firm.html', {'form': form})
 
         return HttpResponse("Как ты сюда попал?!!")
     return HttpResponse("Как ты сюда попал?!")
+
+
+def personalAreaProfile(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'profile'):
+
+            if request.method == "GET" and request.is_ajax():
+                city = request.GET.get("id_city", "")
+                education = request.GET.getlist("id_education[]")
+                profession = request.GET.getlist("id_profession[]")
+                skill = request.GET.getlist("id_skill[]")
+                disability = request.GET.getlist("id_disability[]") 
+
+                temp_dict = {"disability":0, "city":0, "education":0, "profession":0, "skill":0}
+                work_places = WorkPlace.objects.all()
+
+                number_mismatches_dict = [0] * 6
+                print(city, education, profession, skill, disability)
+
+                for place in work_places:
+                    number_mismatches = 0
+                    if city and place.city_id == int(city):
+                        temp_dict["city"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if place.education.id in list(map(int, education)):         
+                        temp_dict["education"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if place.profession.id in list(map(int, profession)):
+                            temp_dict["profession"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if set(place.skill.values_list("id",  flat=True)).issubset(list(map(int, skill))):
+                        temp_dict["skill"] += 1 
+                    else:
+                        number_mismatches += 1
+
+                    if not set(place.disability.values_list("id",  flat=True)).issubset(list(map(int, disability))) or list(map(int, disability)) == []:
+                        temp_dict["disability"] += 1 
+                    else:
+                        number_mismatches += 1
+                    number_mismatches_dict[number_mismatches] += 1
+
+
+                place_info = {
+                    "target_mismatches": temp_dict,
+                    "prof_desc": number_mismatches_dict
+                }
+                return JsonResponse({"place_info":place_info}, status=200)
+
+
+            if request.method == 'GET':
+                form = profile_form
+                return render(request, 'data/personal_area_profile.html', {'form': form})
+            
