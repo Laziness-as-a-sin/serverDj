@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import csrf
-from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill
+from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill, Education
 from django.contrib.auth.models import User
 from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form
 from django.http import JsonResponse
@@ -302,4 +302,54 @@ def personalAreaProfile(request):
             if request.method == 'GET':
                 form = profile_form
                 return render(request, 'data/personal_area_profile.html', {'form': form})
+
+            
+            if request.method == 'POST':
+                print()
+                form = profile_form(request.POST)
+                if form.is_valid():
+
+                    user = Profile.objects.get(user=request.user)
+                    print(form.cleaned_data['birth_date'])
+                    if (form.cleaned_data['description']!=""):
+                        user.description = form.cleaned_data['description']
+                    if (form.cleaned_data['location']!=""):
+                        user.location = form.cleaned_data['location']
+                    if (form.cleaned_data['birth_date']!=None):
+                        user.birth_date = form.cleaned_data['birth_date']
+                    if (form.cleaned_data['sex']!=None):
+                        user.sex = form.cleaned_data['sex']
+                    if (form.cleaned_data['city']!=""):  
+                        user.city = form.cleaned_data['city']
+                    if (form.cleaned_data['name1']!=""):   
+                        user.name1 = form.cleaned_data['name1']
+                    if (form.cleaned_data['name2']!=""):
+                        user.name2 = form.cleaned_data['name2']
+                    if (form.cleaned_data['name3']!=""):
+                        user.name3 = form.cleaned_data['name3']
+                    user.save()
+                    if (form.cleaned_data['education'] !=[]):
+                        user.education.clear()
+                        for temp in form.cleaned_data['education']:
+                            education = get_object_or_404(Education, name=temp)
+                            user.education.add(education.id)
+                    if (form.cleaned_data['profession'] !=[]):
+                        user.profession.clear()
+                        for temp in form.cleaned_data['profession']:
+                            profession = get_object_or_404(Profession, name=temp)
+                            user.profession.add(profession.id)
+                    if (form.cleaned_data['skills'] !=[]):
+                        user.skills.clear()
+                        for temp in form.cleaned_data['skills']:
+                            skill = get_object_or_404(Skill, name=temp)
+                            user.skills.add(skill.id)
+                    if (form.cleaned_data['disability'] !=[]):
+                        user.disability.clear()
+                        for temp in form.cleaned_data['disability']:
+                            disability = get_object_or_404(Disability, name=temp)
+                            user.disability.add(disability.id)
+
+                    user.save()
+                    
+                    return HttpResponse("Save, sucsessfull!")
             
