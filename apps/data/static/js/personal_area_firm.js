@@ -94,7 +94,7 @@ $(document).ready(function(){
     });
 
 
-    $(":input").not("#id_profession").on("change", function(e){
+    $(":input").on("change", function(e){
         e.preventDefault();
 
         var id_disability = $("#id_disability").val();
@@ -142,31 +142,6 @@ $(document).ready(function(){
                     $("#id_disability option[value=" + response.user_info[i] + "]").attr('selected','selected');
                 }
 
-                var id_disability = $("#id_disability").val();
-                var id_city = $("#id_city").val();
-                var id_education = $("#id_education").val();
-                var id_profession = $("#id_profession").val();
-                var id_skill = $("#id_skill").val();
-        
-                var data = {id_disability, id_city, id_education, id_profession, id_skill};
-                console.log(data)
-                $.ajax({
-                    type : 'GET',
-                    url :  '/personal_area/firm/',
-                    data : data,
-                    success : function(response){
-                        tempDict = [];
-                        console.log(response.user_info);
-                        addData(myChart, 0, response.user_info.prof_desc)
-                        Object.keys(response.user_info.target_mismatches).forEach(function(key) {
-                            tempDict.push(response.user_info.target_mismatches[key]);
-                         });
-                         addData(myChart1, 0, tempDict)
-                    },
-                    error : function(response){
-                        console.log(response)
-                    }
-                })
             },
             error : function(response){
                 console.log(response)

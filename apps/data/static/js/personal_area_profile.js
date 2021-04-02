@@ -68,7 +68,7 @@ $(document).ready(function(){
             data : data,
             success : function(response){
                 tempDict = [];
-                console.log(response.place_info);
+                console.log(response);
                 addData(myChart, 0, response.place_info.prof_desc)
                 Object.keys(response.place_info.target_mismatches).forEach(function(key) {
                     tempDict.push(response.place_info.target_mismatches[key]);

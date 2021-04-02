@@ -7,6 +7,13 @@ from .forms import index_form, workPlace_form, registration_firm_form, registrat
 from django.http import JsonResponse
 from django.db.models import Q
 
+def checkIsInclude(arr1, arr2):
+    for a in arr2:
+        for b in arr1:
+            if a == b:
+                return True
+    return False
+
 
 def index(request):
     usernames = User.objects.all().values("username")
@@ -261,6 +268,7 @@ def personalAreaProfile(request):
                 work_places = WorkPlace.objects.all()
 
                 number_mismatches_dict = [0] * 6
+                work_places_info = []
                 print(city, education, profession, skill, disability)
 
                 for place in work_places:
@@ -285,17 +293,31 @@ def personalAreaProfile(request):
                     else:
                         number_mismatches += 1
 
-                    if not set(place.disability.values_list("id",  flat=True)).issubset(list(map(int, disability))) or list(map(int, disability)) == []:
+                    if not checkIsInclude(list(map(int, disability)), place.disability.values_list("id",  flat=True)) or list(map(int, disability)) == []:
                         temp_dict["disability"] += 1 
                     else:
                         number_mismatches += 1
                     number_mismatches_dict[number_mismatches] += 1
 
+                    if not checkIsInclude(list(map(int, disability)), place.disability.values_list("id",  flat=True)) or list(map(int, disability)) == []:
+                        coincidence = 0
+                        if city and place.city_id == int(city):
+                            coincidence += 0.25
+                        if place.education.id in list(map(int, education)):
+                            coincidence += 0.25
+                        if place.profession.id in list(map(int, profession)):
+                            coincidence += 0.25
+                        if set(place.skill.values_list("id",  flat=True)).issubset(list(map(int, skill))):
+                            coincidence += 0.25
+                        work_places_info.append({"work_place_name": place.name, "work_place_profession": place.profession.name, "work_place_coincidence": coincidence, "work_place_min_salary": place.min_salary, "work_place_max_salary": place.max_salary})
 
                 place_info = {
                     "target_mismatches": temp_dict,
-                    "prof_desc": number_mismatches_dict
+                    "prof_desc": number_mismatches_dict,
+                    "work_places_info": work_places_info
                 }
+
+                print(work_places_info)
                 return JsonResponse({"place_info":place_info}, status=200)
 
 

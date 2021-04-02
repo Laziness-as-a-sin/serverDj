@@ -11,22 +11,35 @@
         {% if user.profile %}
 
             <div class="row">
-                        <div class="col-3">
-                            <form action="{% url 'personal_area_profile' %}" method='post'>{% csrf_token %}
-                                {{ form|crispy }}
-                                <input type="submit">
-                            </form>
-                        </div>
-                        <div class="col">
-                            <div class="row">
-                                <canvas id="myChart"></canvas>
-                            </div>
-                            <!-- <div class="row">
-                                <canvas id="myChart1"></canvas>
-                            </div>  -->
-                        </div>
+                <div class="col-3">
+                    <form action="{% url 'personal_area_profile' %}" method='post'>{% csrf_token %}
+                        {{ form|crispy }}
+                        <input type="submit">
+                    </form>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <canvas id="myChart"></canvas>
                     </div>
-
+                    <div class="row border border-primary">
+                        {% comment %} <div> {% endcomment %}
+                            <div class="col">
+                                <text>Название рабочего места </text>
+                            </div>
+                            <div class="col">
+                                <p class="text-right">10000 - 15000</p>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col">
+                                Профессия
+                            </div>
+                            <div class="col">
+                                <p class="text-right">Процент совпадения: 75%</p>
+                            </div>
+                        {% comment %} </div> {% endcomment %}
+                    </div>
+                </div>
+            </div>
         {% else %}
             {% if user.firm %}
                 <a href="accounts/login/">login as profile</a>
