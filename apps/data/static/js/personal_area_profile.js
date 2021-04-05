@@ -74,6 +74,53 @@ $(document).ready(function(){
                     tempDict.push(response.place_info.target_mismatches[key]);
                 });
                 addData(myChart, 0, tempDict)
+
+                while(document.getElementById("idtest")){
+                    document.getElementById("idtest").remove()
+                }
+
+                $.each(response.place_info.work_places_info,function(key,data) {
+                    console.log(data);
+
+                    
+                    let block_user_workplace = document.createElement('div')
+                    block_user_workplace.className = "row border border-primary"
+                    block_user_workplace.id = "idtest"
+                    block_user_workplace.innerHTML =    `<div class='col'><text>${data['work_place_name']}</text></div>\
+                                                        <div class='col'>\
+                                                            <p class='text-right'>${data['work_place_min_salary']} - ${data['work_place_max_salary']}</p>\
+                                                        </div>\
+                                                        <div class='w-100'></div>\
+                                                        <div class='col'>\
+                                                            ${data['work_place_profession']}\
+                                                        </div>\
+                                                        <div class='col'>\
+                                                            <p class='text-right'>Процент совпадения: ${data['work_place_coincidence']}%</p>\
+                                                        </div>
+                                                        `
+                    
+
+                    document.getElementById("chart_div").after(block_user_workplace)
+                });
+
+                
+
+
+                // <div class="col">
+                //                 <text>Название рабочего места </text>
+                //             </div>
+                //             <div class="col">
+                //                 <p class="text-right">10000 - 15000</p>
+                //             </div>
+                //             <div class="w-100"></div>
+                //             <div class="col">
+                //                 Профессия
+                //             </div>
+                //             <div class="col">
+                //                 <p class="text-right">Процент совпадения: 75%</p>
+                //             </div>
+
+
             },
             error : function(response){
                 console.log(response)
