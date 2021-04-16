@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import Firm, Disability, Education, Profession, City, Skill, Profile, Schedule, WorkPlace, WorkExperience, EmploymentType, Profile
-
 admin.site.register(Profile)
 admin.site.register(Firm)
 admin.site.register(Disability)

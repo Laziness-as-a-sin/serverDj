@@ -374,4 +374,4 @@ def personalAreaProfile(request):
                     user.save()
                     
                     return HttpResponse("Save, sucsessfull!")
-            
+
