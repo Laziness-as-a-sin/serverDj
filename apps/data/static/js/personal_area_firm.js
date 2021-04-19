@@ -4,7 +4,36 @@ function addData(chart, label, data) {
     chart.update();  
 }
 
+function geocodeAddress(geocoder, resultsMap, address) {
+    geocoder.geocode({ address: address }, (results, status) => {
+      if (status === "OK") {
+        resultsMap.setCenter(results[0].geometry.location);
+        new google.maps.Marker({
+          map: resultsMap,
+          position: results[0].geometry.location,
+        });
+      } else {
+        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+}
+let map;
+var geocoder;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 15,
+    });
+    geocoder = new google.maps.Geocoder();
+    geocodeAddress(geocoder, map, "Владивосток, Державина 15")
+};
+
+
+
 $(document).ready(function(){
+
+    
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -96,7 +125,6 @@ $(document).ready(function(){
 
     $(":input").on("change", function(e){
         e.preventDefault();
-
         var id_disability = $("#id_disability").val();
         var id_city = $("#id_city").val();
         var id_education = $("#id_education").val();
