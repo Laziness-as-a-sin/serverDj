@@ -238,6 +238,10 @@ def personalAreaFirm(request):
                         number_mismatches += 1
 
                     number_mismatches_dict[number_mismatches] += 1
+                work_places_info = []
+                work_places_info.append({"name": 'Петр Гордиенко', "status": 1, "position": 'Иваново'})
+                work_places_info.append({"name": 'Петр Гордиенко', "status": 0, "position": 'Иваново'})
+                work_places_info.append({"name": 'Петр Гордиенко', "status": 0, "position": 'Иваново'})
 
                 user_info = {
                     "target_mismatches": temp_dict,
