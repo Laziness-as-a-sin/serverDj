@@ -210,8 +210,14 @@ def personalAreaFirm(request):
                 number_mismatches_dict = [0] * 6
                 print(city, education, profession, skill, disability)
 
+                related_professions = Profession.objects.get(id=profession).boundProfession.values_list("id",  flat=True)
+                related_professions = set(list(map(int, related_professions)))
+                users_good = []
+                users_wrong = []
                 for user in users:
+                    checkUserProf = 0
                     number_mismatches = 0
+
                     if city and user.city_id == int(city):
                         temp_dict["city"] += 1 
                     else:
@@ -224,8 +230,14 @@ def personalAreaFirm(request):
 
                     if profession and int(profession) in user.profession.values_list("id",  flat=True):
                             temp_dict["profession"] += 1 
+                            checkUserProf = 2
                     else:
+                        if checkIsInclude(related_professions, user.profession.values_list("id",  flat=True)): 
+                            checkUserProf = 1
+                        else:
+                            checkUserProf = 0
                         number_mismatches += 1
+                    print( checkUserProf)
 
                     if set(list(map(int, skill))).issubset(user.skills.values_list("id",  flat=True)):
                         temp_dict["skill"] += 1 
@@ -238,14 +250,18 @@ def personalAreaFirm(request):
                         number_mismatches += 1
 
                     number_mismatches_dict[number_mismatches] += 1
-                work_places_info = []
-                work_places_info.append({"name": 'Петр Гордиенко', "status": 1, "position": 'Иваново'})
-                work_places_info.append({"name": 'Петр Гордиенко', "status": 0, "position": 'Иваново'})
-                work_places_info.append({"name": 'Петр Гордиенко', "status": 0, "position": 'Иваново'})
+
+                    if checkUserProf == 1:
+                        users_wrong.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True)))})
+                    if checkUserProf == 2:
+                        users_good.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True)))})
 
                 user_info = {
+                    "city": City.objects.get(pk= int(city)).name,
                     "target_mismatches": temp_dict,
-                    "prof_desc": number_mismatches_dict
+                    "prof_desc": number_mismatches_dict,
+                    "users_good": users_good,
+                    "users_wrong": users_wrong
                 }
                 return JsonResponse({"user_info":user_info}, status=200)
             else:
