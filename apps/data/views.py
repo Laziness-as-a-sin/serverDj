@@ -287,12 +287,22 @@ def personalAreaProfile(request):
                 temp_dict = {"disability":0, "city":0, "education":0, "profession":0, "skill":0}
                 work_places = WorkPlace.objects.all()
 
+                work_place_good = []
+                work_place_wrong = []
+                related_professions = []
+                for x in profession:
+                    for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                        if y not in related_professions:
+                            related_professions.append(y)
+
                 number_mismatches_dict = [0] * 6
                 work_places_info = []
                 print(city, education, profession, skill, disability)
 
                 for place in work_places:
+                    checkPlace = 0
                     number_mismatches = 0
+                        
                     if city and place.city_id == int(city):
                         temp_dict["city"] += 1 
                     else:
@@ -304,9 +314,14 @@ def personalAreaProfile(request):
                         number_mismatches += 1
 
                     if place.profession.id in list(map(int, profession)):
-                            temp_dict["profession"] += 1 
+                        temp_dict["profession"] += 1 
+                        checkPlace = 2
+                    elif place.profession.id in related_professions:
+                        number_mismatches += 1
+                        checkPlace = 1
                     else:
                         number_mismatches += 1
+                        checkPlace = 0
 
                     if set(place.skill.values_list("id",  flat=True)).issubset(list(map(int, skill))):
                         temp_dict["skill"] += 1 
@@ -331,7 +346,15 @@ def personalAreaProfile(request):
                             coincidence += 0.25
                         work_places_info.append({"work_place_name": place.name, "work_place_profession": place.profession.name, "work_place_coincidence": coincidence, "work_place_min_salary": place.min_salary, "work_place_max_salary": place.max_salary})
 
+                    if checkPlace == 2:
+                        work_place_good.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
+                    if checkPlace == 1:
+                        work_place_wrong.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
+
                 place_info = {
+                    "city": City.objects.get(pk= int(city)).name,
+                    "work_place_good": work_place_good,
+                    "work_place_wrong": work_place_wrong,
                     "target_mismatches": temp_dict,
                     "prof_desc": number_mismatches_dict,
                     "work_places_info": work_places_info

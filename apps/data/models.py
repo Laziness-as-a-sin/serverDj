@@ -103,11 +103,11 @@ class WorkPlace(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField('окортко о себе', max_length=500, blank=True)
-    location = models.CharField('адрес', max_length=30, blank=True)
+    location = models.CharField('адрес', max_length=30, default='Державина 15')
     birth_date = models.DateField('дата рождения', null=True, blank=True)
     sex = models.IntegerField('пол', blank=True, default=1)
     education = models.ManyToManyField(Education, blank=True)
-    city = models.ForeignKey(City, on_delete=models.PROTECT, null=True, blank=True)
+    city = models.ForeignKey(City, on_delete=models.PROTECT, default = 1)
     disability = models.ManyToManyField(Disability, blank=True)
     skills = models.ManyToManyField(Skill, blank=True)
     profession = models.ManyToManyField(Profession, blank=True)

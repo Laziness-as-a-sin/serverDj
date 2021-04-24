@@ -209,6 +209,13 @@ $(document).ready(function(){
                                                         </div>\
                                                         <div class='col'>\
                                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+                                                        </div>\
+                                                        <div class='col'>\
+                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                                                                <label class="btn btn-primary active">\
+                                                                <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                                                            </label>\
+                                                            </div>\
                                                         </div>
                                                         `
 
@@ -231,6 +238,13 @@ $(document).ready(function(){
                                                         </div>\
                                                         <div class='col'>\
                                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+                                                        </div>\
+                                                        <div class='col'>\
+                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                                                                <label class="btn btn-primary active">\
+                                                                    <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                                                                </label>\                                                        
+                                                            </div>
                                                         </div>
                                                         `
 
@@ -251,7 +265,7 @@ $(document).ready(function(){
                     } else {
                       alert("Geocode was not successful for the following reason: " + status);
                     }
-                  });
+                });
             },
             error : function(response){
                 console.log(response)
