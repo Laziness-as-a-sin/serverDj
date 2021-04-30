@@ -175,8 +175,66 @@ $(document).ready(function(){
                     document.getElementById("mapRow").after(block_user_workplace)
                 });
 
-                $.each(response.place_info.work_place_wrong, function(key,data) {
-                    geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+                // $.each(response.place_info.work_place_wrong, function(key,data) {
+                //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+
+                //     let block_work_place = document.createElement('div')
+                //     block_work_place.className = "row border border-warning mt-1"
+                //     block_work_place.id = "boxWorkPlaceWrong"
+                //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+                //                                         <div class='col'>\
+                //                                             <p class='text-right'>Подходит по смежной профессии</p>\
+                //                                         </div>\
+                //                                         <div class='w-100'></div>\
+                //                                         <div class='col'>\
+                //                                             ${data['profession']}\
+                //                                         </div>\
+                //                                         <div class='col'>\
+                //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+                //                                         </div>\
+                //                                         <div class='col'>\
+                //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                //                                                 <label class="btn btn-primary active">\
+                //                                                 <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                //                                             </label>\
+                //                                             </div>\
+                //                                         </div>
+                //                                         `
+
+                //     document.getElementById("mapRow").after(block_work_place)
+                // });
+
+                // $.each(response.place_info.work_place_good, function(key,data) {
+                //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Item-Bag-icon.png", 40, 40, data['name'], data)
+
+                //     let block_work_place = document.createElement('div')
+                //     block_work_place.className = "row border border-primary mt-1"
+                //     block_work_place.id = "boxWorkPlaceGood"
+                //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+                //                                         <div class='col'>\
+                //                                             <p class='text-right'>Подходит по профессии</p>\
+                //                                         </div>\
+                //                                         <div class='w-100'></div>\
+                //                                         <div class='col'>\
+                //                                             ${data['profession']}\
+                //                                         </div>\
+                //                                         <div class='col'>\
+                //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+                //                                         </div>\
+                //                                         <div class='col'>\
+                //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                //                                                 <label class="btn btn-primary active">\
+                //                                                     <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                //                                                 </label>\                                                        
+                //                                             </div>
+                //                                         </div>
+                //                                         `
+
+                //     document.getElementById("mapRow").after(block_work_place)
+                // });
+
+                $.each(response.place_info.work_place, function(key,data) {
+                    // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
 
                     let block_work_place = document.createElement('div')
                     block_work_place.className = "row border border-warning mt-1"
@@ -204,52 +262,23 @@ $(document).ready(function(){
                     document.getElementById("mapRow").after(block_work_place)
                 });
 
-                $.each(response.place_info.work_place_good, function(key,data) {
-                    geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Item-Bag-icon.png", 40, 40, data['name'], data)
-
-                    let block_work_place = document.createElement('div')
-                    block_work_place.className = "row border border-primary mt-1"
-                    block_work_place.id = "boxWorkPlaceGood"
-                    block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Подходит по профессии</p>\
-                                                        </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Адрес: ${data['position']}</p>\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                                                                <label class="btn btn-primary active">\
-                                                                    <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                                                                </label>\                                                        
-                                                            </div>
-                                                        </div>
-                                                        `
-
-                    document.getElementById("mapRow").after(block_work_place)
-                });
-
                 var location =  response.place_info.city + ', ' + $("#id_location").val();
-                geocoder.geocode({ address: location }, (results, status) => {
-                    if (status === "OK") {
-                      map.setCenter(results[0].geometry.location);
-                      marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location,
-                        animation: google.maps.Animation.DROP,
-                        title: 'Местоположение вас',
-                        icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/Orc-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
+                // geocoder.geocode({ address: location }, (results, status) => {
+                //     if (status === "OK") {
+                //       map.setCenter(results[0].geometry.location);
+                //       marker = new google.maps.Marker({
+                //         map: map,
+                //         position: results[0].geometry.location,
+                //         animation: google.maps.Animation.DROP,
+                //         title: 'Местоположение вас',
+                //         icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/Orc-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
                         
-                      });
-                      markersArray.push(marker);
-                    } else {
-                      alert("Geocode was not successful for the following reason: " + status);
-                    }
-                });
+                //       });
+                //       markersArray.push(marker);
+                //     } else {
+                //       alert("Geocode was not successful for the following reason: " + status);
+                //     }
+                // });
 
 
                 
