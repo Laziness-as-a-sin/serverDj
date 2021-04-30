@@ -62,6 +62,36 @@ function initMap() {
     geocodeAddress(geocoder, map, "Владивосток, Державина 15")
 };
 
+
+function showInfoWorkPlace(WorkPlace){
+    // console.log(WorkPlace)
+
+    // let Modal = document.createElement('div')
+
+    // Modal.className = "modal fade"
+    // Modal.id = "myModalBox"
+    // Modal.innerHTML =  `<div class="modal-dialog" role="document">
+    //                         <div class="modal-content">
+    //                             <div class="modal-header">
+    //                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    //                                     <span aria-hidden="true">&times;</span>
+    //                                 </button>
+    //                                 <h4 class="modal-title">Modal title</h4>
+    //                             </div>
+    //                             <div class="modal-body">
+    //                                 <p>One fine body&hellip;</p>
+    //                             </div>
+    //                             <div class="modal-footer">
+    //                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    //                                 <button type="button" class="btn btn-primary">Save changes</button>
+    //                             </div>
+    //                         </div>
+    //                     </div>`
+    // document.getElementById("chart_div").after(Modal)
+    // $('#myModalBox').modal(options)
+    
+};
+
 $(document).ready(function(){
 
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -120,7 +150,7 @@ $(document).ready(function(){
         var id_skill = $("#id_skills").val();
 
         var data = {id_disability, id_city, id_education, id_profession, id_skill};
-        console.log(data)
+        // console.log(data)
         $.ajax({
             type : 'GET',
             url :  '/personal_area/profile/',
@@ -151,115 +181,76 @@ $(document).ready(function(){
                 }
                 markersArray.length = 0;
 
-                $.each(response.place_info.work_places_info,function(key,data) {
-                    console.log(data);
+                // $.each(response.place_info.work_places_info,function(key,data) {
+                //     // console.log(data);
 
                     
-                    let block_user_workplace = document.createElement('div')
-                    block_user_workplace.className = "row border border-primary"
-                    block_user_workplace.id = "idtest"
-                    block_user_workplace.innerHTML =    `<div class='col'><text>${data['work_place_name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>${data['work_place_min_salary']} - ${data['work_place_max_salary']}</p>\
-                                                        </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['work_place_profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Процент совпадения: ${data['work_place_coincidence']}%</p>\
-                                                        </div>
-                                                        `
-                    
-
-                    document.getElementById("mapRow").after(block_user_workplace)
-                });
-
-                // $.each(response.place_info.work_place_wrong, function(key,data) {
-                //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
-
-                //     let block_work_place = document.createElement('div')
-                //     block_work_place.className = "row border border-warning mt-1"
-                //     block_work_place.id = "boxWorkPlaceWrong"
-                //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+                //     let block_user_workplace = document.createElement('div')
+                //     block_user_workplace.className = "row border border-primary"
+                //     block_user_workplace.id = "idtest"
+                //     block_user_workplace.innerHTML =    `<div class='col'><text>${data['work_place_name']}</text></div>\
                 //                                         <div class='col'>\
-                //                                             <p class='text-right'>Подходит по смежной профессии</p>\
+                //                                             <p class='text-right'>${data['work_place_min_salary']} - ${data['work_place_max_salary']}</p>\
                 //                                         </div>\
                 //                                         <div class='w-100'></div>\
                 //                                         <div class='col'>\
-                //                                             ${data['profession']}\
+                //                                             ${data['work_place_profession']}\
                 //                                         </div>\
                 //                                         <div class='col'>\
-                //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                //                                                 <label class="btn btn-primary active">\
-                //                                                 <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                //                                             </label>\
-                //                                             </div>\
+                //                                             <p class='text-right'>Процент совпадения: ${data['work_place_coincidence']}%</p>\
                 //                                         </div>
                 //                                         `
+                    
 
-                //     document.getElementById("mapRow").after(block_work_place)
+                //     document.getElementById("mapRow").after(block_user_workplace)
                 // });
 
-                // $.each(response.place_info.work_place_good, function(key,data) {
-                //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Item-Bag-icon.png", 40, 40, data['name'], data)
-
-                //     let block_work_place = document.createElement('div')
-                //     block_work_place.className = "row border border-primary mt-1"
-                //     block_work_place.id = "boxWorkPlaceGood"
-                //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Подходит по профессии</p>\
-                //                                         </div>\
-                //                                         <div class='w-100'></div>\
-                //                                         <div class='col'>\
-                //                                             ${data['profession']}\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                //                                                 <label class="btn btn-primary active">\
-                //                                                     <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                //                                                 </label>\                                                        
-                //                                             </div>
-                //                                         </div>
-                //                                         `
-
-                //     document.getElementById("mapRow").after(block_work_place)
-                // });
 
                 $.each(response.place_info.work_place, function(key,data) {
                     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
 
                     let block_work_place = document.createElement('div')
-                    block_work_place.className = "row border border-warning mt-1"
-                    block_work_place.id = "boxWorkPlaceWrong"
-                    block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Подходит по смежной профессии</p>\
+                    if (data["checkPlace"] == 2){
+                        block_work_place.id = "boxWorkPlaceGood"
+                        block_work_place.className = "row border border-success mt-1"
+                        approach = "Подходит по профессии"
+                    } else{
+                        block_work_place.id = "boxWorkPlaceWrong"
+                        block_work_place.className = "row border border-warning mt-1"
+                        approach = "Подходит по смежной профессии"
+                    }
+                    block_work_place.innerHTML =    `<div class='col'><text id=place_${data['place_id']} onclick="showInfoWorkPlace(${data})">${data['name']}</text></div>\
+                                                    <div class='col'>\
+                                                        <p class='text-right'>${approach}</p>\
+                                                    </div>\
+                                                    <div class='w-100'></div>\
+                                                    <div class='col'>\
+                                                        ${data['profession']}\
+                                                    </div>\
+                                                    <div class='col'>\
+                                                        <p class='text-right'>Адрес: ${data['position']}</p>\
+                                                    </div>\
+                                                    <div class='col'>\
+                                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                                                            <label class="btn btn-primary active">\
+                                                            <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                                                        </label>\
                                                         </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Адрес: ${data['position']}</p>\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                                                                <label class="btn btn-primary active">\
-                                                                <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                                                            </label>\
-                                                            </div>\
-                                                        </div>
+                                                    </div>
                                                         `
-
-                    document.getElementById("mapRow").after(block_work_place)
+                    if (data["checkPlace"] == 2){
+                        document.getElementById("mapRow").after(block_work_place)
+                    }
+                    else{
+                        if (document.getElementById("boxWorkPlaceGood")){
+                            document.getElementById("boxWorkPlaceGood").after(block_work_place)
+                        }
+                        else{
+                            document.getElementById("mapRow").after(block_work_place)
+                        }
+                        
+                    }
+                    
                 });
 
                 var location =  response.place_info.city + ', ' + $("#id_location").val();
@@ -279,30 +270,10 @@ $(document).ready(function(){
                 //       alert("Geocode was not successful for the following reason: " + status);
                 //     }
                 // });
-
-
-                
-
-
-                // <div class="col">
-                //                 <text>Название рабочего места </text>
-                //             </div>
-                //             <div class="col">
-                //                 <p class="text-right">10000 - 15000</p>
-                //             </div>
-                //             <div class="w-100"></div>
-                //             <div class="col">
-                //                 Профессия
-                //             </div>
-                //             <div class="col">
-                //                 <p class="text-right">Процент совпадения: 75%</p>
-                //             </div>
-
-
             },
             error : function(response){
                 console.log(response)
             }
         })
-    })    
+    })
  })
