@@ -287,6 +287,7 @@ def personalAreaProfile(request):
                 temp_dict = {"disability":0, "city":0, "education":0, "profession":0, "skill":0}
                 work_places = WorkPlace.objects.all()
 
+                work_place = []
                 work_place_good = []
                 work_place_wrong = []
                 related_professions = []
@@ -346,6 +347,11 @@ def personalAreaProfile(request):
                             coincidence += 0.25
                         work_places_info.append({"work_place_name": place.name, "work_place_profession": place.profession.name, "work_place_coincidence": coincidence, "work_place_min_salary": place.min_salary, "work_place_max_salary": place.max_salary})
 
+                    if checkPlace != 0:
+                        work_place.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, 'checkPlace': checkPlace,
+                        'city': place.city.name, 'education': place.education.name, 'educationCheck': 1, 'employment_type': place.employment_type.name, 'schedule': place.schedule.name,
+                        'skill': ["1", "2", "3"], 'skillCheck': [0, 0, 1], 'disability': ["2", "4", "3"], 'disabilityCheck': [1, 0, 1],
+                        'min_salary': place.min_salary, "max_salary": place.max_salary})
                     if checkPlace == 2:
                         work_place_good.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
                     if checkPlace == 1:
@@ -357,7 +363,8 @@ def personalAreaProfile(request):
                     "work_place_wrong": work_place_wrong,
                     "target_mismatches": temp_dict,
                     "prof_desc": number_mismatches_dict,
-                    "work_places_info": work_places_info
+                    "work_places_info": work_places_info,
+                    "work_place": work_place
                 }
 
                 print(work_places_info)
