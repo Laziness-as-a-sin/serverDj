@@ -62,247 +62,247 @@ function initMap() {
     geocodeAddress(geocoder, map, "Владивосток, Державина 15")
 };
 
-$(document).ready(function(){
+// $(document).ready(function(){
 
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Ограничения', 'Город', 'Образование', 'Профессия', 'Навыки'],
-            datasets: [{
-                label: 'Подходите',
-                data: [0, 0, 0, 0, 0, 0],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 1
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 1
-                    }
-                }]
-            }
-        }
-    });
+//     var ctx = document.getElementById('myChart').getContext('2d');
+//     var myChart = new Chart(ctx, {
+//         type: 'bar',
+//         data: {
+//             labels: ['Ограничения', 'Город', 'Образование', 'Профессия', 'Навыки'],
+//             datasets: [{
+//                 label: 'Подходите',
+//                 data: [0, 0, 0, 0, 0, 0],
+//                 backgroundColor: [
+//                     'rgba(255, 99, 132, 0.2)',
+//                     'rgba(54, 162, 235, 0.2)',
+//                     'rgba(255, 206, 86, 0.2)',
+//                     'rgba(75, 192, 192, 0.2)',
+//                     'rgba(153, 102, 255, 0.2)',
+//                     'rgba(255, 159, 64, 0.2)'
+//                 ],
+//                 borderColor: [
+//                     'rgba(255, 99, 132, 1)',
+//                     'rgba(54, 162, 235, 1)',
+//                     'rgba(255, 206, 86, 1)',
+//                     'rgba(75, 192, 192, 1)',
+//                     'rgba(153, 102, 255, 1)',
+//                     'rgba(255, 159, 64, 1)'
+//                 ],
+//                 borderWidth: 1
+//             }]
+//         },
+//         options: {
+//             scales: {
+//                 yAxes: [{
+//                     ticks: {
+//                         beginAtZero: true,
+//                         stepSize: 1
+//                     }
+//                 }],
+//                 xAxes: [{
+//                     ticks: {
+//                         beginAtZero: true,
+//                         stepSize: 1
+//                     }
+//                 }]
+//             }
+//         }
+//     });
 
 
-    $(":input").on("change", function(e){
-        e.preventDefault();
+//     $(":input").on("change", function(e){
+//         e.preventDefault();
 
-        var id_disability = $("#id_disability").val();
-        var id_city = $("#id_city").val();
-        var id_education = $("#id_education").val();
-        var id_profession = $("#id_profession").val();
-        var id_skill = $("#id_skills").val();
+//         var id_disability = $("#id_disability").val();
+//         var id_city = $("#id_city").val();
+//         var id_education = $("#id_education").val();
+//         var id_profession = $("#id_profession").val();
+//         var id_skill = $("#id_skills").val();
 
-        var data = {id_disability, id_city, id_education, id_profession, id_skill};
-        console.log(data)
-        $.ajax({
-            type : 'GET',
-            url :  '/personal_area/profile/',
-            data : data,
-            success : function(response){
-                tempDict = [];
-                console.log(response);
-                addData(myChart, 0, response.place_info.prof_desc)
-                Object.keys(response.place_info.target_mismatches).forEach(function(key) {
-                    tempDict.push(response.place_info.target_mismatches[key]);
-                });
-                addData(myChart, 0, tempDict)
+//         var data = {id_disability, id_city, id_education, id_profession, id_skill};
+//         console.log(data)
+//         $.ajax({
+//             type : 'GET',
+//             url :  '/personal_area/profile/',
+//             data : data,
+//             success : function(response){
+//                 tempDict = [];
+//                 console.log(response);
+//                 addData(myChart, 0, response.place_info.prof_desc)
+//                 Object.keys(response.place_info.target_mismatches).forEach(function(key) {
+//                     tempDict.push(response.place_info.target_mismatches[key]);
+//                 });
+//                 addData(myChart, 0, tempDict)
 
-                while(document.getElementById("idtest")){
-                    document.getElementById("idtest").remove()
-                }
+//                 while(document.getElementById("idtest")){
+//                     document.getElementById("idtest").remove()
+//                 }
 
-                while(document.getElementById("boxWorkPlaceGood")){
-                    document.getElementById("boxWorkPlaceGood").remove()
-                }
+//                 while(document.getElementById("boxWorkPlaceGood")){
+//                     document.getElementById("boxWorkPlaceGood").remove()
+//                 }
 
-                while(document.getElementById("boxWorkPlaceWrong")){
-                    document.getElementById("boxWorkPlaceWrong").remove()
-                }
+//                 while(document.getElementById("boxWorkPlaceWrong")){
+//                     document.getElementById("boxWorkPlaceWrong").remove()
+//                 }
 
-                for (var i = 0; i < markersArray.length; i++ ) {
-                    markersArray[i].setMap(null);
-                }
-                markersArray.length = 0;
+//                 for (var i = 0; i < markersArray.length; i++ ) {
+//                     markersArray[i].setMap(null);
+//                 }
+//                 markersArray.length = 0;
 
-                $.each(response.place_info.work_places_info,function(key,data) {
-                    console.log(data);
+//                 $.each(response.place_info.work_places_info,function(key,data) {
+//                     console.log(data);
 
                     
-                    let block_user_workplace = document.createElement('div')
-                    block_user_workplace.className = "row border border-primary"
-                    block_user_workplace.id = "idtest"
-                    block_user_workplace.innerHTML =    `<div class='col'><text>${data['work_place_name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>${data['work_place_min_salary']} - ${data['work_place_max_salary']}</p>\
-                                                        </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['work_place_profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Процент совпадения: ${data['work_place_coincidence']}%</p>\
-                                                        </div>
-                                                        `
+//                     let block_user_workplace = document.createElement('div')
+//                     block_user_workplace.className = "row border border-primary"
+//                     block_user_workplace.id = "idtest"
+//                     block_user_workplace.innerHTML =    `<div class='col'><text>${data['work_place_name']}</text></div>\
+//                                                         <div class='col'>\
+//                                                             <p class='text-right'>${data['work_place_min_salary']} - ${data['work_place_max_salary']}</p>\
+//                                                         </div>\
+//                                                         <div class='w-100'></div>\
+//                                                         <div class='col'>\
+//                                                             ${data['work_place_profession']}\
+//                                                         </div>\
+//                                                         <div class='col'>\
+//                                                             <p class='text-right'>Процент совпадения: ${data['work_place_coincidence']}%</p>\
+//                                                         </div>
+//                                                         `
                     
 
-                    document.getElementById("mapRow").after(block_user_workplace)
-                });
+//                     document.getElementById("mapRow").after(block_user_workplace)
+//                 });
 
-                // $.each(response.place_info.work_place_wrong, function(key,data) {
-                //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+//                 // $.each(response.place_info.work_place_wrong, function(key,data) {
+//                 //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
 
-                //     let block_work_place = document.createElement('div')
-                //     block_work_place.className = "row border border-warning mt-1"
-                //     block_work_place.id = "boxWorkPlaceWrong"
-                //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Подходит по смежной профессии</p>\
-                //                                         </div>\
-                //                                         <div class='w-100'></div>\
-                //                                         <div class='col'>\
-                //                                             ${data['profession']}\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                //                                                 <label class="btn btn-primary active">\
-                //                                                 <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                //                                             </label>\
-                //                                             </div>\
-                //                                         </div>
-                //                                         `
+//                 //     let block_work_place = document.createElement('div')
+//                 //     block_work_place.className = "row border border-warning mt-1"
+//                 //     block_work_place.id = "boxWorkPlaceWrong"
+//                 //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+//                 //                                         <div class='col'>\
+//                 //                                             <p class='text-right'>Подходит по смежной профессии</p>\
+//                 //                                         </div>\
+//                 //                                         <div class='w-100'></div>\
+//                 //                                         <div class='col'>\
+//                 //                                             ${data['profession']}\
+//                 //                                         </div>\
+//                 //                                         <div class='col'>\
+//                 //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+//                 //                                         </div>\
+//                 //                                         <div class='col'>\
+//                 //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+//                 //                                                 <label class="btn btn-primary active">\
+//                 //                                                 <input type="checkbox" name="options" autocomplete="off" checked> Like\
+//                 //                                             </label>\
+//                 //                                             </div>\
+//                 //                                         </div>
+//                 //                                         `
 
-                //     document.getElementById("mapRow").after(block_work_place)
-                // });
+//                 //     document.getElementById("mapRow").after(block_work_place)
+//                 // });
 
-                // $.each(response.place_info.work_place_good, function(key,data) {
-                //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Item-Bag-icon.png", 40, 40, data['name'], data)
+//                 // $.each(response.place_info.work_place_good, function(key,data) {
+//                 //     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Item-Bag-icon.png", 40, 40, data['name'], data)
 
-                //     let block_work_place = document.createElement('div')
-                //     block_work_place.className = "row border border-primary mt-1"
-                //     block_work_place.id = "boxWorkPlaceGood"
-                //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Подходит по профессии</p>\
-                //                                         </div>\
-                //                                         <div class='w-100'></div>\
-                //                                         <div class='col'>\
-                //                                             ${data['profession']}\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                //                                                 <label class="btn btn-primary active">\
-                //                                                     <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                //                                                 </label>\                                                        
-                //                                             </div>
-                //                                         </div>
-                //                                         `
+//                 //     let block_work_place = document.createElement('div')
+//                 //     block_work_place.className = "row border border-primary mt-1"
+//                 //     block_work_place.id = "boxWorkPlaceGood"
+//                 //     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+//                 //                                         <div class='col'>\
+//                 //                                             <p class='text-right'>Подходит по профессии</p>\
+//                 //                                         </div>\
+//                 //                                         <div class='w-100'></div>\
+//                 //                                         <div class='col'>\
+//                 //                                             ${data['profession']}\
+//                 //                                         </div>\
+//                 //                                         <div class='col'>\
+//                 //                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+//                 //                                         </div>\
+//                 //                                         <div class='col'>\
+//                 //                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+//                 //                                                 <label class="btn btn-primary active">\
+//                 //                                                     <input type="checkbox" name="options" autocomplete="off" checked> Like\
+//                 //                                                 </label>\                                                        
+//                 //                                             </div>
+//                 //                                         </div>
+//                 //                                         `
 
-                //     document.getElementById("mapRow").after(block_work_place)
-                // });
+//                 //     document.getElementById("mapRow").after(block_work_place)
+//                 // });
 
-                $.each(response.place_info.work_place, function(key,data) {
-                    // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+//                 $.each(response.place_info.work_place, function(key,data) {
+//                     // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
 
-                    let block_work_place = document.createElement('div')
-                    block_work_place.className = "row border border-warning mt-1"
-                    block_work_place.id = "boxWorkPlaceWrong"
-                    block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Подходит по смежной профессии</p>\
-                                                        </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Адрес: ${data['position']}</p>\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                                                                <label class="btn btn-primary active">\
-                                                                <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                                                            </label>\
-                                                            </div>\
-                                                        </div>
-                                                        `
+//                     let block_work_place = document.createElement('div')
+//                     block_work_place.className = "row border border-warning mt-1"
+//                     block_work_place.id = "boxWorkPlaceWrong"
+//                     block_work_place.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+//                                                         <div class='col'>\
+//                                                             <p class='text-right'>Подходит по смежной профессии</p>\
+//                                                         </div>\
+//                                                         <div class='w-100'></div>\
+//                                                         <div class='col'>\
+//                                                             ${data['profession']}\
+//                                                         </div>\
+//                                                         <div class='col'>\
+//                                                             <p class='text-right'>Адрес: ${data['position']}</p>\
+//                                                         </div>\
+//                                                         <div class='col'>\
+//                                                             <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+//                                                                 <label class="btn btn-primary active">\
+//                                                                 <input type="checkbox" name="options" autocomplete="off" checked> Like\
+//                                                             </label>\
+//                                                             </div>\
+//                                                         </div>
+//                                                         `
 
-                    document.getElementById("mapRow").after(block_work_place)
-                });
+//                     document.getElementById("mapRow").after(block_work_place)
+//                 });
 
-                var location =  response.place_info.city + ', ' + $("#id_location").val();
-                // geocoder.geocode({ address: location }, (results, status) => {
-                //     if (status === "OK") {
-                //       map.setCenter(results[0].geometry.location);
-                //       marker = new google.maps.Marker({
-                //         map: map,
-                //         position: results[0].geometry.location,
-                //         animation: google.maps.Animation.DROP,
-                //         title: 'Местоположение вас',
-                //         icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/Orc-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
+//                 var location =  response.place_info.city + ', ' + $("#id_location").val();
+//                 // geocoder.geocode({ address: location }, (results, status) => {
+//                 //     if (status === "OK") {
+//                 //       map.setCenter(results[0].geometry.location);
+//                 //       marker = new google.maps.Marker({
+//                 //         map: map,
+//                 //         position: results[0].geometry.location,
+//                 //         animation: google.maps.Animation.DROP,
+//                 //         title: 'Местоположение вас',
+//                 //         icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/Orc-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
                         
-                //       });
-                //       markersArray.push(marker);
-                //     } else {
-                //       alert("Geocode was not successful for the following reason: " + status);
-                //     }
-                // });
+//                 //       });
+//                 //       markersArray.push(marker);
+//                 //     } else {
+//                 //       alert("Geocode was not successful for the following reason: " + status);
+//                 //     }
+//                 // });
 
 
                 
 
 
-                // <div class="col">
-                //                 <text>Название рабочего места </text>
-                //             </div>
-                //             <div class="col">
-                //                 <p class="text-right">10000 - 15000</p>
-                //             </div>
-                //             <div class="w-100"></div>
-                //             <div class="col">
-                //                 Профессия
-                //             </div>
-                //             <div class="col">
-                //                 <p class="text-right">Процент совпадения: 75%</p>
-                //             </div>
+//                 // <div class="col">
+//                 //                 <text>Название рабочего места </text>
+//                 //             </div>
+//                 //             <div class="col">
+//                 //                 <p class="text-right">10000 - 15000</p>
+//                 //             </div>
+//                 //             <div class="w-100"></div>
+//                 //             <div class="col">
+//                 //                 Профессия
+//                 //             </div>
+//                 //             <div class="col">
+//                 //                 <p class="text-right">Процент совпадения: 75%</p>
+//                 //             </div>
 
 
-            },
-            error : function(response){
-                console.log(response)
-            }
-        })
-    })    
- })
+//             },
+//             error : function(response){
+//                 console.log(response)
+//             }
+//         })
+//     })    
+//  })
