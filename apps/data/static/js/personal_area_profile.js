@@ -63,34 +63,141 @@ function initMap() {
 };
 
 
-function showInfoWorkPlace(WorkPlace){
-    // console.log(WorkPlace)
+var city
+function showInfoWorkPlace(id){
+    $.each(list_workplace, function(key,data){
+        if (data["place_id"] == id){
+            console.log(data)
 
-    // let Modal = document.createElement('div')
+            list_skill = data['skill']
+            list_skill_check = data['skillCheck']
+            ul_list_skill = `<ul>`
+            $.each(list_skill, function(key,skill){
+                check_box = '-'
+                if (list_skill_check[key]){
+                    check_box = '+'
+                }
+                ul_list_skill +=`<li>${skill} ${check_box}</li>`
+            });
+            ul_list_skill +=`</ul>`
 
-    // Modal.className = "modal fade"
-    // Modal.id = "myModalBox"
-    // Modal.innerHTML =  `<div class="modal-dialog" role="document">
-    //                         <div class="modal-content">
-    //                             <div class="modal-header">
-    //                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    //                                     <span aria-hidden="true">&times;</span>
-    //                                 </button>
-    //                                 <h4 class="modal-title">Modal title</h4>
-    //                             </div>
-    //                             <div class="modal-body">
-    //                                 <p>One fine body&hellip;</p>
-    //                             </div>
-    //                             <div class="modal-footer">
-    //                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    //                                 <button type="button" class="btn btn-primary">Save changes</button>
-    //                             </div>
-    //                         </div>
-    //                     </div>`
-    // document.getElementById("chart_div").after(Modal)
-    // $('#myModalBox').modal(options)
+
+            list_disability = data['disability']
+            list_disability_check = data['disabilityCheck']
+            ul_list_disability = `<ul>`
+            $.each(list_disability, function(key,disability){
+                check_box = '+'
+                if (list_skill_check[key]){
+                    check_box = '-'
+                }
+                ul_list_disability +=`<li>${disability} ${check_box}</li>`
+            });
+            ul_list_disability +=`</ul>`
+
+
+
+            if (data["city"] == city){
+                city_check = true
+            } else{
+                city_check = false
+            }
+
+
+            let Modal = document.createElement('div')
+
+            Modal.className = "modal fade"
+            Modal.id = "myModalBox"
+            Modal.innerHTML =  `<div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">${data['name']}</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Рабочее место
+                                                    </th>
+                                                    <td>${data['name']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Должность
+                                                    </th>
+                                                    <td>${data['profession']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Город
+                                                    </th>
+                                                    <td>${data['city']}</td>
+                                                    <td>${city_check}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Адресс
+                                                    </th>
+                                                    <td>${data['position']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Образование
+                                                    </th>
+                                                    <td>${data['education']}</td>
+                                                    <td>Чекер</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Тип занятости
+                                                    </th>
+                                                    <td>${data['employment_type']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        График работы
+                                                    </th>
+                                                    <td>${data['schedule']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Ключевые навыки
+                                                    </th>
+                                                    <td>${ul_list_skill}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Ограничения
+                                                    </th>
+                                                    <td>${ul_list_disability}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Зарплата
+                                                    </th>
+                                                    <td>От ${data['min_salary']} до ${data['max_salary']} </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Подтвердить</button>
+                                        </div>
+                                    </div>
+                                </div>`
+            document.getElementById("chart_div").after(Modal)
+            $('#myModalBox').modal('show')
+        }
+    });
+
     
 };
+
+var list_workplace
 
 $(document).ready(function(){
 
@@ -150,7 +257,7 @@ $(document).ready(function(){
         var id_skill = $("#id_skills").val();
 
         var data = {id_disability, id_city, id_education, id_profession, id_skill};
-        // console.log(data)
+        console.log(data)
         $.ajax({
             type : 'GET',
             url :  '/personal_area/profile/',
@@ -180,6 +287,7 @@ $(document).ready(function(){
                     markersArray[i].setMap(null);
                 }
                 markersArray.length = 0;
+                
 
                 // $.each(response.place_info.work_places_info,function(key,data) {
                 //     // console.log(data);
@@ -205,10 +313,11 @@ $(document).ready(function(){
                 //     document.getElementById("mapRow").after(block_user_workplace)
                 // });
 
-
+                list_workplace = response.place_info.work_place
+                city = response.place_info.city
                 $.each(response.place_info.work_place, function(key,data) {
-                    // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
-
+                    geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+                
                     let block_work_place = document.createElement('div')
                     if (data["checkPlace"] == 2){
                         block_work_place.id = "boxWorkPlaceGood"
@@ -219,7 +328,7 @@ $(document).ready(function(){
                         block_work_place.className = "row border border-warning mt-1"
                         approach = "Подходит по смежной профессии"
                     }
-                    block_work_place.innerHTML =    `<div class='col'><text id=place_${data['place_id']} onclick="showInfoWorkPlace(${data})">${data['name']}</text></div>\
+                    block_work_place.innerHTML =    `<div class='col'><text id=place_${data['place_id']} onclick='showInfoWorkPlace(${data['place_id']})'>${data['name']}</text></div>\
                                                     <div class='col'>\
                                                         <p class='text-right'>${approach}</p>\
                                                     </div>\

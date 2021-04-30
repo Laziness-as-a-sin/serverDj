@@ -4,6 +4,10 @@ function addData(chart, label, data) {
     chart.update();  
 }
 
+let map;
+var geocoder;
+var markersArray = [];
+
 function geocodeAddress(geocoder, resultsMap, address, image= "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", size1 = 70, size2 = 70, resultTitle='Noname', description="You Firm place") {
     geocoder.geocode({ address: address }, (results, status) => {
       if (status === "OK") {
@@ -49,9 +53,7 @@ function geocodeAddress(geocoder, resultsMap, address, image= "https://icons.ico
       }
     });
 }
-let map;
-var geocoder;
-var markersArray = [];
+
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -61,7 +63,6 @@ function initMap() {
     geocoder = new google.maps.Geocoder();
     geocodeAddress(geocoder, map, "Владивосток, Державина 15")
 };
-
 
 
 $(document).ready(function(){

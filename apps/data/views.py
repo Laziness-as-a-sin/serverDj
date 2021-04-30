@@ -347,10 +347,27 @@ def personalAreaProfile(request):
                             coincidence += 0.25
                         work_places_info.append({"work_place_name": place.name, "work_place_profession": place.profession.name, "work_place_coincidence": coincidence, "work_place_min_salary": place.min_salary, "work_place_max_salary": place.max_salary})
 
+                    skillNames = list(map(str, place.skill.values_list("name",  flat=True)))
+                    skillCheck = []
+                    for el in list(map(int, place.skill.values_list("id",  flat=True))):
+                        if el in list(map(int, skill)):
+                            skillCheck.append(1)
+                        else:
+                            skillCheck.append(0)
+
+                    disabilityNames = list(map(str, place.disability.values_list("name",  flat=True)))
+                    disabilityCheck = []
+                    for el in list(map(int, place.disability.values_list("id",  flat=True))):
+                        if el in list(map(int, disability)):
+                            disabilityCheck.append(1)
+                        else:
+                            disabilityCheck.append(0)
+            
+                    print(skillNames, skillCheck)
                     if checkPlace != 0:
                         work_place.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, 'checkPlace': checkPlace,
                         'city': place.city.name, 'education': place.education.name, 'educationCheck': 1, 'employment_type': place.employment_type.name, 'schedule': place.schedule.name,
-                        'skill': ["1", "2", "3"], 'skillCheck': [0, 0, 1], 'disability': ["2", "4", "3"], 'disabilityCheck': [1, 0, 1],
+                        'skill': skillNames, 'skillCheck': skillCheck, 'disability': disabilityNames, 'disabilityCheck': disabilityCheck,
                         'min_salary': place.min_salary, "max_salary": place.max_salary, 'place_id': place.id})
                     if checkPlace == 2:
                         work_place_good.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
