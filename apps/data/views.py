@@ -302,6 +302,7 @@ def personalAreaProfile(request):
 
                 for place in work_places:
                     checkPlace = 0
+                    educationCheck = 0
                     number_mismatches = 0
                         
                     if city and place.city_id == int(city):
@@ -311,6 +312,7 @@ def personalAreaProfile(request):
 
                     if place.education.id in list(map(int, education)):         
                         temp_dict["education"] += 1 
+                        educationCheck = 1
                     else:
                         number_mismatches += 1
 
@@ -366,7 +368,7 @@ def personalAreaProfile(request):
                     print(skillNames, skillCheck)
                     if checkPlace != 0:
                         work_place.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, 'checkPlace': checkPlace,
-                        'city': place.city.name, 'education': place.education.name, 'educationCheck': 1, 'employment_type': place.employment_type.name, 'schedule': place.schedule.name,
+                        'city': place.city.name, 'education': place.education.name, 'educationCheck': educationCheck, 'employment_type': place.employment_type.name, 'schedule': place.schedule.name,
                         'skill': skillNames, 'skillCheck': skillCheck, 'disability': disabilityNames, 'disabilityCheck': disabilityCheck,
                         'min_salary': place.min_salary, "max_salary": place.max_salary, 'place_id': place.id})
                     if checkPlace == 2:
