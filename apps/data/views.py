@@ -351,7 +351,7 @@ def personalAreaProfile(request):
                         work_place.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, 'checkPlace': checkPlace,
                         'city': place.city.name, 'education': place.education.name, 'educationCheck': 1, 'employment_type': place.employment_type.name, 'schedule': place.schedule.name,
                         'skill': ["1", "2", "3"], 'skillCheck': [0, 0, 1], 'disability': ["2", "4", "3"], 'disabilityCheck': [1, 0, 1],
-                        'min_salary': place.min_salary, "max_salary": place.max_salary})
+                        'min_salary': place.min_salary, "max_salary": place.max_salary, 'place_id': place.id})
                     if checkPlace == 2:
                         work_place_good.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
                     if checkPlace == 1:
