@@ -63,7 +63,6 @@ function initMap() {
 };
 
 
-var city
 function showInfoWorkPlace(id){
     $.each(list_workplace, function(key,data){
         if (data["place_id"] == id){
@@ -96,10 +95,16 @@ function showInfoWorkPlace(id){
 
 
 
-            if (data["city"] == city){
+            if (data['checkPlace']){
                 city_check = true
             } else{
                 city_check = false
+            }
+
+            if (data['educationCheck']){
+                education_check = true
+            } else{
+                education_check = false
             }
 
 
@@ -148,7 +153,7 @@ function showInfoWorkPlace(id){
                                                         Образование
                                                     </th>
                                                     <td>${data['education']}</td>
-                                                    <td>Чекер</td>
+                                                    <td>${education_check}</td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">
@@ -314,7 +319,6 @@ $(document).ready(function(){
                 // });
 
                 list_workplace = response.place_info.work_place
-                city = response.place_info.city
                 $.each(response.place_info.work_place, function(key,data) {
                     geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
                 
