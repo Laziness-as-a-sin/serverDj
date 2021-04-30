@@ -43,13 +43,6 @@ class Profession(models.Model):
 
     def __str__(self):
         return self.name
-    
-
-class WorkExperience(models.Model):
-    name = models.CharField('опыт работы', max_length=200)
-
-    def __str__(self):
-        return self.name
 
 
 class EmploymentType(models.Model):
@@ -78,6 +71,30 @@ class Firm(models.Model):
         return self.name
 
 
+class DysfunctionsBody(models.Model):
+    name = models.CharField('вид нарушения функций организма', max_length=200)
+    description = models.TextField('описание', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class RestrictionsCategoriesLife(models.Model):
+    name = models.CharField('ограничения основных категорий жизнедеятельности', max_length=200)
+    description = models.TextField('описание', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class DisabilityGroups(models.Model):
+    name = models.CharField('группа инвалидности', max_length=200)
+    description = models.TextField('описание', blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class WorkPlace(models.Model):
     def contact_default():
         return ""
@@ -88,13 +105,15 @@ class WorkPlace(models.Model):
     location = models.CharField('Адрес', max_length=200, default='Державина 15')
     education = models.ForeignKey(Education, verbose_name='образование', on_delete=models.PROTECT, null=True)
     profession = models.ForeignKey(Profession, verbose_name='профессия', on_delete=models.CASCADE, null=True)
-    work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
+    # work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
     employment_type = models.ManyToManyField(EmploymentType, verbose_name='тип занятости', blank=True)
     schedule = models.ManyToManyField(Schedule, verbose_name='график работы', blank=True)
     skill = models.ManyToManyField(Skill, verbose_name='навыки', blank=True)
     disability = models.ManyToManyField(Disability, verbose_name='ограничения', blank=True)
     min_salary = models.IntegerField(verbose_name='минимальная зарплата', null=True)
     max_salary = models.IntegerField(verbose_name='максимальная зарплата', null=True)
+    profile_liked = models.ManyToManyField(User, verbose_name="Пользователи лайкнутые работадателем", blank = True, related_name='profile_liked')
+    liked_by_profile = models.ManyToManyField(User, verbose_name="Пользователи которые лайкнули", blank = True, related_name='liked_by_profile')
 
     def __str__(self):
         return self.name
@@ -103,17 +122,23 @@ class WorkPlace(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField('окортко о себе', max_length=500, blank=True)
-    location = models.CharField('адрес', max_length=30, default='Державина 15')
-    birth_date = models.DateField('дата рождения', null=True, blank=True)
     sex = models.IntegerField('пол', blank=True, default=1)
-    education = models.ManyToManyField(Education, blank=True)
+    birth_date = models.DateField('дата рождения', null=True, blank=True)
     city = models.ForeignKey(City, on_delete=models.PROTECT, default = 1)
+    location = models.CharField('адрес', max_length=30, default='Державина 15')
+    education = models.ManyToManyField(Education, blank=True)
+    work_experience = models.ManyToManyField(Profession, blank=True, related_name='work_experience', verbose_name='опыт работы')
+    disability_group = models.ForeignKey(DisabilityGroups, verbose_name='группа инвалидности', on_delete=models.PROTECT, blank=True, null=True)
+    dysfunctions_body = models.ManyToManyField(DysfunctionsBody, blank=True)
+    restrictions_categories_life = models.ManyToManyField(RestrictionsCategoriesLife, blank=True)
     disability = models.ManyToManyField(Disability, blank=True)
-    skills = models.ManyToManyField(Skill, blank=True)
-    profession = models.ManyToManyField(Profession, blank=True)
+    skills = models.ManyToManyField(Skill, blank=True, related_name='skills', verbose_name='навыки')
+    profession = models.ManyToManyField(Profession, blank=True, related_name='profession', verbose_name='профессии')
     name1 = models.CharField('фамилия', max_length=200, blank=True)
     name2 = models.CharField('Имя', max_length=200, blank=True)
     name3 = models.CharField('отчество', max_length=200, blank=True)
+    desired_position = models.ManyToManyField(Profession, blank=True, related_name='desired_position', verbose_name='желаемые профессии')
+    desired_skill = models.ManyToManyField(Skill, blank=True, related_name='desired_skills', verbose_name='желаемые навыки')
 
     def __str__(self):
         return self.user.username
