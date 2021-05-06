@@ -174,7 +174,7 @@ $(document).ready(function(){
                 tempDict = [];
                 var location =  response.user_info.city + ', ' + $("#id_location").val();
 
-                console.log(location);
+                console.log(response);
                 addData(myChart, 0, response.user_info.prof_desc)
                 Object.keys(response.user_info.target_mismatches).forEach(function(key) {
                     tempDict.push(response.user_info.target_mismatches[key]);
