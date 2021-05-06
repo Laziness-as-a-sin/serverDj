@@ -210,15 +210,28 @@ def personalAreaFirm(request):
                 number_mismatches_dict = [0] * 6
                 print(city, education, profession, skill, disability)
 
-                related_professions = Profession.objects.get(id=profession).boundProfession.values_list("id",  flat=True)
-                related_professions = set(list(map(int, related_professions)))
+                if education:
+                    educationName = Education.objects.get(id=education).name
+                else: 
+                    educationName = 'Не указано'
+
+                if profession:
+                    related_professions = Profession.objects.get(id=profession).boundProfession.values_list("id",  flat=True)
+                    related_professions = set(list(map(int, related_professions)))
+                else:
+                    related_professions = []
                 users_all = []
                 users_good = []
                 users_wrong = []
-                # skillNames = []
-                # skillId = []
-                # for el in set(list(map(int, skill))):
-                #     skillNames.append(Skill.)
+
+                skillNames = []
+                skillId = []   
+                for el in set(list(map(int, skill))):
+                    skillNames.append(Skill.objects.get(id=el).name)
+                    skillId.append(Skill.objects.get(id=el).id)
+
+                
+
                 for user in users:
                     checkUserProf = 0
                     number_mismatches = 0
@@ -256,25 +269,22 @@ def personalAreaFirm(request):
 
                     number_mismatches_dict[number_mismatches] += 1
                     
-                    # skillCheck = []
-                    # for el in list(map(int, user.skills.values_list("id",  flat=True))):
-                    #     if el in list(map(int, skill)):
-                    #         skillCheck.append(1)
-                    #     else:
-                    #         skillCheck.append(0)
+                    skillCheck = []
+                    for el in skillId:
+                        if el in list(map(int, user.skills.values_list("id",  flat=True))):
+                            skillCheck.append(1)
+                        else:
+                            skillCheck.append(0)
 
-                    # disabilityNames = list(map(str, place.disability.values_list("name",  flat=True)))
-                    # disabilityCheck = []
-                    # for el in list(map(int, place.disability.values_list("id",  flat=True))):
-                    #     if el in list(map(int, disability)):
-                    #         disabilityCheck.append(1)
-                    #     else:
-                    #         disabilityCheck.append(0)
-
+                    if education and education in list(map(int, user.education.values_list("id",  flat=True))):
+                        educationCheck = 1
+                    else:
+                        educationCheck = 0
+                    
                     if checkUserProf != 0:
                         users_all.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True))),
                         'checkUser': checkUserProf,
-                        'city': user.city.name, 'education': ['ol', 'al'], 'educationCheck': [0, 1], 'skill': ['ol', 'al'], 'skillCheck': [0, 1], 'disability': ['ol', 'al'], 'disabilityCheck': [0, 1],
+                        'city': user.city.name, 'education': educationName, 'educationCheck': educationCheck, 'skill': skillNames, 'skillCheck': skillCheck, 'disability': ['ol', 'al'], 'disabilityCheck': [0, 1],
                         'desired_salary': user.desired_salary, 'user_id': user.id})
                     if checkUserProf == 1:
                         users_wrong.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True)))})
