@@ -64,6 +64,135 @@ function initMap() {
     geocodeAddress(geocoder, map, "Владивосток, Державина 15")
 };
 
+var list_user = []
+var city;
+function showInfoUser(id){
+    $.each(list_user, function(key,data){
+        if (data["user_id"] == id){
+            console.log(data)
+
+            list_skill = data['skill']
+            list_skill_check = data['skillCheck']
+            ul_list_skill = `<ul>`
+            $.each(list_skill, function(key,skill){
+                check_box = '-'
+                if (list_skill_check[key]){
+                    check_box = '+'
+                }
+                ul_list_skill +=`<li>${skill} ${check_box}</li>`
+            });
+            ul_list_skill +=`</ul>`
+
+
+            list_disability = data['disability']
+            list_disability_check = data['disabilityCheck']
+            ul_list_disability = `<ul>`
+            $.each(list_disability, function(key,disability){
+                check_box = '+'
+                if (list_skill_check[key]){
+                    check_box = '-'
+                }
+                ul_list_disability +=`<li>${disability} ${check_box}</li>`
+            });
+            ul_list_disability +=`</ul>`
+
+
+
+            if (data['city'] == city){
+                city_check = true
+            } else{
+                city_check = false
+            }
+
+            if (data['educationCheck']){
+                education_check = true
+            } else{
+                education_check = false
+            }
+
+            if (data['desired_salary']){
+                desired_salary = data['desired_salary']
+            } else{
+                desired_salary = "Не указано"
+            }
+
+            let Modal = document.createElement('div')
+
+            Modal.className = "modal fade"
+            Modal.id = "myModalBox"
+            Modal.innerHTML =  `<div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">${data['name']}</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Фамилия и имя
+                                                    </th>
+                                                    <td>${data['name']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Город
+                                                    </th>
+                                                    <td>${data['city']}</td>
+                                                    <td>${city_check}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Адресс
+                                                    </th>
+                                                    <td>${data['position']}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Образование
+                                                    </th>
+                                                    <td>${data['education']}</td>
+                                                    <td>${education_check}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Ключевые навыки
+                                                    </th>
+                                                    <td>${ul_list_skill}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Ограничения
+                                                    </th>
+                                                    <td>${ul_list_disability}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Желаемая зарплата
+                                                    </th>
+                                                    <td>${desired_salary}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Готов обучить</button>
+                                        </div>
+                                    </div>
+                                </div>`
+            document.getElementById("myChart1").after(Modal)
+            $('#myModalBox').modal('show')
+        }
+    }); 
+};
+
+
+
+
 
 $(document).ready(function(){
 
@@ -173,7 +302,7 @@ $(document).ready(function(){
             success : function(response){
                 tempDict = [];
                 var location =  response.user_info.city + ', ' + $("#id_location").val();
-
+                city = response.user_info.city;
                 console.log(response);
                 addData(myChart, 0, response.user_info.prof_desc)
                 Object.keys(response.user_info.target_mismatches).forEach(function(key) {
@@ -194,15 +323,26 @@ $(document).ready(function(){
                 }
                 markersArray.length = 0;
 
-                $.each(response.user_info.users_wrong, function(key,data) {
-                    geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/1024/Grim-Reaper-icon.png", 40, 40, data['name'], data)
-
+                var approach
+                list_user = response.user_info.users_all
+                $.each(response.user_info.users_all, function(key,data) {
                     let block_user = document.createElement('div')
-                    block_user.className = "row border border-warning mt-1"
-                    block_user.id = "boxUserWrong"
-                    block_user.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
+                    if (data["checkUser"] == 2){
+                        geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Villager-icon.png", 40, 40, data)
+                        approach = "Подходит по профессии"
+                        block_user.className = "row border border-primary mt-1"
+                        block_user.id = "boxUserGood"
+                    } else{
+                        geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/1024/Grim-Reaper-icon.png", 40, 40, data['name'], data)
+                        block_user.className = "row border border-warning mt-1"
+                        block_user.id = "boxUserWrong"
+                        approach = "Подходит по смежной профессии"
+                    }
+
+
+                    block_user.innerHTML =    `<div class='col'><text id=user_${data['user_id']} onclick='showInfoUser(${data['user_id']})'>${data['name']}</text></div>\
                                                         <div class='col'>\
-                                                            <p class='text-right'>Подходит по смежной профессии</p>\
+                                                            <p class='text-right'>${approach}</p>\
                                                         </div>\
                                                         <div class='w-100'></div>\
                                                         <div class='col'>\
@@ -219,38 +359,21 @@ $(document).ready(function(){
                                                             </div>\
                                                         </div>
                                                         `
-
-                    document.getElementById("mapRow").after(block_user)
+                    if (data["checkUser"] == 2){
+                        document.getElementById("mapRow").after(block_user)
+                    }
+                    else{
+                        if (document.getElementById("boxUserGood")){
+                            document.getElementById("boxUserGood").after(block_user)
+                        }
+                        else{
+                            document.getElementById("mapRow").after(block_user)
+                        }
+                        
+                    }
                 });
 
-                $.each(response.user_info.users_good, function(key,data) {
-                    geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Villager-icon.png", 40, 40, data)
 
-                    let block_user = document.createElement('div')
-                    block_user.className = "row border border-primary mt-1"
-                    block_user.id = "boxUserGood"
-                    block_user.innerHTML =    `<div class='col'><text>${data['name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Подходит по профессии</p>\
-                                                        </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Адрес: ${data['position']}</p>\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
-                                                                <label class="btn btn-primary active">\
-                                                                    <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                                                                </label>\                                                        
-                                                            </div>
-                                                        </div>
-                                                        `
-
-                    document.getElementById("mapRow").after(block_user)
-                });
                 geocoder.geocode({ address: location }, (results, status) => {
                     if (status === "OK") {
                       map.setCenter(results[0].geometry.location);

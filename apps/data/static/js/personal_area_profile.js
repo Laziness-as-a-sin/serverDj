@@ -190,16 +190,14 @@ function showInfoWorkPlace(id){
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Подтвердить</button>
+                                            <button type="button" class="btn btn-primary">Готов обучиться</button>
                                         </div>
                                     </div>
                                 </div>`
             document.getElementById("chart_div").after(Modal)
             $('#myModalBox').modal('show')
         }
-    });
-
-    
+    }); 
 };
 
 var list_workplace
