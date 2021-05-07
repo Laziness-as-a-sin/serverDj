@@ -4,6 +4,12 @@ function addData(chart, label, data) {
     chart.update();  
 }
 
+function selectElement(id, valueToSelect) {    
+    console.log(id, valueToSelect)
+    // let element = document.getElementById(id);
+    // element.value = valueToSelect;
+}
+
 let map;
 var geocoder;
 var markersArray = [];
@@ -338,6 +344,7 @@ $(document).ready(function(){
 
                 var approach
                 list_user = response.user_info.users_all
+                var counter = 0
                 $.each(response.user_info.users_all, function(key,data) {
                     let block_user = document.createElement('div')
                     if (data["checkUser"] == 2){
@@ -365,7 +372,7 @@ $(document).ready(function(){
                                                             <p class='text-right'>Адрес: ${data['position']}</p>\
                                                         </div>\
                                                         <div class='col'>\
-                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='selectElement("id_profile_liked", ${data['user_id']})'>\
                                                                 <label class="btn btn-primary active">\
                                                                 <input type="checkbox" name="options" autocomplete="off" checked> Like\
                                                             </label>\
@@ -384,6 +391,13 @@ $(document).ready(function(){
                         }
                         
                     }
+
+                    // document.getElementsByClassName('btn-group btn-group-toggle')[counter]
+                    //     .addEventListener('click', function (event) {
+                    //         alert('Hi!');
+                    //         selectElement('id_profile_liked', data['user_id']);
+                    //     });
+                    // counter += 1;
                 });
 
 
