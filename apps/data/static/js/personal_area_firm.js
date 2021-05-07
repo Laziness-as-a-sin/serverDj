@@ -4,11 +4,23 @@ function addData(chart, label, data) {
     chart.update();  
 }
 
+var selectedValuesLiked = [];
 function selectElement(id, valueToSelect) {    
-    console.log(id, valueToSelect)
-    // let element = document.getElementById(id);
-    // element.value = valueToSelect;
+    // console.log(id, valueToSelect)
+    let element = document.getElementById(id);
+
+    id = '#'+id;
+    if (selectedValuesLiked.includes(valueToSelect)){
+        selectedValuesLiked.splice(selectedValuesLiked.indexOf(valueToSelect), 1);
+    }
+    else{
+        selectedValuesLiked.push(valueToSelect);
+    }
+    $(id).val(selectedValuesLiked);
+    // element.options[valueToSelect].selected= valueToSelect;
 }
+
+
 
 let map;
 var geocoder;
