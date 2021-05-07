@@ -276,7 +276,7 @@ def personalAreaFirm(request):
                         else:
                             skillCheck.append(0)
 
-                    if education and education in list(map(int, user.education.values_list("id",  flat=True))):
+                    if education and (education in list(map(int, user.education.values_list("id",  flat=True))) or list(map(int, [education])) == list(map(int, user.education.values_list("id",  flat=True)))):
                         educationCheck = 1
                     else:
                         educationCheck = 0
@@ -480,3 +480,28 @@ def personalAreaProfile(request):
                     
                     return HttpResponse("Save, sucsessfull!")
 
+
+def basketFirm(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'firm'):
+            workPlace = WorkPlace.objects.filter(firm=request.user.firm.id)
+            work_places = []
+            for el in workPlace:
+                # temp1 = list(el.liked_by_profile.values_list("name1",  flat=True))
+                # temp2 = list(el.liked_by_profile.values_list("name2",  flat=True))
+                profile_liked_names = []
+                for el1 in el.profile_liked.all():
+                    profile_liked_names.append(el1.name1 + ' ' + el1.name2)
+                liked_by_profile_names = []
+                for el1 in el.liked_by_profile.all():
+                    liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+
+                work_places.append({'name': el.name, "position": f"{el.city}, {el.location}", "profession": el.profession.name,
+                'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
+                'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
+                'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
+                'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
+                'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+            print(work_places)
+            return HttpResponse('request.user.firm.id')
+    return HttpResponse("Как ты сюда попал?!!")

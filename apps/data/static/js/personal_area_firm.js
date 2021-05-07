@@ -97,6 +97,13 @@ function showInfoUser(id){
             ul_list_disability +=`</ul>`
 
 
+            list_profession = data['profession']
+            ul_list_profession = `<ul>`
+            $.each(list_profession, function(key,profession){
+                ul_list_profession +=`<li>${profession}</li>`
+            });
+            ul_list_profession +=`</ul>`
+
 
             if (data['city'] == city){
                 city_check = true
@@ -156,6 +163,12 @@ function showInfoUser(id){
                                                     </th>
                                                     <td>${data['education']}</td>
                                                     <td>${education_check}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Профессии по образованию
+                                                    </th>
+                                                    <td>${ul_list_profession}</td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">

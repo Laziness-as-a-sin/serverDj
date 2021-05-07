@@ -95,33 +95,6 @@ class DisabilityGroups(models.Model):
         return self.name
 
 
-class WorkPlace(models.Model):
-    def contact_default():
-        return ""
-
-    name = models.CharField('Title work place', max_length=200, default=contact_default, blank=True)
-    firm = models.ForeignKey(Firm, verbose_name='фирма', on_delete=models.CASCADE, null=True)
-    city = models.ForeignKey(City, verbose_name='город', on_delete=models.PROTECT, default=1)
-    location = models.CharField('Адрес', max_length=200, default='Державина 15')
-    education = models.ForeignKey(Education, verbose_name='образование', on_delete=models.PROTECT, null=True)
-    profession = models.ForeignKey(Profession, verbose_name='профессия', on_delete=models.CASCADE, null=True)
-    # work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
-    employment_type = models.ManyToManyField(EmploymentType, verbose_name='тип занятости', blank=True)
-    schedule = models.ManyToManyField(Schedule, verbose_name='график работы', blank=True)
-    skill = models.ManyToManyField(Skill, verbose_name='навыки', blank=True)
-    disability_group = models.ForeignKey(DisabilityGroups, verbose_name='группа инвалидности', on_delete=models.PROTECT, blank=True, null=True)
-    dysfunctions_body = models.ManyToManyField(DysfunctionsBody, blank=True, verbose_name='физические ограничения')
-    restrictions_categories_life = models.ManyToManyField(RestrictionsCategoriesLife, blank=True, verbose_name='ограничение категорий жизнедеятельности')
-    disability = models.ManyToManyField(Disability, verbose_name='ограничения', blank=True)
-    min_salary = models.IntegerField(verbose_name='минимальная зарплата', null=True)
-    max_salary = models.IntegerField(verbose_name='максимальная зарплата', null=True)
-    profile_liked = models.ManyToManyField(User, verbose_name="Пользователи лайкнутые работадателем", blank = True, related_name='profile_liked')
-    liked_by_profile = models.ManyToManyField(User, verbose_name="Пользователи которые лайкнули", blank = True, related_name='liked_by_profile')
-
-    def __str__(self):
-        return self.name
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField('окортко о себе', max_length=500, blank=True)
@@ -146,6 +119,34 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+        
+class WorkPlace(models.Model):
+    def contact_default():
+        return ""
+
+    name = models.CharField('Title work place', max_length=200, default=contact_default, blank=True)
+    firm = models.ForeignKey(Firm, verbose_name='фирма', on_delete=models.CASCADE, null=True)
+    city = models.ForeignKey(City, verbose_name='город', on_delete=models.PROTECT, default=1)
+    location = models.CharField('Адрес', max_length=200, default='Державина 15')
+    education = models.ForeignKey(Education, verbose_name='образование', on_delete=models.PROTECT, null=True)
+    profession = models.ForeignKey(Profession, verbose_name='профессия', on_delete=models.CASCADE, null=True)
+    # work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
+    employment_type = models.ManyToManyField(EmploymentType, verbose_name='тип занятости', blank=True)
+    schedule = models.ManyToManyField(Schedule, verbose_name='график работы', blank=True)
+    skill = models.ManyToManyField(Skill, verbose_name='навыки', blank=True)
+    # disability_group = models.ForeignKey(DisabilityGroups, verbose_name='группа инвалидности', on_delete=models.PROTECT, blank=True, null=True)
+    dysfunctions_body = models.ManyToManyField(DysfunctionsBody, blank=True, verbose_name='физические ограничения')
+    restrictions_categories_life = models.ManyToManyField(RestrictionsCategoriesLife, blank=True, verbose_name='ограничение категорий жизнедеятельности')
+    disability = models.ManyToManyField(Disability, verbose_name='ограничения', blank=True)
+    min_salary = models.IntegerField(verbose_name='минимальная зарплата', null=True)
+    max_salary = models.IntegerField(verbose_name='максимальная зарплата', null=True)
+    profile_liked = models.ManyToManyField(Profile, verbose_name="Пользователи лайкнутые работадателем", blank = True, related_name='profile_liked')
+    liked_by_profile = models.ManyToManyField(Profile, verbose_name="Пользователи которые лайкнули", blank = True, related_name='liked_by_profile')
+
+    def __str__(self):
+        return self.name
+
 
 
 # @receiver(post_save, sender=User)

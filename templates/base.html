@@ -30,14 +30,18 @@
                 </li>
                 <li class="nav-item"> 
                     <a class="nav-link " data-value="blog" href="#">Blog</a>         </li>   
-                <li class="nav-item">  
-                <a class="nav-link " data-value="team" href="#">         Team</a>       </li>  
                 {% if user.is_authenticated %}
                     {% if user.firm %}
+                        <li class="nav-item">  
+                        <a class="nav-link " data-value="basketFirm" href="{% url 'basket_firm' %}">Корзина</a>
+                        </li>
                         <li class="nav-item"> 
                         <a class="nav-link " data-value="contact" href="#">{{user.firm.name}}</a>
                     {% else %}
                         {% if user.profile %}
+                            <li class="nav-item">  
+                            <a class="nav-link " data-value="basketProfile" href="#">Корзина</a>
+                            </li>
                             <li class="nav-item"> 
                             <a class="nav-link " data-value="contact" href="#">{{user.profile.name1}}</a>
                         {% else %}
@@ -46,8 +50,11 @@
                         {% endif %}
                     {% endif %}
                 {% else %}
+                    {% comment %} <li class="nav-item">  
+                    <a class="nav-link " data-value="Корзина" href="#">Корзина</a>
+                    </li>        {% endcomment %}
                     <li class="nav-item"> 
-                    <a class="nav-link " data-value="contact" href="#">NoName</a>
+                    <a class="nav-link " data-value="contact" href="#">No loggined</a>
                 {% endif %}
                     </li> 
                 </ul> 
