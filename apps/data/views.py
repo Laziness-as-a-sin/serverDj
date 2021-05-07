@@ -502,6 +502,5 @@ def basketFirm(request):
                 'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
                 'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
                 'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
-            print(work_places)
-            return HttpResponse('request.user.firm.id')
+            return render(request, 'data/basket_firm.html', {'work_places': work_places})
     return HttpResponse("Как ты сюда попал?!!")
