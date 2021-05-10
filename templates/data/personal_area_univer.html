@@ -10,6 +10,7 @@
         {% if user.profile %}
             <script>
                 var info = JSON.parse('{{ info | escapejs }}');
+                var work_places = JSON.parse('{{ work_places | escapejs }}');
             </script>
             <div class="row justify-content-center">
                 <div class="col-auto">
@@ -32,6 +33,23 @@
                             <tbody id="tableProfile">  <tbody>
         
                             </tbody>
+                    </table>
+
+                    <table class="table table-responsive border border-primary mt-1">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Вакансия</th>
+                            <th scope="col">Фирма</th>
+                            <th scope="col">Город</th>
+                            <th scope="col">Требуемые навыки</th>
+                            <th scope="col">Пользователи, лайкнутые фирмой</th>
+                            <th scope="col">Пользователи, лайкнувшие фирму</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tableWorkPlace">  <tbody>
+    
+                        </tbody>
                     </table>
                 </div>
             </div>
