@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block script %}
+    {% load static %}
+    {% load crispy_forms_tags %}
+{% endblock %}
+
+{%block title%}Корзина{%endblock%}
+{%block content%}
+    {% if user.is_authenticated %}
+        {% if user.profile %}
+            <script>
+                var info = JSON.parse('{{ info | escapejs }}');
+            </script>
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <table class="table table-responsive border border-primary mt-1">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">ФИО</th>
+                                <th scope="col">Пол</th>
+                                <th scope="col">Город</th>
+                                <th scope="col">Возраст</th>
+                                <th scope="col">Базовое образование</th>
+                                <th scope="col">Опыт работы</th>
+                                <th scope="col">Компетенции</th>
+                                <th scope="col">Где хочет работать</th>
+                                <th scope="col">Ближайшие вакансии</th>
+                                <th scope="col">Доступные вакансии</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableProfile">  <tbody>
+        
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+            {% comment %} <div id="blockWorkPlace"></div> {% endcomment %}
+        {% endif %}
+    {% endif %}
+    <script type="text/javascript" src="{% static 'js/personal_area_univer.js' %}"></script>
+{%endblock%}

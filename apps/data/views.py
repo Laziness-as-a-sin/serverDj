@@ -285,7 +285,7 @@ def personalAreaFirm(request):
                     if checkUserProf != 0:
                         users_all.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True))),
                         'checkUser': checkUserProf,
-                        'city': user.city.name, 'education': educationName, 'educationCheck': educationCheck, 'skill': skillNames, 'skillCheck': skillCheck, 'disability': ['ol', 'al'], 'disabilityCheck': [0, 1],
+                        'city': user.city.name, 'education': educationName, 'educationCheck': educationCheck, 'skill': skillNames, 'skillCheck': skillCheck, 'disability': [], 'disabilityCheck': [],
                         'desired_salary': user.desired_salary, 'user_id': user.id})
                     if checkUserProf == 1:
                         users_wrong.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True)))})
@@ -505,3 +505,92 @@ def basketFirm(request):
                 'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
             return render(request, 'data/basket_firm.html', {'work_places': json.dumps(work_places)})
     return HttpResponse("Как ты сюда попал?!!")
+
+
+def basketProfile(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'profile'):
+            profile = Profile.objects.get(user=request.user)
+            workPlace = WorkPlace.objects.filter(liked_by_profile__id=profile.id)
+            print(workPlace)
+            work_places = []
+            for el in workPlace:
+                profile_liked_names = []
+                for el1 in el.profile_liked.all():
+                    profile_liked_names.append(el1.name1 + ' ' + el1.name2)
+                liked_by_profile_names = []
+                for el1 in el.liked_by_profile.all():
+                    liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+
+                work_places.append({'name': el.name, "position": f"{el.city}, {el.location}", "profession": el.profession.name,
+                'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
+                'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
+                'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
+                'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
+                'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+            print(work_places)
+            return render(request, 'data/basket_profile.html', {'work_places': json.dumps(work_places)})
+    return HttpResponse("Как ты сюда попал?!!")
+
+
+def usersLike(request):
+    if request.method == 'GET':
+        work_place = WorkPlace.objects.get(id = request.GET.get("idWorkplace"))
+        profile = Profile.objects.get(user=request.user)
+        place_info = 1
+        print(work_place.liked_by_profile.values_list("id",  flat=True), profile)
+        if profile.id in work_place.liked_by_profile.values_list("id",  flat=True):
+            work_place.liked_by_profile.remove(profile)
+        else:
+            work_place.liked_by_profile.add(profile)
+        
+        return JsonResponse({"status":place_info}, status=200)
+
+
+def personalAreaUniver(request):
+    profile = Profile.objects.all()
+    profiles = []
+    info = []
+    for el in Profile.objects.all():
+        work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)).count()
+        related_professions = []
+        for x in el.profession.values_list("id",  flat=True):
+            for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                if y not in related_professions:
+                    related_professions.append(y)
+        work_places_near = WorkPlace.objects.filter(profession__in=related_professions).count()
+        if el.sex == 1:
+            sex = 'Муж'
+        else:
+            sex = 'Жен'
+    
+        profiles.append({'name': el.name1 + ' ' + el.name2, "profession": list(el.profession.values_list("name",  flat=True)),
+        'sex': sex, 'age': el.birth_date, 'work_experience': list(el.work_experience.values_list("name",  flat=True)), 
+        'desired_position': list(el.desired_position.values_list("name",  flat=True)), 
+        'city': el.city.name, 'education': list(el.education.values_list("name",  flat=True)),
+        'skill': list(el.skills.values_list("name",  flat=True)), 'disability': list(el.disability.values_list("name",  flat=True)),
+        'work_places': work_places, 'work_places_near': work_places_near,
+        'id': el.id})
+    info.append({'profiles': profiles})
+
+    return render(request, 'data/personal_area_univer.html', {'info': json.dumps(info)})
+    # workPlace = WorkPlace.objects.filter(liked_by_profile__id=profile.id)
+
+    # print(workPlace)
+    # work_places = []
+    # for el in workPlace:
+    #     profile_liked_names = []
+    #     for el1 in el.profile_liked.all():
+    #         profile_liked_names.append(el1.name1 + ' ' + el1.name2)
+    #     liked_by_profile_names = []
+    #     for el1 in el.liked_by_profile.all():
+    #         liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+
+    #     work_places.append({'name': el.name, "position": f"{el.city}, {el.location}", "profession": el.profession.name,
+    #     'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
+    #     'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
+    #     'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
+    #     'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
+    #     'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+    # print(work_places)
+    # return HttpResponse("Как ты сюда попал?!!")

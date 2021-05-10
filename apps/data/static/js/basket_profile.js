@@ -162,24 +162,6 @@ $(document).ready(function(){
                                                             </div>\
                                                         </div>
                                                         `
-
-
-
-
-        // block_work_place.innerHTML = `<table class="table">
-        //                                 <tbody>
-        //                                     <th scope="row">
-        //                                         Рабочее место:
-        //                                     </th>
-        //                                     <td><text id=place_${data['place_id']} onclick='showInfoWorkPlace(${data['place_id']})'>${data['name']}</text></td>
-        //                                     <th scope="row">
-        //                                         Пользователи, которых вы лайкнули:
-        //                                     </th>
-        //                                     <td>${ul_list_profile_liked_names}</td>
-        //                                 </tbody>
-        //                             </table>`
-
-
         document.getElementById("blockWorkPlace").after(block_work_place)
     });
 });

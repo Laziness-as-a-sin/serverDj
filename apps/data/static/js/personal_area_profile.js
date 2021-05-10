@@ -342,7 +342,7 @@ $(document).ready(function(){
                                                         <p class='text-right'>Адрес: ${data['position']}</p>\
                                                     </div>\
                                                     <div class='col'>\
-                                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">\
+                                                        <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='saveLike(${data['place_id']}, 3)'>\
                                                             <label class="btn btn-primary active">\
                                                             <input type="checkbox" name="options" autocomplete="off" checked> Like\
                                                         </label>\
@@ -388,3 +388,23 @@ $(document).ready(function(){
         })
     })
  })
+
+
+function saveLike(idW, idU){
+    var idWorkplace = idW;
+    var idUser = idU;
+
+    var data = {idWorkplace, idUser};
+    console.log(data)
+    $.ajax({
+        type : 'GET',
+        url :  '/personal_area/profile/like',
+        data : data,
+        success : function(response){
+            console.log('Complete');
+        },
+        error : function(response){
+            console.log(response)
+        }
+    })
+};

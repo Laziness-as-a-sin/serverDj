@@ -14,6 +14,9 @@ urlpatterns = [
     path('personal_area/firm/', views.personalAreaFirm, name='personal_area_firm'),
     path('personal_area/profile/', views.personalAreaProfile, name='personal_area_profile'),
     path('personal_area/firm/basket/', views.basketFirm, name='basket_firm'),
+    path('personal_area/profile/basket/', views.basketProfile, name='basket_profile'),
+    path('personal_area/profile/like', views.usersLike, name='users_like'),
+    path('personal_area/univer/', views.personalAreaUniver, name='personal_area_univer')
 ]
 
 urlpatterns += [

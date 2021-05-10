@@ -7,13 +7,12 @@
 {%block title%}Корзина{%endblock%}
 {%block content%}
     {% if user.is_authenticated %}
-        {% if user.firm %}
+        {% if user.profile %}
             <script>
                 var work_places = JSON.parse('{{ work_places | escapejs }}');
-                console.log(work_places)
             </script>
             <div id="blockWorkPlace"></div>
         {% endif %}
     {% endif %}
-    <script type="text/javascript" src="{% static 'js/basket_firm.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/basket_profile.js' %}"></script>
 {%endblock%}
