@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dbKS',
         'USER': 'root',
-        'PASSWORD': 'admin'
+        'PASSWORD': 'Zdtkbrbq1'
         
  #       'ENGINE': 'django.db.backends.sqlite3',
  #       'NAME': BASE_DIR / 'db.sqlite3',

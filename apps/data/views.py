@@ -172,7 +172,7 @@ def personalAreaFirm(request):
                     tempWorkPlace.city = form.cleaned_data['city']
                     tempWorkPlace.education = form.cleaned_data['education']
                     tempWorkPlace.profession = form.cleaned_data['profession']
-                    tempWorkPlace.work_experience = form.cleaned_data['work_experience']
+                    # tempWorkPlace.work_experience = form.cleaned_data['work_experience']
                     tempWorkPlace.min_salary = form.cleaned_data['min_salary']
                     tempWorkPlace.max_salary = form.cleaned_data['max_salary']
                     tempWorkPlace.save()
@@ -548,7 +548,7 @@ def usersLike(request):
 
 
 def personalAreaUniver(request):
-    profile = Profile.objects.all()
+    profiles = []
     profilesProfession = []
     info = []
     for el in Profile.objects.all():
@@ -584,6 +584,7 @@ def personalAreaUniver(request):
             for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
                 if y not in related_professions:
                     related_professions.append(y)
+        work_related_places_count = WorkPlace.objects.filter(profession__in=related_professions).count()
 
         for work in WorkPlace.objects.filter(profession__in=related_professions):
             work_places_related_count = WorkPlace.objects.filter(profession__in=[work.profession]).count()
@@ -617,7 +618,7 @@ def personalAreaUniver(request):
         #print(profilesProfession)
 
 
-        profiles = []
+        # profiles = []
         if el.sex == 1:
             sex = 'Муж'
         else:
@@ -632,20 +633,39 @@ def personalAreaUniver(request):
             # print('*', despos)
 
 
-        # if checkIsInclude(related_professions, ):
-        #     related_professions_na
+        liked_vacancies = []
+        ready_to_educate = []
+        user_doublelikes = []
+        for work in WorkPlace.objects.filter(liked_by_profile__in=[el.id]):
+            print('---', work.name)
+            if work.profession.id in  el.profession.values_list("id",  flat=True):
+                liked_vacancies.append(work.name)
+            else:
+                liked_vacancies.append(f'{work.name} | Требуется переобучение')
+                ready_to_educate.append(f'{work.name} | Требуется переобучение')
+            if el.id in  WorkPlace.objects.get(id=work.id).profile_liked.values_list("id",  flat=True):
+                    user_doublelikes.append(f'{work.name}')
+
+
+        firm_liked = []
+        for work in WorkPlace.objects.filter(profile_liked__in=[el.id]):
+            if work.profession.id in  el.profession.values_list("id",  flat=True):
+                firm_liked.append(work.name)
+            else:
+                firm_liked.append(f'{work.name} | Требуется переобучение')
 
 
         print(desired_professions_list, '*')
         profiles.append({'name': f'{el.name1} {el.name2} {el.name3}', "profession": list(el.profession.values_list("name",  flat=True)),
         'sex': sex, 'age': str(el.birth_date), 'work_experience': list(el.work_experience.values_list("name",  flat=True)), 
-        'desired_position': desired_professions_list, 
+        'desired_position': desired_professions_list, 'liked_vacancies': liked_vacancies, 'ready_to_educate': ready_to_educate,
+        'firm_liked': firm_liked, 'user_doublelikes': user_doublelikes,
         'city': el.city.name, 'education': list(el.education.values_list("name",  flat=True)),
         'skill': list(el.skills.values_list("name",  flat=True)), 'disability': list(el.disability.values_list("name",  flat=True)),
-        'work_places': 1, 'work_places_near': 2,
+        'work_places': work_places_count, 'work_places_near': work_related_places_count,
         'id': el.id})
     # info.append({'profiles': profiles})
-
+    print(profiles, '***')
     # work_places = []
     # for el in WorkPlace.objects.all() :
 
@@ -663,5 +683,5 @@ def personalAreaUniver(request):
     #     'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
     #     'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
 
-    return render(request, 'data/personal_area_univer.html', {'info': 1, 'work_places': 1, 'tabl1': json.dumps(profilesProfession)})
+    return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': 1, 'tabl1': json.dumps(profilesProfession)})
     # return HttpResponse("Как ты сюда попал?!!")
