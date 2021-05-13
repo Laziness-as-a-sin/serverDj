@@ -694,5 +694,5 @@ def personalAreaUniver(request):
         'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
     print(work_places)
 
-    return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': 1, 'tabl1': json.dumps(profilesProfession)})
+    return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': json.dumps(work_places), 'tabl1': json.dumps(profilesProfession)})
     # return HttpResponse("Как ты сюда попал?!!")
