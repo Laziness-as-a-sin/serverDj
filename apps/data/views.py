@@ -666,22 +666,33 @@ def personalAreaUniver(request):
         'id': el.id})
     # info.append({'profiles': profiles})
     print(profiles, '***')
-    # work_places = []
-    # for el in WorkPlace.objects.all() :
+    work_places = []
+    for el in WorkPlace.objects.all() :
 
-    #     profile_liked_names = []
-    #     for el1 in el.profile_liked.all():
-    #         profile_liked_names.append(el1.name1 + ' ' + el1.name2)
-    #     liked_by_profile_names = []
-    #     for el1 in el.liked_by_profile.all():
-    #         liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+        profile_liked_names = []
+        worckplace_double_like = []
+        for el1 in el.profile_liked.all():
+            if el1.id in el.liked_by_profile.values_list("id",  flat=True):
+                worckplace_double_like.append(el1.name1 + ' ' + el1.name2)
+            if el.profession.id in list(el1.profession.values_list("id",  flat=True)):
+                profile_liked_names.append(el1.name1 + ' ' + el1.name2)
+            else:
+                profile_liked_names.append(f'{el1.name1} {el1.name2} | Требуется переобучение')
 
-    #     work_places.append({'name': el.name, 'firm': el.firm.name , "position": f"{el.city}, {el.location}", "profession": el.profession.name,
-    #     'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
-    #     'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
-    #     'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
-    #     'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
-    #     'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+        liked_by_profile_names = []
+        for el1 in el.liked_by_profile.all():
+            if el.profession.id in list(el1.profession.values_list("id",  flat=True)):
+                liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+            else:
+                liked_by_profile_names.append(f'{el1.name1} {el1.name2} | Требуется переобучение')
+
+        work_places.append({'name': el.name, 'firm': el.firm.name , "position": f"{el.city}, {el.location}", "profession": el.profession.name,
+        'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
+        'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
+        'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
+        'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names, 'worckplace_double_like': worckplace_double_like, 'place_count': 10,
+        'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+    print(work_places)
 
     return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': 1, 'tabl1': json.dumps(profilesProfession)})
     # return HttpResponse("Как ты сюда попал?!!")
