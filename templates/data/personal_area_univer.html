@@ -10,7 +10,7 @@
         {% if user.profile %}
             <script>
                 // var info = JSON.parse('{{ info | escapejs }}');
-                // var work_places = JSON.parse('{{ work_places | escapejs }}');
+                // var tabl2 = JSON.parse('{{ tabl2 | escapejs }}');
                 var tabl1 = JSON.parse('{{ tabl1 | escapejs }}');
             </script>
             <div class="row justify-content-center">
@@ -20,18 +20,16 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">ФИО</th>
-                                <th scope="col">Пол</th>
-                                <th scope="col">Город</th>
-                                <th scope="col">Возраст</th>
-                                <th scope="col">Базовое образование</th>
-                                <th scope="col">Опыт работы</th>
-                                <th scope="col">Компетенции</th>
-                                <th scope="col">Где хочет работать</th>
-                                <th scope="col">Ближайшие вакансии</th>
-                                <th scope="col">Доступные вакансии</th>
+                                <th scope="col">Обр. программа</th>
+                                <th scope="col">Вакансия</th>
+                                <th scope="col">Лайк от пользователя</th>
+                                <th scope="col">Лайк от фирмы</th>
+                                <th scope="col">Взаимный лайк</th>
+                                <th scope="col">Компания</th>
+                                <th scope="col">Прирост кол-ва рабочих мест</th>
                             </tr>
                             </thead>
-                            <tbody id="tableProfile">  <tbody>
+                            <tbody id="tabl1">  <tbody>
         
                             </tbody>
                     </table>
@@ -40,15 +38,23 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Вакансия</th>
-                            <th scope="col">Фирма</th>
+                            <th scope="col">ФИО</th>
+                            <th scope="col">Пол</th>
                             <th scope="col">Город</th>
-                            <th scope="col">Требуемые навыки</th>
-                            <th scope="col">Пользователи, лайкнутые фирмой</th>
-                            <th scope="col">Пользователи, лайкнувшие фирму</th>
+                            <th scope="col">Возраст</th>
+
+                            <th scope="col">Базовое образование</th>
+                            <th scope="col">Опыт работы</th>
+                            <th scope="col">Компетенции</th>
+                            <th scope="col">Желаемая работа</th>
+                            <th scope="col">Какие вакансии лайкнул</th>
+                            <th scope="col">Какие вакансии его лайкнули</th>
+                            <th scope="col">Взаимные лайки</th>
+                            <th scope="col">Скольким вакансиям соответствует до обучения</th>
+                            <th scope="col">Скольким вакансиям соответствует после обучения</th>
                         </tr>
                         </thead>
-                        <tbody id="tableWorkPlace">  <tbody>
+                        <tbody id="tabl2">  <tbody>
     
                         </tbody>
                     </table>

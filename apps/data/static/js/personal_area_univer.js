@@ -1,92 +1,43 @@
-// function showInfoWorkPlace(id){
-//     $.each(work_places, function(key,data){
-//         if (data["place_id"] == id){
-//             console.log(data)
 
-//             list_skill = data['skill']
-//             ul_list_skill = `<ul>`
-//             $.each(list_skill, function(key,skill){
-//                 ul_list_skill +=`<li>${skill}</li>`
-//             });
-//             ul_list_skill +=`</ul>`
-
-
-//             list_disability = data['disability']
-//             ul_list_disability = `<ul>`
-//             $.each(list_disability, function(key,disability){
-//                 ul_list_disability +=`<li>${disability}</li>`
-//             });
-//             ul_list_disability +=`</ul>`
-
-
-//             list_profile_liked_names = data['profile_liked_names']
-//             ul_list_profile_liked_names = `<ul>`
-//             $.each(list_profile_liked_names, function(key,profile){
 $(document).ready(function(){
     // console.log(info)
     // console.log(work_places)
     console.log(tabl1)
     var counter = 0
-    // $.each(info[0].profiles, function(key,data) {
-    //     console.log(data)
-    //     counter += 1
-    //     list_desired_position = data['desired_position']
-    //     ul_list_desired_position = `<ul>`
-    //     $.each(list_desired_position, function(key,desired_position){
-    //         ul_list_desired_position +=`<li>${desired_position}</li>`
-    //     });
-    //     ul_list_desired_position +=`</ul>`
+    $.each(tabl1, function(key,data) {
+        counter += 1
+        
+        if (data['checkLProfileLike']){
+            checkLProfileLike = "+"
+        } else{
+            checkLProfileLike = "-"
+        }
 
-    //     list_disability = data['disability']
-    //     ul_list_disability = `<ul>`
-    //     $.each(list_disability, function(key,disability){
-    //         ul_list_disability +=`<li>${disability}</li>`
-    //     });
-    //     ul_list_disability +=`</ul>`
+        if (data['checkLikeByProfile']){
+            checkLikeByProfile = "+"
+        } else{
+            checkLikeByProfile = "-"
+        }
 
-    //     list_education = data['education']
-    //     ul_list_education = `<ul>`
-    //     $.each(list_education, function(key,education){
-    //         ul_list_education +=`<li>${education}</li>`
-    //     });
-    //     ul_list_education +=`</ul>`
+        if (data['checkDoubleLike']){
+            checkDoubleLike = "+"
+        } else{
+            checkDoubleLike = "-"
+        }
 
-    //     list_profession= data['profession']
-    //     ul_list_profession = `<ul>`
-    //     $.each(list_profession, function(key,profession){
-    //         ul_list_profession +=`<li>${profession}</li>`
-    //     });
-    //     ul_list_profession +=`</ul>`
-
-    //     list_skill = data['skill']
-    //     ul_list_skill = `<ul>`
-    //     $.each(list_skill, function(key,skill){
-    //         ul_list_skill +=`<li>${skill}</li>`
-    //     });
-    //     ul_list_skill +=`</ul>`
-
-    //     list_work_experience = data['work_experience']
-    //     ul_list_work_experience = `<ul>`
-    //     $.each(list_work_experience, function(key,work_experience){
-    //         ul_list_work_experience +=`<li>${work_experience}</li>`
-    //     });
-    //     ul_list_work_experience +=`</ul>`
-
-    //     block_profile = document.createElement('tr')
-    //     block_profile.innerHTML =    `<th scope="row">${counter}</th>\
-    //                                     <td>${data['name']}</td>\
-    //                                     <td>${data['sex']}</td>\
-    //                                     <td>${data['city']}</td>\
-    //                                     <td>${data['age']}</td>\
-    //                                     <td>${ul_list_profession}</td>\
-    //                                     <td>${ul_list_work_experience}</td>\
-    //                                     <td>${ul_list_skill}</td>\
-    //                                     <td>${ul_list_desired_position}</td>\
-    //                                     <td>${data['work_places_near']}</td>\
-    //                                     <td>${data['work_places']}</td>\
-    //                                     `
-    //     document.getElementById("tableProfile").append(block_profile)
-    // });
+        block_profile = document.createElement('tr')
+        block_profile.innerHTML =    `<th scope="row">${counter}</th>\
+                                        <td>${data['name']}</td>\
+                                        <td>${data['profession']}</td>\
+                                        <td>${data['work']}</td>\
+                                        <td>${checkLProfileLike}</td>\
+                                        <td>${checkLikeByProfile}</td>\
+                                        <td>${checkDoubleLike}</td>\
+                                        <td>${data['firm']}</td>\
+                                        <td>${data['upPlaces']}</td>
+                                        `
+        document.getElementById("tabl1").append(block_profile)
+    });
 
 
     // var counter = 0
