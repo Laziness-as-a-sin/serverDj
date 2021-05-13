@@ -9,8 +9,9 @@
     {% if user.is_authenticated %}
         {% if user.profile %}
             <script>
-                var info = JSON.parse('{{ info | escapejs }}');
-                var work_places = JSON.parse('{{ work_places | escapejs }}');
+                // var info = JSON.parse('{{ info | escapejs }}');
+                // var work_places = JSON.parse('{{ work_places | escapejs }}');
+                var tabl1 = JSON.parse('{{ tabl1 | escapejs }}');
             </script>
             <div class="row justify-content-center">
                 <div class="col-auto">

@@ -549,45 +549,119 @@ def usersLike(request):
 
 def personalAreaUniver(request):
     profile = Profile.objects.all()
-    profiles = []
+    profilesProfession = []
     info = []
     for el in Profile.objects.all():
-        work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)).count()
+        work_places_count = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)).count()
+        print(WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)))
+        for work in WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)):
+
+            work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True))
+            if el.id in list(work_places.values_list("liked_by_profile",  flat=True).values_list("id",  flat=True)):
+                checkLikeByProfile = True
+            else:
+                checkLikeByProfile = False
+            
+            
+            if work.id in list(work_places.values_list("profile_liked",  flat=True).values_list("id",  flat=True)):
+                checkLProfileLike = True
+            else:
+                checkLProfileLike = False
+
+            if checkLProfileLike and checkLikeByProfile:
+                checkDoubleLike = True
+            else:
+                checkDoubleLike = False
+            
+
+            profilesProfession.append({'name': f'{el.name1} {el.name2} {el.name3}', 'profession': f'{work.profession.name} | Переобучение не требуется', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
+                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': 0})
+
+
+
         related_professions = []
         for x in el.profession.values_list("id",  flat=True):
             for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
                 if y not in related_professions:
                     related_professions.append(y)
-        work_places_near = WorkPlace.objects.filter(profession__in=related_professions).count()
+
+        for work in WorkPlace.objects.filter(profession__in=related_professions):
+            work_places_related_count = WorkPlace.objects.filter(profession__in=[work.profession]).count()
+
+            work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True))
+            if el.id in list(work_places.values_list("liked_by_profile",  flat=True).values_list("id",  flat=True)):
+                checkLikeByProfile = True
+            else:
+                checkLikeByProfile = False
+            
+            
+            if work.id in list(work_places.values_list("profile_liked",  flat=True).values_list("id",  flat=True)):
+                checkLProfileLike = True
+            else:
+                checkLProfileLike = False
+
+            if checkLProfileLike and checkLikeByProfile:
+                checkDoubleLike = True
+            else:
+                checkDoubleLike = False
+
+            if (work_places_count == 0):
+                upPlaces = 0
+            else:
+                upPlaces = work_places_related_count/work_places_count
+
+
+            profilesProfession.append({'name': f'{el.name1} {el.name2} {el.name3}', 'profession': f'{work.profession.name}', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
+                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': f'{upPlaces * 100}%'})
+        
+        #print(profilesProfession)
+
+
+        profiles = []
         if el.sex == 1:
             sex = 'Муж'
         else:
             sex = 'Жен'
-    
-        profiles.append({'name': el.name1 + ' ' + el.name2, "profession": list(el.profession.values_list("name",  flat=True)),
+
+        desired_professions_list = []
+        for despos in el.desired_position.values_list("id",  flat=True):
+            if despos in list(el.profession.values_list("id",  flat=True)):
+                desired_professions_list.append(Profession.objects.get(id=despos).name)
+            else:
+                desired_professions_list.append(f'{Profession.objects.get(id=despos).name} | Требуется переобучение')
+            # print('*', despos)
+
+
+        # if checkIsInclude(related_professions, ):
+        #     related_professions_na
+
+
+        print(desired_professions_list, '*')
+        profiles.append({'name': f'{el.name1} {el.name2} {el.name3}', "profession": list(el.profession.values_list("name",  flat=True)),
         'sex': sex, 'age': str(el.birth_date), 'work_experience': list(el.work_experience.values_list("name",  flat=True)), 
-        'desired_position': list(el.desired_position.values_list("name",  flat=True)), 
+        'desired_position': desired_professions_list, 
         'city': el.city.name, 'education': list(el.education.values_list("name",  flat=True)),
         'skill': list(el.skills.values_list("name",  flat=True)), 'disability': list(el.disability.values_list("name",  flat=True)),
-        'work_places': work_places, 'work_places_near': work_places_near,
+        'work_places': 1, 'work_places_near': 2,
         'id': el.id})
-    info.append({'profiles': profiles})
+    # info.append({'profiles': profiles})
 
-    work_places = []
-    for el in WorkPlace.objects.all() :
-        profile_liked_names = []
-        for el1 in el.profile_liked.all():
-            profile_liked_names.append(el1.name1 + ' ' + el1.name2)
-        liked_by_profile_names = []
-        for el1 in el.liked_by_profile.all():
-            liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+    # work_places = []
+    # for el in WorkPlace.objects.all() :
 
-        work_places.append({'name': el.name, 'firm': el.firm.name , "position": f"{el.city}, {el.location}", "profession": el.profession.name,
-        'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
-        'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
-        'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
-        'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
-        'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+    #     profile_liked_names = []
+    #     for el1 in el.profile_liked.all():
+    #         profile_liked_names.append(el1.name1 + ' ' + el1.name2)
+    #     liked_by_profile_names = []
+    #     for el1 in el.liked_by_profile.all():
+    #         liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
 
-    return render(request, 'data/personal_area_univer.html', {'info': json.dumps(info), 'work_places': json.dumps(work_places)})
+    #     work_places.append({'name': el.name, 'firm': el.firm.name , "position": f"{el.city}, {el.location}", "profession": el.profession.name,
+    #     'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
+    #     'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
+    #     'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
+    #     'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
+    #     'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+
+    return render(request, 'data/personal_area_univer.html', {'info': 1, 'work_places': 1, 'tabl1': json.dumps(profilesProfession)})
     # return HttpResponse("Как ты сюда попал?!!")
