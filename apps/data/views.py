@@ -788,3 +788,10 @@ def personalInfoProfile(request):
         'disability_group': profile.disability_group, 'name1': profile.name1, 'name2': profile.name2, 'name3': profile.name3, 'desired_salary': profile.desired_salary})
 
     return render(request, 'data/personal_info_profile.html', {'form': form})
+
+    # asdawdadawd
+    # asdawdadawd
+    # asdawdadawd
+
+    # asdawdadawd
+    # asdawdadawd
