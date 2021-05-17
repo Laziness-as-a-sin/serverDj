@@ -1,9 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import csrf
-from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill, Education
+from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill, Education, DysfunctionsBody
+from .models import RestrictionsCategoriesLife
 from django.contrib.auth.models import User
-from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form
+from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form, personal_info_profile
 from django.http import JsonResponse
 from django.db.models import Q
 import json
@@ -141,7 +142,7 @@ def registrationFirm(request):
             tempFirm = Firm(user=tempUser, name=form.cleaned_data['name'], description=form.cleaned_data['description'])
             tempFirm.save()
 
-            return HttpResponse("Save, sucsessfull!"+form.cleaned_data['username'])
+            return HttpResponse("Save, sucsessfull! "+form.cleaned_data['username'])
 
     else:
         form = registration_firm_form
@@ -180,6 +181,10 @@ def personalAreaFirm(request):
                     for temp in form.cleaned_data['employment_type']:
                         employment_type = get_object_or_404(EmploymentType, name=temp)
                         tempWorkPlace.employment_type.add(employment_type.id)
+
+                    for temp in form.cleaned_data['profile_liked']:
+                        profile_liked = get_object_or_404(EmploymentType, name=temp)
+                        tempWorkPlace.employment_type.add(profile_liked.id)
 
                     for temp in form.cleaned_data['schedule']:
                         schedule = get_object_or_404(Schedule, name=temp)
@@ -696,3 +701,90 @@ def personalAreaUniver(request):
 
     return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': json.dumps(work_places), 'tabl1': json.dumps(profilesProfession)})
     # return HttpResponse("Как ты сюда попал?!!")
+
+
+def personalInfoProfile(request):
+    if request.method == 'POST':
+        form = personal_info_profile(request.POST)
+
+        if form.is_valid():
+            user = Profile.objects.get(user=request.user)
+            print(form.cleaned_data['birth_date'])
+            if (form.cleaned_data['description']!=""):
+                user.description = form.cleaned_data['description']
+            if (form.cleaned_data['location']!=""):
+                user.location = form.cleaned_data['location']
+            if (form.cleaned_data['birth_date']!=None):
+                user.birth_date = form.cleaned_data['birth_date']
+            if (form.cleaned_data['sex']!=None):
+                user.sex = form.cleaned_data['sex']
+            if (form.cleaned_data['city']!=""):  
+                user.city = form.cleaned_data['city']
+            if (form.cleaned_data['name1']!=""):   
+                user.name1 = form.cleaned_data['name1']
+            if (form.cleaned_data['name2']!=""):
+                user.name2 = form.cleaned_data['name2']
+            if (form.cleaned_data['name3']!=""):
+                user.name3 = form.cleaned_data['name3']
+            if (form.cleaned_data['disability_group']!=""):
+                user.disability_group = form.cleaned_data['disability_group']
+            if (form.cleaned_data['desired_salary']!=""):
+                user.desired_salary = form.cleaned_data['desired_salary']
+            user.save()
+            if (form.cleaned_data['education']):
+                user.education.clear()
+                for temp in form.cleaned_data['education']:
+                    education = get_object_or_404(Education, name=temp)
+                    user.education.add(education.id)
+            if (form.cleaned_data['profession']):
+                user.profession.clear()
+                for temp in form.cleaned_data['profession']:
+                    profession = get_object_or_404(Profession, name=temp)
+                    user.profession.add(profession.id)
+            if (form.cleaned_data['skills']):
+                user.skills.clear()
+                for temp in form.cleaned_data['skills']:
+                    skill = get_object_or_404(Skill, name=temp)
+                    user.skills.add(skill.id)
+            if (form.cleaned_data['disability']):
+                user.disability.clear()
+                for temp in form.cleaned_data['disability']:
+                    disability = get_object_or_404(Disability, name=temp)
+                    user.disability.add(disability.id)
+            if (form.cleaned_data['work_experience']):
+                user.work_experience.clear()
+                for temp in form.cleaned_data['work_experience']:
+                    work_experience = get_object_or_404(Profession, name=temp)
+                    user.work_experience.add(work_experience.id)
+            if (form.cleaned_data['dysfunctions_body']):
+                user.dysfunctions_body.clear()
+                for temp in form.cleaned_data['dysfunctions_body']:
+                    dysfunctions_body = get_object_or_404(DysfunctionsBody, name=temp)
+                    user.dysfunctions_body.add(dysfunctions_body.id)
+            if (form.cleaned_data['restrictions_categories_life']):
+                user.restrictions_categories_life.clear()
+                for temp in form.cleaned_data['restrictions_categories_life']:
+                    restrictions_categories_life = get_object_or_404(RestrictionsCategoriesLife, name=temp)
+                    user.restrictions_categories_life.add(restrictions_categories_life.id)
+            if (form.cleaned_data['desired_position']):
+                user.desired_position.clear()
+                for temp in form.cleaned_data['desired_position']:
+                    desired_position = get_object_or_404(Profession, name=temp)
+                    user.desired_position.add(desired_position.id)
+            if (form.cleaned_data['desired_skill']):
+                user.desired_skill.clear()
+                for temp in form.cleaned_data['desired_skill']:
+                    desired_skill = get_object_or_404(Skill, name=temp)
+                    user.desired_skill.add(desired_skill.id)
+
+            user.save()
+            # return render(request, 'data/personal_info_profile.html', {'form': form})
+    else:
+        profile = Profile.objects.get(user=request.user)
+        form = personal_info_profile(initial={'description': profile.description, 'sex': profile.sex, 'birth_date': profile.birth_date, 
+        'city': profile.city, 'location': profile.location, 'education': list(profile.education.values_list("id",  flat=True)), 'work_experience': list(profile.work_experience.values_list("id",  flat=True)), 'dysfunctions_body': list(profile.dysfunctions_body.values_list("id",  flat=True)),
+        'restrictions_categories_life': list(profile.restrictions_categories_life.values_list("id",  flat=True)), 'disability': list(profile.disability.values_list("id",  flat=True)), 'skills': list(profile.skills.values_list("id",  flat=True)), 'profession': list(profile.profession.values_list("id",  flat=True)),
+        'desired_position': list(profile.desired_position.values_list("id",  flat=True)), 'desired_skill': list(profile.desired_skill.values_list("id",  flat=True)),
+        'disability_group': profile.disability_group, 'name1': profile.name1, 'name2': profile.name2, 'name3': profile.name3, 'desired_salary': profile.desired_salary})
+
+    return render(request, 'data/personal_info_profile.html', {'form': form})

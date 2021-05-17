@@ -15,8 +15,10 @@
                 var tabl2 = JSON.parse('{{ tabl2 | escapejs }}');
                 var work_places = JSON.parse('{{ work_places | escapejs }}'); 
             </script>
-            <div class="row justify-content-center">
-                <div class="col-auto">
+            {% comment %} <div class="table-responsive"> {% endcomment %}
+            {% comment %} <div class="container-fluid"> {% endcomment %}
+                <div class="row justify-content-center ">
+
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table class="table table-resposive table-bordered table-striped mb-0">
                             <thead>
@@ -35,9 +37,10 @@
                             <tbody id="tabl1">  <tbody>
         
                             </tbody>
-                    </table>
-                    </div>
-                    
+                        </table>
+                    </div><br>
+                    {% comment %} </div> {% endcomment %}
+                    {% comment %} <div class="table-responsive">     {% endcomment %}
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table class="table table-resposive table-bordered table-striped mb-0">
                             <thead>
@@ -63,8 +66,9 @@
         
                             </tbody>
                         </table>
-                    </div>
-                    
+                    {% comment %} </div> {% endcomment %}
+                    </div><br>
+                    {% comment %} <div class="table-responsive"> {% endcomment %}
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table class="table table-resposive table-bordered table-striped mb-0">
                             <thead>
@@ -84,10 +88,10 @@
         
                             </tbody>
                         </table>
+                    {% comment %} </div> {% endcomment %}
                     </div>
-
                 </div>
-            </div>
+            {% comment %} </div> {% endcomment %}
             {% comment %} <div id="blockWorkPlace"></div> {% endcomment %}
         {% endif %}
     {% endif %}

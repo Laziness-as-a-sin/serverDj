@@ -1,0 +1,20 @@
+{% extends 'base.html'%}
+
+{%block title%}Личный кабинет{%endblock%}
+
+{% block script %}
+    {%load crispy_forms_tags%}
+    {%load static%}
+    {% comment %} <link rel="stylesheet" href="{% static 'css/registration_profile.css' %}"> {% endcomment %}
+{% endblock %}
+
+{%block content%}
+    <div class="row">
+        <div class="col-12">
+            <form action="{% url 'personal_info_profile' %}" method="post">{% csrf_token %}
+                {{form|crispy}}
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+{%endblock%}

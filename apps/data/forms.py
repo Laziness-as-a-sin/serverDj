@@ -109,4 +109,12 @@ class registration_firm_form(forms.ModelForm, forms.Form):
 class profile_form(forms.ModelForm):
     class Meta:
         model = Profile
+        fields = ['education', 'profession', 'work_experience', 'skills',
+         'desired_position', 'desired_skill', 'desired_salary']
+        widgets = {'profession': forms.HiddenInput()}
+
+
+class personal_info_profile(forms.ModelForm, forms.Form):
+    class Meta:
+        model = Profile
         exclude = ['user']
