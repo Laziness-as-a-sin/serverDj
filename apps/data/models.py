@@ -103,14 +103,15 @@ class Profile(models.Model):
     description = models.TextField('кортко о себе', max_length=500, blank=True)
     sex = models.IntegerField('пол', blank=True, default=1)
     birth_date = models.DateField('дата рождения', null=True, blank=True)
-    city = models.ForeignKey(City, on_delete=models.PROTECT, default = 1)
+    city = models.ForeignKey(City, on_delete=models.PROTECT, default = 1, verbose_name='город')
+    city_to_move = models.ManyToManyField(City, blank=True, related_name='city_to_move', verbose_name='города для переезда')
     location = models.CharField('адрес', max_length=30, default='Державина 15')
-    education = models.ManyToManyField(Education, blank=True)
+    education = models.ManyToManyField(Education, blank=True, verbose_name='образование')
     work_experience = models.ManyToManyField(Profession, blank=True, related_name='work_experience', verbose_name='опыт работы')
     disability_group = models.ForeignKey(DisabilityGroups, verbose_name='группа инвалидности', on_delete=models.PROTECT, blank=True, null=True)
     dysfunctions_body = models.ManyToManyField(DysfunctionsBody, blank=True, verbose_name='физические ограничения')
     restrictions_categories_life = models.ManyToManyField(RestrictionsCategoriesLife, blank=True, verbose_name='ограничение категорий жизнедеятельности')
-    disability = models.ManyToManyField(Disability, blank=True)
+    disability = models.ManyToManyField(Disability, blank=True, verbose_name='ограничения')
     skills = models.ManyToManyField(Skill, blank=True, related_name='skills', verbose_name='компетенции')
     profession = models.ManyToManyField(Profession, blank=True, related_name='profession', verbose_name='профессии по образованию')
     desired_position = models.ManyToManyField(Profession, blank=True, related_name='desired_position', verbose_name='желаемые профессии')
@@ -153,7 +154,7 @@ class Course(models.Model):
 
     name = models.CharField('Название образовательной программы', max_length=200)
     description = models.TextField('Описание образовательной программы', default=contact_default)
-    count = models.IntegerField(verbose_name='Количество мест')
+    count = models.IntegerField(verbose_name='Количество мест', null=True)
     price = models.IntegerField(verbose_name='Стоимость обучения на 1 человека', null=True)
     def __str__(self):
         return self.name
