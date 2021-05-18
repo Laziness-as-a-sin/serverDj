@@ -4,7 +4,53 @@ function addData(chart, label, data) {
     chart.update();  
 }
 
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Полностью подходят', 'Подходит по городу для переезда', 'Подходит по смежной профессии', 'Надо переехать и переобучиться'],
+        datasets: [{
+            label: 'Подходите',
+            data: [0, 0, 0, 0],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }],
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                }
+            }]
+        }
+    }
+});
+
+let map;
+var geocoder;
+var markersArray = [];
+
 function geocodeAddress(geocoder, resultsMap, address, image= "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", size1 = 70, size2 = 70, resultTitle='Noname', description="You Firm place") {
+    console.log(address)
     geocoder.geocode({ address: address }, (results, status) => {
       if (status === "OK") {
         // resultsMap.setCenter(results[0].geometry.location);
@@ -49,9 +95,6 @@ function geocodeAddress(geocoder, resultsMap, address, image= "https://icons.ico
       }
     });
 }
-let map;
-var geocoder;
-var markersArray = [];
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -201,191 +244,105 @@ function showInfoWorkPlace(id){
 };
 
 var list_workplace
+function updateData(){
+    var id_city = $("#id_city").val();
+    var id_city_to_move = $("#id_city_to_move").val();
+    var id_education = $("#id_education").val();
+    var id_profession = $("#id_profession").val();
+    var id_work_experience = $("#id_work_experience").val();
+    var id_skill = $("#id_skills").val();
+    var id_sort_by = $('#id_sort_by').val();
+    var check_proffession = $('#check_proffession:checked').val();
+    var check_city_move = $('#check_city_move:checked').val();
+
+    var data = {id_city, id_city_to_move, id_education, id_profession, id_work_experience, id_skill, id_sort_by, check_proffession, check_city_move};
+    console.log(data)
+    $.ajax({
+        type : 'GET',
+        url :  '/personal_area/profile/',
+        data : data,
+        success : function(response){
+            console.log(response);
+
+            tempDict = [];
+            Object.keys(response.place_info.target_mismatches).forEach(function(key) {
+                tempDict.push(response.place_info.target_mismatches[key]);
+            });
+            addData(myChart, 0, tempDict)
+
+            while(document.getElementById("boxWork")){
+                document.getElementById("boxWork").remove()
+            }
+            markersArray.length = 0;
+
+            list_workplace = response.place_info.work_place
+            $.each(response.place_info.work_place, function(key,data) {
+                // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+            
+                let block_work_place = document.createElement('div')
+                block_work_place.id = "boxWork"
+                if (data["checkPlace"] == 1){
+                    block_work_place.className = "row border border-success mt-1"
+                    approach = "Подходит по профессии"
+                } else if(data["checkPlace"] == 2){
+                    block_work_place.className = "row border border-warning mt-1"
+                    approach = "Подходит по смежной профессии"
+                } else if(data["checkPlace"] == 3){
+                    block_work_place.className = "row border border-warning mt-1"
+                    approach = "Подходит по смежной профессии"
+                } else if(data["checkPlace"] == 4){
+                    block_work_place.className = "row border border-warning mt-1"
+                    approach = "Подходит по смежной профессии"
+                }
+                
+                block_work_place.innerHTML =    `<div class='col'><text id=place_${data['id']} onclick='showInfoWorkPlace(${data['id']})'>${data['name']}</text></div>\
+                                                <div class='col'>\
+                                                    <p class='text-right'>Зарплата: </p>\
+                                                </div>\                                
+                                                <div class='col'>\
+                                                    <p class='text'>${data['min_salary']} - ${data['max_salary']}</p>\
+                                                </div>\
+                                                <div class='col'>\
+                                                    <p class='text-right'>${approach}</p>\
+                                                </div>\
+                                                <div class='w-100'></div>\
+                                                <div class='col-4'>\
+                                                    ${data['profession']}\
+                                                </div>\
+                                                <div class='col-4'>\
+                                                    <p class='text-right'>Адрес: ${data['position']}</p>\
+                                                </div>\
+                                                <div class='col-2'>\
+                                                </div>\
+                                                <div class='col-2'>\
+                                                    <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='saveLike(${data['id']}, 3)'>\
+                                                        <label class="btn btn-primary active">\
+                                                        <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                                                    </label>\
+                                                    </div>\
+                                                </div>
+                                                    `
+                document.getElementById("filters").after(block_work_place)
+                
+            });
+
+            var location =  response.place_info.city + ', ' + $("#id_location").val();
+        },
+        error : function(response){
+            console.log(response)
+        }
+    })
+}
+
 
 $(document).ready(function(){
-
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Ограничения', 'Город', 'Образование', 'Профессия', 'Навыки'],
-            datasets: [{
-                label: 'Подходите',
-                data: [0, 0, 0, 0, 0, 0],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 1
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 1
-                    }
-                }]
-            }
-        }
-    });
-
-
+    setTimeout(function() {
+        updateData();
+    }, 10);
+    
     $(":input").on("change", function(e){
         e.preventDefault();
-
-        var id_disability = $("#id_disability").val();
-        var id_city = $("#id_city").val();
-        var id_education = $("#id_education").val();
-        var id_profession = $("#id_profession").val();
-        var id_skill = $("#id_skills").val();
-
-        var data = {id_disability, id_city, id_education, id_profession, id_skill};
-        console.log(data)
-        $.ajax({
-            type : 'GET',
-            url :  '/personal_area/profile/',
-            data : data,
-            success : function(response){
-                tempDict = [];
-                console.log(response);
-                addData(myChart, 0, response.place_info.prof_desc)
-                Object.keys(response.place_info.target_mismatches).forEach(function(key) {
-                    tempDict.push(response.place_info.target_mismatches[key]);
-                });
-                addData(myChart, 0, tempDict)
-
-                while(document.getElementById("idtest")){
-                    document.getElementById("idtest").remove()
-                }
-
-                while(document.getElementById("boxWorkPlaceGood")){
-                    document.getElementById("boxWorkPlaceGood").remove()
-                }
-
-                while(document.getElementById("boxWorkPlaceWrong")){
-                    document.getElementById("boxWorkPlaceWrong").remove()
-                }
-
-                for (var i = 0; i < markersArray.length; i++ ) {
-                    markersArray[i].setMap(null);
-                }
-                markersArray.length = 0;
-                
-
-                // $.each(response.place_info.work_places_info,function(key,data) {
-                //     // console.log(data);
-
-                    
-                //     let block_user_workplace = document.createElement('div')
-                //     block_user_workplace.className = "row border border-primary"
-                //     block_user_workplace.id = "idtest"
-                //     block_user_workplace.innerHTML =    `<div class='col'><text>${data['work_place_name']}</text></div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>${data['work_place_min_salary']} - ${data['work_place_max_salary']}</p>\
-                //                                         </div>\
-                //                                         <div class='w-100'></div>\
-                //                                         <div class='col'>\
-                //                                             ${data['work_place_profession']}\
-                //                                         </div>\
-                //                                         <div class='col'>\
-                //                                             <p class='text-right'>Процент совпадения: ${data['work_place_coincidence']}%</p>\
-                //                                         </div>
-                //                                         `
-                    
-
-                //     document.getElementById("mapRow").after(block_user_workplace)
-                // });
-
-                list_workplace = response.place_info.work_place
-                $.each(response.place_info.work_place, function(key,data) {
-                    geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
-                
-                    let block_work_place = document.createElement('div')
-                    if (data["checkPlace"] == 2){
-                        block_work_place.id = "boxWorkPlaceGood"
-                        block_work_place.className = "row border border-success mt-1"
-                        approach = "Подходит по профессии"
-                    } else{
-                        block_work_place.id = "boxWorkPlaceWrong"
-                        block_work_place.className = "row border border-warning mt-1"
-                        approach = "Подходит по смежной профессии"
-                    }
-                    block_work_place.innerHTML =    `<div class='col'><text id=place_${data['place_id']} onclick='showInfoWorkPlace(${data['place_id']})'>${data['name']}</text></div>\
-                                                    <div class='col'>\
-                                                        <p class='text-right'>${approach}</p>\
-                                                    </div>\
-                                                    <div class='w-100'></div>\
-                                                    <div class='col'>\
-                                                        ${data['profession']}\
-                                                    </div>\
-                                                    <div class='col'>\
-                                                        <p class='text-right'>Адрес: ${data['position']}</p>\
-                                                    </div>\
-                                                    <div class='col'>\
-                                                        <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='saveLike(${data['place_id']}, 3)'>\
-                                                            <label class="btn btn-primary active">\
-                                                            <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                                                        </label>\
-                                                        </div>\
-                                                    </div>
-                                                        `
-                    if (data["checkPlace"] == 2){
-                        document.getElementById("mapRow").after(block_work_place)
-                    }
-                    else{
-                        if (document.getElementById("boxWorkPlaceGood")){
-                            document.getElementById("boxWorkPlaceGood").after(block_work_place)
-                        }
-                        else{
-                            document.getElementById("mapRow").after(block_work_place)
-                        }
-                        
-                    }
-                    
-                });
-
-                var location =  response.place_info.city + ', ' + $("#id_location").val();
-                // geocoder.geocode({ address: location }, (results, status) => {
-                //     if (status === "OK") {
-                //       map.setCenter(results[0].geometry.location);
-                //       marker = new google.maps.Marker({
-                //         map: map,
-                //         position: results[0].geometry.location,
-                //         animation: google.maps.Animation.DROP,
-                //         title: 'Местоположение вас',
-                //         icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/Orc-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
-                        
-                //       });
-                //       markersArray.push(marker);
-                //     } else {
-                //       alert("Geocode was not successful for the following reason: " + status);
-                //     }
-                // });
-            },
-            error : function(response){
-                console.log(response)
-            }
-        })
+        updateData();
     })
  })
 

@@ -24,23 +24,29 @@
                     <div class="row" id="mapRow">
                         <div id="map"></div>
                     </div>
-                    <!-- <div class="row border border-primary", id="block_user_workplace">
-                        {% comment %} <div> {% endcomment %}
-                            <div class="col">
-                                <text>Название рабочего места </text>
-                            </div>
-                            <div class="col">
-                                <p class="text-right">10000 - 15000</p>
-                            </div>
-                            <div class="w-100"></div>
-                            <div class="col">
-                                Профессия
-                            </div>
-                            <div class="col">
-                                <p class="text-right">Процент совпадения: 75%</p>
-                            </div>
-                        {% comment %} </div> {% endcomment %}
-                    </div> -->
+                    <div class="row py-2" id="filters">
+                        <div class="col-2">
+                            <a>Сортировать по</a>
+                        </div>
+                        <div class="col-2">
+                            <select class="selectpicker" id="id_sort_by">
+                                <option value=1>Зарплата</option>
+                                <option value=2>Название</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <a>Убрать вакансии со смежной профессией</a>
+                        </div>
+                        <div class="col-1">
+                            <input class="form-check-input" type="checkbox" value="1" id="check_proffession"/>
+                        </div>
+                        <div class="col-3">
+                            <a>Убрать вакансии с городами требующими переезда</a>
+                        </div>
+                        <div class="col-1">
+                            <input class="form-check-input" type="checkbox" value="1" id="check_city_move"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         {% else %}
