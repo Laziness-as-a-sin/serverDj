@@ -147,6 +147,25 @@ class WorkPlace(models.Model):
     def __str__(self):
         return self.name
 
+class Course(models.Model):
+    def contact_default():
+        return ""
+
+    name = models.CharField('Название образовательной программы', max_length=200)
+    description = models.TextField('Описание образовательной программы', default=contact_default)
+    count = models.IntegerField(verbose_name='Количество мест')
+    price = models.IntegerField(verbose_name='Стоимость обучения на 1 человека', null=True)
+    def __str__(self):
+        return self.name
+
+
+class Univer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField('Наименование университета', max_length=200)
+    course = models.ManyToManyField(Course, verbose_name='Курсы', blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 # @receiver(post_save, sender=User)

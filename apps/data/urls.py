@@ -10,6 +10,7 @@ urlpatterns = [
     path('test_page/', views.testPage, name = 'test_page'),
     path('test_page/test_update/', views.testUpdate, name = 'test_update'),
     path('registration_firm/', views.registrationFirm, name = 'registration_firm'),
+    path('registration_univer/', views.registrationUniver, name = 'registration_univer'),
     path('personal_area/', views.personalArea, name='personal_area'),
     path('personal_area/firm/', views.personalAreaFirm, name='personal_area_firm'),
     path('personal_area/profile/', views.personalAreaProfile, name='personal_area_profile'),
@@ -18,6 +19,7 @@ urlpatterns = [
     path('personal_area/profile/like', views.usersLike, name='users_like'),
     path('personal_area/univer/', views.personalAreaUniver, name='personal_area_univer'),
     path('personal_area/profile/info', views.personalInfoProfile, name='personal_info_profile'),
+    path('personal_area/univer/add_course', views.addCourseByUniver, name='add_course_by_univer'),
 ]
 
 urlpatterns += [

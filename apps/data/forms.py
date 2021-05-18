@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 import datetime #for checking renewal date range.
 from django.contrib.auth.models import User
 from django.forms import MultipleChoiceField, BooleanField, IntegerField
-from .models import City, Education, Profession, Disability, Skill, WorkPlace, Firm, Profile
+from .models import City, Education, Profession, Disability, Skill, WorkPlace, Firm, Profile, Course
 from multiselectfield import MultiSelectField
 
 
@@ -118,3 +118,35 @@ class personal_info_profile(forms.ModelForm, forms.Form):
     class Meta:
         model = Profile
         exclude = ['user']
+
+
+class registration_univer_form(forms.Form):
+    username = forms.CharField(label='Логин', max_length=200)
+    email = forms.EmailField(max_length=200)
+    password = forms.CharField(label='Пароль', max_length=200, widget=forms.PasswordInput)
+    password_repeat = forms.CharField(label='Повторите пароль', max_length=200, widget=forms.PasswordInput)
+    name = forms.CharField(label='Наименование образовательного учреждения', max_length=200)
+
+    def clean_username(self):
+        name = self.cleaned_data['username']
+        
+        if User.objects.filter(username=name):
+            raise ValidationError(_('Логин занят!'))
+        
+        return name
+
+    def clean(self):
+        cleaned_data = super(registration_univer_form, self).clean()
+        pass1 = cleaned_data.get("password")
+        pass2 = cleaned_data.get("password_repeat")
+
+        if pass1 != pass2:
+            msg = "Пароли должны совпадать!"
+            self.add_error('password', msg)
+
+
+class add_course_by_univer_form(forms.ModelForm, forms.Form):
+    class Meta:
+        model = Course
+        exclude = []
+    

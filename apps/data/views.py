@@ -2,9 +2,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.context_processors import csrf
 from .models import City, Profile, Profession, Disability, Firm, WorkPlace, EmploymentType, Schedule, Skill, Education, DysfunctionsBody
-from .models import RestrictionsCategoriesLife
+from .models import RestrictionsCategoriesLife, Univer, Course
 from django.contrib.auth.models import User
-from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form, personal_info_profile
+from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form, personal_info_profile, registration_univer_form, add_course_by_univer_form
 from django.http import JsonResponse
 from django.db.models import Q
 import json
@@ -155,6 +155,8 @@ def personalArea(request):
             return redirect('firm/')
         if hasattr(request.user, 'profile'):
             return redirect('profile/')
+        if hasattr(request.user, 'univer'):
+            return redirect('univer/')
         return HttpResponse("Как ты сюда попал?!!")
     return HttpResponse("Как ты сюда попал?!")
 
@@ -660,7 +662,7 @@ def personalAreaUniver(request):
                 firm_liked.append(f'{work.name} | Требуется переобучение')
 
 
-        print(desired_professions_list, '*')
+        # print(desired_professions_list, '*')
         profiles.append({'name': f'{el.name1} {el.name2} {el.name3}', "profession": list(el.profession.values_list("name",  flat=True)),
         'sex': sex, 'age': str(el.birth_date), 'work_experience': list(el.work_experience.values_list("name",  flat=True)), 
         'desired_position': desired_professions_list, 'liked_vacancies': liked_vacancies, 'ready_to_educate': ready_to_educate,
@@ -670,7 +672,7 @@ def personalAreaUniver(request):
         'work_places': work_places_count, 'work_places_near': work_related_places_count,
         'id': el.id})
     # info.append({'profiles': profiles})
-    print(profiles, '***')
+    # print(profiles, '***')
     work_places = []
     for el in WorkPlace.objects.all() :
 
@@ -697,9 +699,15 @@ def personalAreaUniver(request):
         'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
         'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names, 'worckplace_double_like': worckplace_double_like, 'place_count': 10,
         'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
-    print(work_places)
+    # print(work_places)
 
-    return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': json.dumps(work_places), 'tabl1': json.dumps(profilesProfession)})
+    courses = []
+    for course in Course.objects.all():      
+        courses.append({'name': course.name, 'skill': course.name, 'univer': Univer.objects.get(course=course).name, 'count': course.count,
+            'price_per_person': course.price, 'price':course.price*course.count ,'forecast': 20})
+
+    return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': json.dumps(work_places),
+        'tabl1': json.dumps(profilesProfession), 'courses': json.dumps(courses)})
     # return HttpResponse("Как ты сюда попал?!!")
 
 
@@ -788,4 +796,37 @@ def personalInfoProfile(request):
         'disability_group': profile.disability_group, 'name1': profile.name1, 'name2': profile.name2, 'name3': profile.name3, 'desired_salary': profile.desired_salary})
 
     return render(request, 'data/personal_info_profile.html', {'form': form})
-    #efhefkjehfekjfh
+
+
+def registrationUniver(request):
+    if request.method == 'POST':
+        form = registration_univer_form(request.POST)
+        if form.is_valid():  
+            tempUser = User(username=form.cleaned_data['username'], email=form.cleaned_data['email'], password = form.cleaned_data['password'])
+            tempUser.save()
+            tempUser.set_password(tempUser.password)
+            tempUser.save()
+
+            tempUniver = Univer(user=tempUser, name=form.cleaned_data['name'])
+            tempUniver.save()
+            return redirect('/accounts/login/')
+
+    else:
+        form = registration_univer_form
+    return render(request, 'data/registration_univer.html', {'form': form})
+    
+
+def addCourseByUniver(request):
+    if request.method == 'POST':
+        form = add_course_by_univer_form(request.POST)
+        if form.is_valid():
+            tempCourse = Course(name=form.cleaned_data['name'], description=form.cleaned_data['description'], count=form.cleaned_data['count'], price=form.cleaned_data['price'])
+            tempCourse.save()
+            tempUniver = Univer.objects.get(id=request.user.univer.id)
+            tempUniver.course.add(tempCourse.id)
+            tempUniver.save()
+            print('******************************', tempUniver)
+            return redirect('/personal_area/univer/')
+    else:
+        form = add_course_by_univer_form
+    return render(request, 'data/univer_course.html', {'form': form})

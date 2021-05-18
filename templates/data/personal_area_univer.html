@@ -5,95 +5,116 @@
     <link rel="stylesheet" href="{% static 'css/personal_area_univer.css' %}">
 {% endblock %}
 
-{%block title%}Корзина{%endblock%}
+{%block title%}Личный кабинет образовательного учреждения{%endblock%}
 {%block content%}
     {% if user.is_authenticated %}
-        {% if user.profile %}
+        {% if user.univer %}
             <script>
                 // var info = JSON.parse('{{ info | escapejs }}');
                 var tabl1 = JSON.parse('{{ tabl1 | escapejs }}');
                 var tabl2 = JSON.parse('{{ tabl2 | escapejs }}');
-                var work_places = JSON.parse('{{ work_places | escapejs }}'); 
+                var work_places = JSON.parse('{{ work_places | escapejs }}');
+                var courses = JSON.parse('{{ courses | escapejs }}');
             </script>
             {% comment %} <div class="table-responsive"> {% endcomment %}
             {% comment %} <div class="container-fluid"> {% endcomment %}
-                <div class="row justify-content-center ">
-
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table class="table table-resposive table-bordered table-striped mb-0">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">ФИО</th>
-                                <th scope="col">Обр. программа</th>
-                                <th scope="col">Вакансия</th>
-                                <th scope="col">Лайк от пользователя</th>
-                                <th scope="col">Лайк от фирмы</th>
-                                <th scope="col">Взаимный лайк</th>
-                                <th scope="col">Компания</th>
-                                <th scope="col">Прирост кол-ва рабочих мест</th>
-                            </tr>
-                            </thead>
-                            <tbody id="tabl1">  <tbody>
-        
-                            </tbody>
-                        </table>
-                    </div><br>
-                    {% comment %} </div> {% endcomment %}
-                    {% comment %} <div class="table-responsive">     {% endcomment %}
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table class="table table-resposive table-bordered table-striped mb-0">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">ФИО</th>
-                                <th scope="col">Пол</th>
-                                <th scope="col">Город</th>
-                                <th scope="col">Возраст</th>
+            <div class="row justify-content-center ">
+                <button id = 'button1' type="button" class="btn btn-primary" onclick="ShowHideTable('table1', 'button1', 1)">Показать таблицу 1</button>
+                <button id = 'button2' type="button" class="btn btn-primary" onclick="ShowHideTable('table2', 'button2', 2)">Показать таблицу 2</button>
+                <button id = 'button3' type="button" class="btn btn-primary" onclick="ShowHideTable('table3', 'button3', 3)">Показать таблицу 3</button>
+                
+                <div id = 'table1' class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-resposive table-bordered table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">ФИО</th>
+                            <th scope="col">Обр. программа</th>
+                            <th scope="col">Вакансия</th>
+                            <th scope="col">Лайк от пользователя</th>
+                            <th scope="col">Лайк от фирмы</th>
+                            <th scope="col">Взаимный лайк</th>
+                            <th scope="col">Компания</th>
+                            <th scope="col">Прирост кол-ва рабочих мест</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabl1">  <tbody>
     
-                                <th scope="col">Базовое образование</th>
-                                <th scope="col">Опыт работы</th>
-                                <th scope="col">Компетенции</th>
-                                <th scope="col">Желаемая работа</th>
-                                <th scope="col">Какие вакансии лайкнул</th>
-                                <th scope="col">Какие вакансии его лайкнули</th>
-                                <th scope="col">Взаимные лайки</th>
-                                <th scope="col">Скольким вакансиям соответствует до обучения</th>
-                                <th scope="col">Скольким вакансиям соответствует после обучения</th>
-                            </tr>
-                            </thead>
-                            <tbody id="tabl2">  <tbody>
-        
-                            </tbody>
-                        </table>
-                    {% comment %} </div> {% endcomment %}
-                    </div><br>
-                    {% comment %} <div class="table-responsive"> {% endcomment %}
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table class="table table-resposive table-bordered table-striped mb-0">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Рабочее место</th>
-                                <th scope="col">Город</th>
-                                <th scope="col">Базовое образование</th>
-                                <th scope="col">Каких людей лайкнул</th>
-                                <th scope="col">Какие люди его лайкнули</th>
-                                <th scope="col">Взаимные лайки</th>
-                                <th scope="col">Фирма</th>
-                                <th scope="col">Кол-во рабочих мест</th>
-                            </tr>
-                            </thead>
-                            <tbody id="work_places">  <tbody>
-        
-                            </tbody>
-                        </table>
-                    {% comment %} </div> {% endcomment %}
-                    </div>
+                        </tbody>
+                    </table>
+                </div><br>
+                <div id = 'table2' class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-resposive table-bordered table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">ФИО</th>
+                            <th scope="col">Пол</th>
+                            <th scope="col">Город</th>
+                            <th scope="col">Возраст</th>
+
+                            <th scope="col">Базовое образование</th>
+                            <th scope="col">Опыт работы</th>
+                            <th scope="col">Компетенции</th>
+                            <th scope="col">Желаемая работа</th>
+                            <th scope="col">Какие вакансии лайкнул</th>
+                            <th scope="col">Какие вакансии его лайкнули</th>
+                            <th scope="col">Взаимные лайки</th>
+                            <th scope="col">Скольким вакансиям соответствует до обучения</th>
+                            <th scope="col">Скольким вакансиям соответствует после обучения</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabl2">  <tbody>
+    
+                        </tbody>
+                    </table>
+                </div><br>
+                <div id = 'table3' class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-resposive table-bordered table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Рабочее место</th>
+                            <th scope="col">Город</th>
+                            <th scope="col">Базовое образование</th>
+                            <th scope="col">Каких людей лайкнул</th>
+                            <th scope="col">Какие люди его лайкнули</th>
+                            <th scope="col">Взаимные лайки</th>
+                            <th scope="col">Фирма</th>
+                            <th scope="col">Кол-во рабочих мест</th>
+                        </tr>
+                        </thead>
+                        <tbody id="work_places">  <tbody>
+    
+                        </tbody>
+                    </table>
+                </div><br>
+                <div id = 'table4' class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-resposive table-bordered table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Образовательная программа</th>
+                            <th scope="col">Компетенция</th>
+                            <th scope="col">Образовательное учреждение</th>
+                            <th scope="col">Количество человек</th>
+                            <th scope="col">Стоимость программы</th>
+                            <th scope="col">Стоимость трудоустройства одного человека</th>
+                            <th scope="col">Прогноз количества трудоустроенных человек</th>
+                        </tr>
+                        </thead>
+                        <tbody id="courses">  <tbody>
+    
+                        </tbody>
+                    </table>
                 </div>
-            {% comment %} </div> {% endcomment %}
-            {% comment %} <div id="blockWorkPlace"></div> {% endcomment %}
+            </div>
+
+            <a href="{% url 'add_course_by_univer' %}">
+                <button type="button" class="btn btn-primary">Добавить образовательную программу</button>
+            </a>
+            <script type="text/javascript" src="{% static 'js/personal_area_univer.js' %}"></script>
         {% endif %}
     {% endif %}
-    <script type="text/javascript" src="{% static 'js/personal_area_univer.js' %}"></script>
+    
 {%endblock%}

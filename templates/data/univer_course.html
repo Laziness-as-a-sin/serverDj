@@ -1,0 +1,19 @@
+{% extends 'base.html'%}
+
+{%block title%}Добавление образовательной программы{%endblock%}
+
+{% block script %}
+    {%load crispy_forms_tags%}
+    {%load static%}
+{% endblock %}
+
+{%block content%}
+    <div class="row">
+        <div class="col">
+            <form action="{% url 'add_course_by_univer' %}" method="post">{% csrf_token %}
+                {{form|crispy}}
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+{%endblock%}

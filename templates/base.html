@@ -22,41 +22,41 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">  
                 <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse " id="navbarSupportedContent">     <ul class="navbar-nav mr-4">
-                {% if user.is_authenticated %}
-                    {% if user.firm %}
-                        <li class="nav-item">  
-                        <a class="nav-link " data-value="basketFirm" href="{% url 'basket_firm' %}">Корзина</a>
-                        </li>
-                        <li class="nav-item"> 
-                        <a class="nav-link " data-value="contact" href="#">{{user.firm.name}}</a>
-                        {% comment %} </li>
-                        <li class="nav-item"> 
-                        <a class="nav-link " data-value="contact" href="personal_area_profile">{{user.firm.name}}</a> {% endcomment %}
-                    {% else %}
-                        {% if user.profile %}
-                            <li class="nav-item">  
-                                <a class="nav-link " data-value="name" href="{% url 'personal_area_profile' %}">Поиск</a>
-                            </li>
-                            <li class="nav-item"> 
-                                <a class="nav-link " data-value="basketProfile" href="{% url 'basket_profile' %}">Корзина</a>
-                            </li>
-                            <li class="nav-item"> 
-                                <a class="nav-link " data-value="personal_info" href="{% url 'personal_info_profile' %}">{{user.profile.name1}}</a>
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-4">
+                        {% if user.is_authenticated %}
+                            {% if user.firm %}
+                                <li class="nav-item">  
+                                <a class="nav-link " data-value="basketFirm" href="{% url 'basket_firm' %}">Корзина</a>
+                                </li>
+                                <li class="nav-item"> 
+                                <a class="nav-link " data-value="contact" href="#">{{user.firm.name}}</a>
+                                <!-- {% comment %} </li>
+                                <li class="nav-item"> 
+                                <a class="nav-link " data-value="contact" href="personal_area_profile">{{user.firm.name}}</a> {% endcomment %} -->
+                            {% elif user.profile %}
+                                <li class="nav-item">  
+                                    <a class="nav-link " data-value="name" href="{% url 'personal_area_profile' %}">Поиск</a>
+                                </li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link " data-value="basketProfile" href="{% url 'basket_profile' %}">Корзина</a>
+                                </li>
+                                <li class="nav-item"> 
+                                    <a class="nav-link " data-value="personal_info" href="{% url 'personal_info_profile' %}">{{user.profile.name1}}</a>
+                            {% elif user.univer %}
+                                <li class="nav-item"> 
+                                    <a class="nav-link " data-value="personal_area" href="{% url 'personal_area_univer' %}">{{user.univer.name}}</a>
+                                <li>
+                            {% endif %}
                         {% else %}
+                            <!-- <li class="nav-item">  
+                            <a class="nav-link " data-value="Корзина" href="#">Корзина</a>
+                            </li> -->
                             <li class="nav-item"> 
-                            <a class="nav-link " data-value="personal_area" href="{% url 'personal_area_profile' %}>{{user.username}}</a>
+                                <a class="nav-link " data-value="contact" href="#">No loggined</a>
+                            </li> 
                         {% endif %}
-                    {% endif %}
-                {% else %}
-                    {% comment %} <li class="nav-item">  
-                    <a class="nav-link " data-value="Корзина" href="#">Корзина</a>
-                    </li>        {% endcomment %}
-                    <li class="nav-item"> 
-                    <a class="nav-link " data-value="contact" href="#">No loggined</a>
-                {% endif %}
-                    </li> 
-                </ul> 
+                    </ul> 
             </div></nav>
         </div>
     {%endblock%}

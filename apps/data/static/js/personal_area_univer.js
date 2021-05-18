@@ -1,3 +1,14 @@
+function ShowHideTable(id_table, id_button, number_table){
+    var x = document.getElementById(id_table);
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById(id_button).innerHTML = `Скрыть таблицу ${number_table}` 
+    } else {
+        x.style.display = "none";
+        document.getElementById(id_button).innerHTML = `Показать таблицу ${number_table}` 
+    }
+}
+
 
 $(document).ready(function(){
     console.log(tabl1)
@@ -145,6 +156,24 @@ $(document).ready(function(){
                                         <td>${data['work_places_near']}</td>\
                                         `
         document.getElementById("tabl2").append(block_work_place)
+    });
+
+    console.log(courses)
+    var counter = 0
+    $.each(courses, function(key,data) {
+        counter += 1
+
+        block_work_course = document.createElement('tr')
+        block_work_course.innerHTML =    `<th scope="row">${counter}</th>\
+                                        <td>${data['name']}</td>\
+                                        <td>${data['skill']}</td>\
+                                        <td>${data['univer']}</td>\
+                                        <td>${data['count']}</td>\
+                                        <td>${data['price']}</td>\
+                                        <td>${data['price_per_person']}</td>\
+                                        <td>${data['forecast']}</td>\
+                                        `
+        document.getElementById("courses").append(block_work_course)
     });
 
 });
