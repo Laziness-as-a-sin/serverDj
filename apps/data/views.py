@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from .forms import index_form, workPlace_form, registration_firm_form, registration_profile_form, profile_form, personal_info_profile, registration_univer_form, add_course_by_univer_form
 from django.http import JsonResponse
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 def checkIsInclude(arr1, arr2):
@@ -701,17 +702,39 @@ def personalAreaUniver(request):
         'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
         'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
         'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
-        'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names, 'worckplace_double_like': worckplace_double_like, 'place_count': 10,
+        'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names, 'worckplace_double_like': worckplace_double_like, 'place_count': el.count,
         'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
     # print(work_places)
 
     courses = []
+    
     for course in Course.objects.all():      
-        courses.append({'name': course.name, 'skill': course.name, 'univer': Univer.objects.get(course=course).name, 'count': course.count,
+        courses.append({'name': course.name, 'skill': course.profession.name, 'univer': Univer.objects.get(course=course).name, 'count': course.count,
             'price_per_person': course.price, 'price':course.price*course.count ,'forecast': 20})
 
+
+    recomm_courses = []
+    dict_work_count = {}
+    for work in WorkPlace.objects.all():
+        if work.profession.name in dict_work_count.keys():
+            if work.count:
+                dict_work_count[work.profession.name] += work.count
+        else:
+            if work.count:
+                dict_work_count[work.profession.name] = work.count
+
+    for key, value in dict_work_count.items():
+        unique_users = []
+        for el in WorkPlace.objects.filter(profession__name=key):
+            for x in list(el.liked_by_profile.values_list('id', flat=True)):
+                if x not in unique_users:
+                    unique_users.append(x)
+        recomm_courses.append({'name': key, 'count_work_place': value, 'profession': key, 'recomm_count': value, 'forecast': len(unique_users)})
+    print(recomm_courses)
+    
+    form = add_course_by_univer_form
     return render(request, 'data/personal_area_univer.html', {'tabl2': json.dumps(profiles), 'work_places': json.dumps(work_places),
-        'tabl1': json.dumps(profilesProfession), 'courses': json.dumps(courses)})
+        'tabl1': json.dumps(profilesProfession), 'courses': json.dumps(courses), 'recomm_courses':json.dumps(recomm_courses), 'form': form})
     # return HttpResponse("Как ты сюда попал?!!")
 
 
@@ -819,18 +842,21 @@ def registrationUniver(request):
         form = registration_univer_form
     return render(request, 'data/registration_univer.html', {'form': form})
     
-
+@csrf_exempt
 def addCourseByUniver(request):
+    if request.method == 'GET':  
+        cookies = request.COOKIES
+        print(cookies)
+        
+        form = add_course_by_univer_form(initial={'name':cookies['name'], 'count':cookies['recomm_count'], 'profession': Profession.objects.get(name=cookies['profession'])})
+        return render(request, 'data/univer_course.html', {'form': form})
     if request.method == 'POST':
         form = add_course_by_univer_form(request.POST)
         if form.is_valid():
-            tempCourse = Course(name=form.cleaned_data['name'], description=form.cleaned_data['description'], count=form.cleaned_data['count'], price=form.cleaned_data['price'])
+            tempCourse = Course(name=form.cleaned_data['name'], profession=form.cleaned_data['profession'],  description=form.cleaned_data['description'], count=form.cleaned_data['count'], price=form.cleaned_data['price'])
             tempCourse.save()
             tempUniver = Univer.objects.get(id=request.user.univer.id)
             tempUniver.course.add(tempCourse.id)
             tempUniver.save()
             print('******************************', tempUniver)
-            return redirect('/personal_area/univer/')
-    else:
-        form = add_course_by_univer_form
-    return render(request, 'data/univer_course.html', {'form': form})
+    return redirect('/personal_area/univer/')

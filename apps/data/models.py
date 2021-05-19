@@ -144,15 +144,18 @@ class WorkPlace(models.Model):
     max_salary = models.IntegerField(verbose_name='максимальная зарплата', null=True)
     profile_liked = models.ManyToManyField(Profile, verbose_name="Пользователи лайкнутые работадателем", blank = True, related_name='profile_liked')
     liked_by_profile = models.ManyToManyField(Profile, verbose_name="Пользователи которые лайкнули", blank = True, related_name='liked_by_profile')
+    count = models.IntegerField(verbose_name='Количество рабочих мест', default=1)
 
     def __str__(self):
         return self.name
+
 
 class Course(models.Model):
     def contact_default():
         return ""
 
-    name = models.CharField('Название образовательной программы', max_length=200)
+    name = models.CharField('Название образовательной программы', max_length=200, default=contact_default)
+    profession = models.ForeignKey(Profession, verbose_name='Компетенция', on_delete=models.PROTECT, null=True)
     description = models.TextField('Описание образовательной программы', default=contact_default)
     count = models.IntegerField(verbose_name='Количество мест', null=True)
     price = models.IntegerField(verbose_name='Стоимость обучения на 1 человека', null=True)

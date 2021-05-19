@@ -15,14 +15,18 @@
                 var tabl2 = JSON.parse('{{ tabl2 | escapejs }}');
                 var work_places = JSON.parse('{{ work_places | escapejs }}');
                 var courses = JSON.parse('{{ courses | escapejs }}');
+                var recomm_courses = JSON.parse('{{ recomm_courses | escapejs }}');
             </script>
             {% comment %} <div class="table-responsive"> {% endcomment %}
             {% comment %} <div class="container-fluid"> {% endcomment %}
+            <div id='add_course_form' style="display: none">
+                {{form|crispy}}
+            </div>
+            
             <div class="row justify-content-center ">
-                <button id = 'button1' type="button" class="btn btn-primary" onclick="ShowHideTable('table1', 'button1', 1)">Показать таблицу 1</button>
-                <button id = 'button2' type="button" class="btn btn-primary" onclick="ShowHideTable('table2', 'button2', 2)">Показать таблицу 2</button>
-                <button id = 'button3' type="button" class="btn btn-primary" onclick="ShowHideTable('table3', 'button3', 3)">Показать таблицу 3</button>
-                
+                <button id = 'button1' type="button" class="btn btn-primary" onclick="ShowHideTable('table1', 'button1', 1)">Скрыть таблицу 1</button>
+                <button id = 'button2' type="button" class="btn btn-primary" onclick="ShowHideTable('table2', 'button2', 2)">Скрыть таблицу 2</button>
+                <button id = 'button3' type="button" class="btn btn-primary" onclick="ShowHideTable('table3', 'button3', 3)">Скрыть таблицу 3</button>
                 <div id = 'table1' class="table-wrapper-scroll-y my-custom-scrollbar">
                     <table class="table table-resposive table-bordered table-striped mb-0">
                         <thead>
@@ -77,8 +81,8 @@
                             <th scope="col">Рабочее место</th>
                             <th scope="col">Город</th>
                             <th scope="col">Базовое образование</th>
-                            <th scope="col">Каких людей лайкнул</th>
-                            <th scope="col">Какие люди его лайкнули</th>
+                            <th scope="col">Каких людей лайкнул работодатель</th>
+                            <th scope="col">Какие люди лайкнули рабоее место</th>
                             <th scope="col">Взаимные лайки</th>
                             <th scope="col">Фирма</th>
                             <th scope="col">Кол-во рабочих мест</th>
@@ -104,6 +108,28 @@
                         </tr>
                         </thead>
                         <tbody id="courses">  <tbody>
+    
+                        </tbody>
+                    </table>
+                </div><br>
+                <select id='sort_table5'>
+                    <option value="1">Количество рабочих мест</option>
+                    <option value="2">Прогноз количества трудоустроенных человек</option>
+                    <option value="3">Рекомендуемый набор (кол-во человек)</option>
+                </select>
+                <div id = 'table5' class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-resposive table-bordered table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Образовательная программа</th>
+                            <th scope="col">Компетенция</th>
+                            <th scope="col">Рекомендуемый набор (кол-во человек)</th>
+                            <th scope="col">Количество рабочих мест</th>
+                            <th scope="col">Прогноз количества трудоустроенных человек</th>
+                        </tr>
+                        </thead>
+                        <tbody id="recomm_courses"> <tbody>
     
                         </tbody>
                     </table>

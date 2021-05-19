@@ -11,6 +11,138 @@ function ShowHideTable(id_table, id_button, number_table){
 
 
 $(document).ready(function(){
+    
+    $('#sort_table5').on('change', function(event){
+        if (event.target.value == '1'){
+            console.log('no sort', recomm_courses)
+            recomm_courses.sort(function(obj1, obj2) {
+                // Сортировка по убыванию
+                return obj2.count_work_place-obj1.count_work_place;
+            });
+            console.log('sort', recomm_courses)
+        }
+        if (event.target.value == '2'){
+            console.log('no sort', recomm_courses)
+            recomm_courses.sort(function(obj1, obj2) {
+                // Сортировка по убыванию
+                return obj2.forecast-obj1.forecast;
+            });
+            console.log('sort', recomm_courses)
+        }
+        if (event.target.value == '3'){
+            console.log('no sort', recomm_courses)
+            recomm_courses.sort(function(obj1, obj2) {
+                // Сортировка по убыванию
+                return obj2.recomm_count-obj1.recomm_count;
+            });
+            console.log('sort', recomm_courses)
+        }
+
+        var counter = 0
+        $("#recomm_courses").empty();
+        $.each(recomm_courses, function(key,data) {
+            block_work_recomm_courses = document.createElement('tr')
+            block_work_recomm_courses.id = `recomm_courses_row_${counter}`
+            block_work_recomm_courses.innerHTML =    `<th id=${counter} scope="row">
+                                                        <a href="/data/personal_area/univer/add_course">
+                                                            <button type="button" class="btn btn-primary">Создать</button></th>\
+                                                        </a>
+                                            <td>${data['name']}</td>\
+                                            <td>${data['profession']}</td>\
+                                            <td>${data['recomm_count']}</td>\
+                                            <td>${data['count_work_place']}</td>\
+                                            <td>${data['forecast']}</td>\
+                                            `
+            document.getElementById("recomm_courses").append(block_work_recomm_courses)
+            counter += 1
+        });
+
+    })
+
+
+
+
+
+    $('#recomm_courses').on("click", "BUTTON", function(event){
+        var target = event.target.parentNode.parentNode
+        row = $(`#recomm_courses_row_${target.getAttribute("id")}`)
+        tempdata =  row.children('td').map(function (index, val) {
+			return $(this).text();
+		}).toArray();
+        console.log(tempdata)
+
+        document.cookie = `name=${tempdata[0]}`
+        document.cookie = `profession=${tempdata[1]}` 
+        document.cookie = `recomm_count=${tempdata[2]}`
+
+
+        // var form = document.getElementById('add_course_form')
+
+        // let Modal = document.createElement('div')
+        // Modal.className = "modal fade"
+        // Modal.id = "myModalBox"
+        // Modal.innerHTML =  `<div class="modal-dialog" role="document">
+        //                         <div class="modal-content">
+        //                             <div class="modal-header">
+        //                                 <h4 class="modal-title">Образовательная программа</h4>
+        //                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        //                                     <span aria-hidden="true">&times;</span>
+        //                                 </button>
+        //                             </div>
+        //                             <div id=modal_body_id class="modal-body">
+
+        //                             </div>
+        //                             <div class="modal-footer">
+        //                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        //                                 <button id="add_course_button" type="button" class="btn btn-primary" data-dismiss="modal">Создать</button>
+        //                             </div>
+        //                         </div>
+        //                     </div>`
+        
+        // document.getElementById("recomm_courses").after(Modal)
+        // var clone = form.cloneNode(true);
+        // clone.querySelector('#id_name').value = tempdata[0]
+        // const text = 'Библиотекарь'
+        // const options = document.getElementById("id_profession").options
+        // for (let n = 0; n < options.length; ++n) {
+        //     const option = options[n]
+        //     console.log(option.text)
+        //     if (option.text === text) {
+        //         $("option").val(n);
+        //         break;
+        //     }
+        // }
+        
+
+        // clone.querySelector('#id_profession'). = 1
+        // clone.style.display = "block";
+        // $('#modal_body_id').append(clone)
+
+        // $('#myModalBox').modal('show')
+        // $('#add_course_button').on("click", function(event){
+        //     data = {'name': tempdata[0], 'profession': tempdata[1], 'count_work_place': tempdata[3], 'recomm_count': tempdata[2], 'forecast': tempdata[4]}
+        //     $.ajax({
+        //         type : 'GET',
+        //         url :  'add_course',
+        //         data : data,
+        //         success : function(response){
+
+        //             console.log(response);
+        //         },
+        //         error : function(response){
+        //             console.log(response)
+        //         }
+        //     })
+        // })
+       
+    })
+
+
+
+
+
+
+
     console.log(tabl1)
     var counter = 0
     $.each(tabl1, function(key,data) {
@@ -175,5 +307,26 @@ $(document).ready(function(){
                                         `
         document.getElementById("courses").append(block_work_course)
     });
+
+    console.log(recomm_courses)
+    var counter = 0
+    $.each(recomm_courses, function(key,data) {
+        block_work_recomm_courses = document.createElement('tr')
+        block_work_recomm_courses.id = `recomm_courses_row_${counter}`
+        block_work_recomm_courses.innerHTML =    `<th id=${counter} scope="row">
+                                                    <a href="/data/personal_area/univer/add_course">
+                                                        <button type="button" class="btn btn-primary">Создать</button></th>\
+                                                    </a>
+                                        <td>${data['name']}</td>\
+                                        <td>${data['profession']}</td>\
+                                        <td>${data['recomm_count']}</td>\
+                                        <td>${data['count_work_place']}</td>\
+                                        <td>${data['forecast']}</td>\
+                                        `
+        document.getElementById("recomm_courses").append(block_work_recomm_courses)
+        counter += 1
+    });
+
+
 
 });
