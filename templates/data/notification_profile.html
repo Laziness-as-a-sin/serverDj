@@ -1,0 +1,42 @@
+{% extends 'base.html'%}
+
+{%block title%}Уведомления{%endblock%}
+
+{% block script %}
+    {%load crispy_forms_tags%}
+    {%load static%}
+    <script type="text/javascript" src="{% static 'js/notification_profile.js' %}"></script>
+{% endblock %}
+
+{%block content%}
+    {% if user.is_authenticated %}
+        {% if user.profile %}
+            <script>
+                var courses = JSON.parse('{{ courses | escapejs }}');
+            </script>
+
+        <div class="row justify-content-center ">
+            <div id = 'table_courses' class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-resposive table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Образовательная программа</th>
+                            <th scope="col">Компетенция</th>
+                            <th scope="col">Образовательное учреждение</th>
+                            <th scope="col">Количество человек</th>
+                            <th scope="col">Стоимость обучения</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_courses_body"> 
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+        {% endif %}
+    {% endif %}
+{%endblock%}

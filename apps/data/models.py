@@ -159,6 +159,7 @@ class Course(models.Model):
     description = models.TextField('Описание образовательной программы', default=contact_default)
     count = models.IntegerField(verbose_name='Количество мест', null=True)
     price = models.IntegerField(verbose_name='Стоимость обучения на 1 человека', null=True)
+    profiles = models.ManyToManyField(Profile, verbose_name='Ученики', blank=True)
     def __str__(self):
         return self.name
 

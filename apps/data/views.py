@@ -895,7 +895,17 @@ def addCourseByUniver(request):
     if request.method == 'POST':
         form = add_course_by_univer_form(request.POST)
         if form.is_valid():
-            tempCourse = Course(name=form.cleaned_data['name'], profession=form.cleaned_data['profession'],  description=form.cleaned_data['description'], count=form.cleaned_data['count'], price=form.cleaned_data['price'])
+            unique_users = []
+            for x in list(WorkPlace.objects.filter(profession__name=form.cleaned_data['name']).values_list('liked_by_profile',flat=True)):
+                if x not in unique_users:
+                    unique_users.append(x)
+
+            tempCourse = Course(name=form.cleaned_data['name'], profession=form.cleaned_data['profession'],  description=form.cleaned_data['description'], 
+                count=form.cleaned_data['count'], price=form.cleaned_data['price'])
+            tempCourse.save()
+            for prof in Profile.objects.filter(id__in=unique_users):
+                tempCourse.profiles.add(prof.id)
+
             tempCourse.save()
             tempUniver = Univer.objects.get(id=request.user.univer.id)
             tempUniver.course.add(tempCourse.id)
@@ -945,3 +955,15 @@ def personalAreaProfileShowInfo(request):
                 return JsonResponse({"place_info":work_place_info}, status=200)
     else:
         return HttpResponse("Как ты сюда попал?!!")
+
+
+def notificationProfile(request):
+    # print(request.user.profile.id)
+    print(Course.objects.filter(profiles__id=request.user.profile.id).values_list('name', flat=True))
+    courses = []
+    for course in Course.objects.filter(profiles__id=request.user.profile.id):
+        courses.append({'name': course.name, 'price': course.price, 'profession': course.profession.name,
+            'univer': list(Univer.objects.filter(course=course.id).values_list('name', flat=True)), 'count': course.count})
+    print(courses)
+
+    return render(request, 'data/notification_profile.html', {'courses':json.dumps(courses)})
