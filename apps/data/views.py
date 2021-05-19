@@ -207,195 +207,76 @@ def personalAreaFirm(request):
             
 
             if request.method == "GET" and request.is_ajax():
-                city = request.GET.get("id_city", "")
-                education = request.GET.get("id_education")
-                profession = request.GET.get("id_profession")
-                skill = request.GET.getlist("id_skill[]")
-                disability = request.GET.getlist("id_disability[]") 
-
-                # if request.GET.get("check_proffession") == None:
-                #     check_proffession = 0 
-                # else:
-                #     check_proffession = 1
-                # if request.GET.get("check_city_move") == None:
-                #     check_city_move = 0 
-                # else:
-                #     check_city_move = 1 
-                # related_professions = []
-                # for x in id_profession:
-                #     for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
-                #         if y not in related_professions:
-                #             related_professions.append(y)
-                
-                # profile = Profile.objects.get(user=request.user)
-                # work_places = WorkPlace.objects.exclude(Q(disability__in=profile.disability.values_list("id",  flat=True)) |
-                # Q(dysfunctions_body__in=profile.dysfunctions_body.values_list("id",  flat=True)) |
-                # Q(restrictions_categories_life__in=profile.restrictions_categories_life.values_list("id",  flat=True))).filter(
-                # (Q(city=id_city) | Q(city__in=id_city_to_move)) & (Q(profession__in=related_professions) | Q(profession__in=id_profession)))
-
-                # if check_proffession == 1 and check_city_move == 1: #реализация фильтров для инвалида
-                #     work_places = work_places.filter(Q(profession__in=id_profession) & Q(city=id_city))
-                # elif check_proffession == 1:
-                #     work_places = work_places.filter(profession__in=id_profession)
-                # elif check_city_move == 1:
-                #     work_places = work_places.filter(city=id_city)
-
-                # if sort_by == 1: #реализация сортировки рабочих мест
-                #     work_places = work_places.order_by('min_salary') #сортировка по зарплате
-                # elif sort_by == 2:
-                #     work_places = work_places.order_by('name') #сортировка по названию
-
-
-                # temp_dict = {"full_suc":0, "city":0, "profession":0, "city_profession":0}
-                # # number_mismatches_dict = [0] * 6
-                # # work_places_info = []
-                # work_place = []
-                # for place in work_places:
-                #     checkPlace = 0
-                #     educationCheck = 0
-                #     number_mismatches = 0
-
-                #     if place.city_id != int(id_city) and  place.profession.id not in list(map(int, id_profession)):
-                #         temp_dict["city_profession"] += 1
-                #         checkPlace = 4
-                #     elif place.city_id != int(id_city):
-                #         temp_dict["city"] += 1
-                #         checkPlace = 3
-                #     elif place.profession.id not in list(map(int, id_profession)):
-                #         temp_dict["profession"] += 1 
-                #         checkPlace = 2
-                #     else:
-                #         temp_dict["full_suc"] += 1
-                #         checkPlace = 1
-
-                #     work_place.append({"name": place.name, "profession": place.profession.name, "position": f"{place.city}, {place.location}",
-                #     "city": place.city.name, "address": place.location, "min_salary": place.min_salary,
-                #     "max_salary": place.max_salary, "id": place.id, "checkPlace": checkPlace})
-
-                # place_info = {
-                #     "target_mismatches": temp_dict,
-                #     "work_place": work_place
-                # }
-
-                # return JsonResponse({"place_info":place_info}, status=200)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                temp_dict = {"city":0, "education":0, "profession":0, "skill":0, "disability":0} 
-                users = Profile.objects.all()
-            
-                number_mismatches_dict = [0] * 6
-                print(city, education, profession, skill, disability)
-
-                if education:
-                    educationName = Education.objects.get(id=education).name
-                else: 
-                    educationName = 'Не указано'
-
-                if profession:
-                    related_professions = Profession.objects.get(id=profession).boundProfession.values_list("id",  flat=True)
-                    related_professions = set(list(map(int, related_professions)))
+                id_city = request.GET.get("id_city", "")
+                id_education = request.GET.get("id_education")
+                id_profession = request.GET.get("id_profession")
+                id_skill = request.GET.getlist("id_skill[]")
+                id_disability = request.GET.getlist("id_disability[]") 
+                id_dysfunctions_body = request.GET.getlist("id_dysfunctions_body[]")
+                id_restrictions_categories_life= request.GET.getlist("id_restrictions_categories_life[]")
+                if request.GET.get("check_proffession") == None:
+                    check_proffession = 0 
                 else:
-                    related_professions = []
-                users_all = []
-                users_good = []
-                users_wrong = []
-
-                skillNames = []
-                skillId = []   
-                for el in set(list(map(int, skill))):
-                    skillNames.append(Skill.objects.get(id=el).name)
-                    skillId.append(Skill.objects.get(id=el).id)
-
+                    check_proffession = 1
+                if request.GET.get("check_city_move") == None:
+                    check_city_move = 0 
+                else:
+                    check_city_move = 1 
+                if request.GET.get("check_disability") == None:
+                    check_disability = 0 
+                else:
+                    check_disability = 1 
+                related_professions = []
+                for x in id_profession:
+                    for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                        if y not in related_professions:
+                            related_professions.append(y)
                 
+                profiles = Profile.objects.filter((Q(city=id_city) | Q(city_to_move__in=[id_city])) & (Q(profession__in=related_professions) | Q(profession__in=[id_profession])))
 
-                for user in users:
-                    checkUserProf = 0
-                    number_mismatches = 0
+                if check_proffession == 1 and check_city_move == 1: #реализация фильтров для инвалида
+                    profiles = profiles.filter(Q(profession__in=[id_profession]) & Q(city=id_city))
+                elif check_proffession == 1:
+                    profiles = profiles.filter(profession__in=[id_profession])
+                elif check_city_move == 1:
+                    profiles = profiles.filter(city=[id_city])
 
-                    if city and user.city_id == int(city):
-                        temp_dict["city"] += 1 
+                if check_disability == 1:
+                    profiles = profiles.exclude(Q(disability__in=id_disability) |
+                    Q(dysfunctions_body__in=id_dysfunctions_body) |
+                    Q(restrictions_categories_life__in=id_restrictions_categories_life))
+
+                temp_dict = {"full_suc":0, "city":0, "profession":0, "city_profession":0, "disability": 0}
+                work_place = []
+                for profile in profiles:
+                    checkPlace = 1
+
+                    if profile.city_id != int(id_city) and int(id_profession) not in profile.profession.values_list("id",  flat=True):
+                        temp_dict["city_profession"] += 1
+                        checkPlace = 4
+                    elif profile.city_id != int(id_city):
+                        temp_dict["city"] += 1
+                        checkPlace = 3
+                    elif id_profession not in profile.profession.values_list("id",  flat=True):
+                        temp_dict["profession"] += 1 
+                        checkPlace = 2
                     else:
-                        number_mismatches += 1
-
-                    if  set(list(map(int, education))).issubset(user.education.values_list("id",  flat=True)):         
-                        temp_dict["education"] += 1 
-                    else:
-                        number_mismatches += 1
-
-                    if profession and int(profession) in user.profession.values_list("id",  flat=True):
-                            temp_dict["profession"] += 1 
-                            checkUserProf = 2
-                    else:
-                        if checkIsInclude(related_professions, user.profession.values_list("id",  flat=True)): 
-                            checkUserProf = 1
-                        else:
-                            checkUserProf = 0
-                        number_mismatches += 1
-                    print( checkUserProf)
-
-                    if set(list(map(int, skill))).issubset(user.skills.values_list("id",  flat=True)):
-                        temp_dict["skill"] += 1 
-                    else:
-                        number_mismatches += 1
-
-                    if not set(list(map(int, disability))).issubset(user.disability.values_list("id",  flat=True)) or list(map(int, disability)) == []:
-                        temp_dict["disability"] += 1 
-                    else:
-                        number_mismatches += 1
-
-                    number_mismatches_dict[number_mismatches] += 1
+                        temp_dict["full_suc"] += 1
+                        checkPlace = 1
                     
-                    skillCheck = []
-                    for el in skillId:
-                        if el in list(map(int, user.skills.values_list("id",  flat=True))):
-                            skillCheck.append(1)
-                        else:
-                            skillCheck.append(0)
+                    if checkIsInclude(profile.disability.values_list("id",  flat=True), id_disability) or checkIsInclude(profile.dysfunctions_body.values_list("id",  flat=True), id_dysfunctions_body) or checkIsInclude(profile.restrictions_categories_life.values_list("id",  flat=True), id_restrictions_categories_life):
+                        temp_dict["disability"] += 1
+                        checkPlace = 5
 
-                    if education and (education in list(map(int, user.education.values_list("id",  flat=True))) or list(map(int, [education])) == list(map(int, user.education.values_list("id",  flat=True)))):
-                        educationCheck = 1
-                    else:
-                        educationCheck = 0
-                    
-                    if checkUserProf != 0:
-                        users_all.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True))),
-                        'checkUser': checkUserProf,
-                        'city': user.city.name, 'education': educationName, 'educationCheck': educationCheck, 'skill': skillNames, 'skillCheck': skillCheck, 'disability': [], 'disabilityCheck': [],
-                        'desired_salary': user.desired_salary, 'user_id': user.id})
-                    if checkUserProf == 1:
-                        users_wrong.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True)))})
-                    if checkUserProf == 2:
-                        users_good.append({"name": user.name1 + ' ' + user.name2, "position": f"{user.city}, {user.location}", "profession": list(map(str, user.profession.values_list("name",  flat=True)))})
+                    work_place.append({"name": f'{profile.name1} {profile.name2}', "position": f"{profile.city.name}, {profile.location}",
+                    "city": profile.city.name, "address": profile.location, "id": profile.id, "checkPlace": checkPlace})
 
-                user_info = {
-                    "city": City.objects.get(pk= int(city)).name,
+                place_info = {
                     "target_mismatches": temp_dict,
-                    "prof_desc": number_mismatches_dict,
-                    "users_all": users_all,
-                    "users_good": users_good,
-                    "users_wrong": users_wrong
+                    "work_place": work_place
                 }
-                return JsonResponse({"user_info":user_info}, status=200)
+                print('III')
+                return JsonResponse({"place_info":place_info}, status=200)
             else:
                 form = workPlace_form
             

@@ -4,6 +4,152 @@ function addData(chart, label, data) {
     chart.update();  
 }
 
+function updateData(){
+    var id_disability = $("#id_disability").val();
+    var id_city = $("#id_city").val();  
+    var id_education = $("#id_education").val();
+    var id_profession = $("#id_profession").val();
+    var id_skill = $("#id_skill").val();
+    var check_disability = $('#check_disability:checked').val();
+    var check_proffession = $('#check_proffession:checked').val();
+    var check_city_move = $('#check_city_move:checked').val();
+    var id_dysfunctions_body = $('#id_dysfunctions_body').val();
+    var id_restrictions_categories_life = $('#id_restrictions_categories_life').val();
+    var data = {id_disability, id_city, id_education, id_profession, id_skill, check_disability, check_proffession, check_city_move, id_restrictions_categories_life, id_dysfunctions_body};
+    console.log(data)
+    $.ajax({
+        type : 'GET',
+        url :  '/personal_area/firm/',
+        data : data,
+        success : function(response){
+            console.log(response)
+        },
+        error : function(response){
+            console.log(response)
+        }
+    })
+    // var id_disability = $("#id_disability").val();
+    // var id_city = $("#id_city").val();  
+    // var id_education = $("#id_education").val();
+    // var id_profession = $("#id_profession").val();
+    // var id_skill = $("#id_skill").val();
+    // var check_disability = $('#check_disability:checked').val();
+    // var check_proffession = $('#check_proffession:checked').val();
+    // var check_city_move = $('#check_city_move:checked').val();
+    // var id_dysfunctions_body = $('#id_dysfunctions_body').val();
+    // var id_restrictions_categories_life = $('#id_restrictions_categories_life').val();
+    // var data = {id_disability, id_city, id_education, id_profession, id_skill, check_disability, check_proffession, check_city_move, id_restrictions_categories_life, id_dysfunctions_body};
+    // console.log(data)
+    // $.ajax({
+    //     type : 'GET',
+    //     url :  '/personal_area/firm/',
+    //     data : data,
+    //     success : function(response){
+    //         tempDict = [];
+    //         var location =  response.user_info.city + ', ' + $("#id_location").val();
+    //         city = response.user_info.city;
+    //         console.log(response);
+    //         addData(myChart, 0, response.user_info.prof_desc)
+    //         Object.keys(response.user_info.target_mismatches).forEach(function(key) {
+    //             tempDict.push(response.user_info.target_mismatches[key]);
+    //         });
+    //         addData(myChart1, 0, tempDict)
+
+    //         while(document.getElementById("boxUserGood")){
+    //             document.getElementById("boxUserGood").remove()
+    //         }
+
+    //         while(document.getElementById("boxUserWrong")){
+    //             document.getElementById("boxUserWrong").remove()
+    //         }
+
+    //         for (var i = 0; i < markersArray.length; i++ ) {
+    //             markersArray[i].setMap(null);
+    //         }
+    //         markersArray.length = 0;
+
+    //         var approach
+    //         list_user = response.user_info.users_all
+    //         var counter = 0
+    //         $.each(response.user_info.users_all, function(key,data) {
+    //             let block_user = document.createElement('div')
+    //             if (data["checkUser"] == 2){
+    //                 geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Villager-icon.png", 40, 40, data)
+    //                 approach = "Подходит по профессии"
+    //                 block_user.className = "row border border-primary mt-1"
+    //                 block_user.id = "boxUserGood"
+    //             } else{
+    //                 geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/1024/Grim-Reaper-icon.png", 40, 40, data['name'], data)
+    //                 block_user.className = "row border border-warning mt-1"
+    //                 block_user.id = "boxUserWrong"
+    //                 approach = "Подходит по смежной профессии"
+    //             }
+
+
+    //             block_user.innerHTML =    `<div class='col'><text id=user_${data['user_id']} onclick='showInfoUser(${data['user_id']})'>${data['name']}</text></div>\
+    //                                                 <div class='col'>\
+    //                                                     <p class='text-right'>${approach}</p>\
+    //                                                 </div>\
+    //                                                 <div class='w-100'></div>\
+    //                                                 <div class='col'>\
+    //                                                     ${data['profession']}\
+    //                                                 </div>\
+    //                                                 <div class='col'>\
+    //                                                     <p class='text-right'>Адрес: ${data['position']}</p>\
+    //                                                 </div>\
+    //                                                 <div class='col'>\
+    //                                                     <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='selectElement("id_profile_liked", ${data['user_id']})'>\
+    //                                                         <label class="btn btn-primary active">\
+    //                                                         <input type="checkbox" name="options" autocomplete="off" checked> Like\
+    //                                                     </label>\
+    //                                                     </div>\
+    //                                                 </div>
+    //                                                 `
+    //             if (data["checkUser"] == 2){
+    //                 document.getElementById("mapRow").after(block_user)
+    //             }
+    //             else{
+    //                 if (document.getElementById("boxUserGood")){
+    //                     document.getElementById("boxUserGood").after(block_user)
+    //                 }
+    //                 else{
+    //                     document.getElementById("mapRow").after(block_user)
+    //                 }
+                    
+    //             }
+
+    //             // document.getElementsByClassName('btn-group btn-group-toggle')[counter]
+    //             //     .addEventListener('click', function (event) {
+    //             //         alert('Hi!');
+    //             //         selectElement('id_profile_liked', data['user_id']);
+    //             //     });
+    //             // counter += 1;
+    //         });
+
+
+    //         geocoder.geocode({ address: location }, (results, status) => {
+    //             if (status === "OK") {
+    //                 map.setCenter(results[0].geometry.location);
+    //                 marker = new google.maps.Marker({
+    //                 map: map,
+    //                 position: results[0].geometry.location,
+    //                 animation: google.maps.Animation.DROP,
+    //                 title: 'Местоположение вас',
+    //                 icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
+                    
+    //                 });
+    //                 markersArray.push(marker);
+    //             } else {
+    //                 alert("Geocode was not successful for the following reason: " + status);
+    //             }
+    //         });
+    //     },
+    //     error : function(response){
+    //         console.log(response)
+    //     }
+    // })
+}
+
 var selectedValuesLiked = [];
 function selectElement(id, valueToSelect) {    
     // console.log(id, valueToSelect)
@@ -320,6 +466,12 @@ $(document).ready(function(){
 
     $(":input").on("change", function(e){
         e.preventDefault();
+        updateData();
+    })
+
+
+    $("#id_profession").on("change", function(e){
+        e.preventDefault();
         var id_disability = $("#id_disability").val();
         var id_city = $("#id_city").val();  
         var id_education = $("#id_education").val();
@@ -329,146 +481,85 @@ $(document).ready(function(){
         var check_proffession = $('#check_proffession:checked').val();
         var check_city_move = $('#check_city_move:checked').val();
         var id_dysfunctions_body = $('#id_dysfunctions_body').val();
-        var data = {id_disability, id_city, id_education, id_profession, id_skill, check_disability, check_proffession, check_city_move};
+        var id_restrictions_categories_life = $('#id_restrictions_categories_life').val();
+        var data = {id_disability, id_city, id_education, id_profession, id_skill, check_disability, check_proffession, check_city_move, id_restrictions_categories_life, id_dysfunctions_body};
         console.log(data)
+        
         $.ajax({
             type : 'GET',
             url :  '/personal_area/firm/',
             data : data,
             success : function(response){
                 tempDict = [];
-                var location =  response.user_info.city + ', ' + $("#id_location").val();
-                city = response.user_info.city;
                 console.log(response);
-                addData(myChart, 0, response.user_info.prof_desc)
-                Object.keys(response.user_info.target_mismatches).forEach(function(key) {
-                    tempDict.push(response.user_info.target_mismatches[key]);
-                });
-                addData(myChart1, 0, tempDict)
-
-                while(document.getElementById("boxUserGood")){
-                    document.getElementById("boxUserGood").remove()
-                }
-
-                while(document.getElementById("boxUserWrong")){
-                    document.getElementById("boxUserWrong").remove()
-                }
-
-                for (var i = 0; i < markersArray.length; i++ ) {
-                    markersArray[i].setMap(null);
-                }
-                markersArray.length = 0;
-
-                var approach
-                list_user = response.user_info.users_all
-                var counter = 0
-                $.each(response.user_info.users_all, function(key,data) {
-                    let block_user = document.createElement('div')
-                    if (data["checkUser"] == 2){
-                        geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Villager-icon.png", 40, 40, data)
-                        approach = "Подходит по профессии"
-                        block_user.className = "row border border-primary mt-1"
-                        block_user.id = "boxUserGood"
-                    } else{
-                        geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/1024/Grim-Reaper-icon.png", 40, 40, data['name'], data)
-                        block_user.className = "row border border-warning mt-1"
-                        block_user.id = "boxUserWrong"
-                        approach = "Подходит по смежной профессии"
-                    }
-
-
-                    block_user.innerHTML =    `<div class='col'><text id=user_${data['user_id']} onclick='showInfoUser(${data['user_id']})'>${data['name']}</text></div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>${approach}</p>\
-                                                        </div>\
-                                                        <div class='w-100'></div>\
-                                                        <div class='col'>\
-                                                            ${data['profession']}\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <p class='text-right'>Адрес: ${data['position']}</p>\
-                                                        </div>\
-                                                        <div class='col'>\
-                                                            <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='selectElement("id_profile_liked", ${data['user_id']})'>\
-                                                                <label class="btn btn-primary active">\
-                                                                <input type="checkbox" name="options" autocomplete="off" checked> Like\
-                                                            </label>\
-                                                            </div>\
-                                                        </div>
-                                                        `
-                    if (data["checkUser"] == 2){
-                        document.getElementById("mapRow").after(block_user)
-                    }
-                    else{
-                        if (document.getElementById("boxUserGood")){
-                            document.getElementById("boxUserGood").after(block_user)
-                        }
-                        else{
-                            document.getElementById("mapRow").after(block_user)
-                        }
-                        
-                    }
-
-                    // document.getElementsByClassName('btn-group btn-group-toggle')[counter]
-                    //     .addEventListener('click', function (event) {
-                    //         alert('Hi!');
-                    //         selectElement('id_profile_liked', data['user_id']);
-                    //     });
-                    // counter += 1;
-                });
-
-
-                geocoder.geocode({ address: location }, (results, status) => {
-                    if (status === "OK") {
-                      map.setCenter(results[0].geometry.location);
-                      marker = new google.maps.Marker({
-                        map: map,
-                        position: results[0].geometry.location,
-                        animation: google.maps.Animation.DROP,
-                        title: 'Местоположение вас',
-                        icon: {url:"https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", scaledSize: new google.maps.Size(70, 70)}, 
-                        
-                      });
-                      markersArray.push(marker);
-                    } else {
-                      alert("Geocode was not successful for the following reason: " + status);
-                    }
-                });
-            },
-            error : function(response){
-                console.log(response)
-            }
-        })
-    })
-
-
-    $("#id_profession").on("change", function(e){
-        e.preventDefault();
-        var id_profession = $("#id_profession").val();
-        var data = {id_profession};
-        
-        $.ajax({
-            type : 'GET',
-            url :  '/test_page/test_update/',
-            data : data,
-            success : function(response){
-                tempDict = [];
-                console.log(response.user_info);
-                $('#id_disability option:selected').removeAttr('selected');
+                $('#id_disability option:selected').removeAttr('selected'); //разобраться потом, код для автоматического добавления ограничений
                 for (i in response.user_info){
                     $("#id_disability option[value=" + response.user_info[i] + "]").attr('selected','selected');
                 }
+                tempDict = [];
+                Object.keys(response.place_info.target_mismatches).forEach(function(key) {
+                    tempDict.push(response.place_info.target_mismatches[key]);
+                });
+                addData(myChart, 0, tempDict)
+    
+                while(document.getElementById("boxWork")){
+                    document.getElementById("boxWork").remove()
+                }
+                markersArray.length = 0;
+    
+                list_workplace = response.place_info.work_place
+                $.each(response.place_info.work_place, function(key,data) {
+                    // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+                
+                    let block_work_place = document.createElement('div')
+                    block_work_place.id = "boxWork"
+                    if (data["checkPlace"] == 1){
+                        block_work_place.className = "row border border-success mt-1"
+                        approach = "Подходит по профессии"
+                    } else if(data["checkPlace"] == 2){
+                        block_work_place.className = "row border border-warning mt-1"
+                        approach = "Подходит по смежной профессии"
+                    } else if(data["checkPlace"] == 3){
+                        block_work_place.className = "row border border-warning mt-1"
+                        approach = "Подходит по смежной профессии"
+                    } else if(data["checkPlace"] == 4){
+                        block_work_place.className = "row border border-warning mt-1"
+                        approach = "Подходит по смежной профессии"
+                    }
+                    
+                    block_work_place.innerHTML =    `<div class='col'><text id=place_${data['id']} ' >${data['name']}</text></div>\
+                                                    <div class='col'>\
+                                                        <p class='text-right'></p>\
+                                                    </div>\                                
+                                                    <div class='col'>\
+                                                        <p class='text-right'>${approach}</p>\
+                                                    </div>\
+                                                    <div class='w-100'></div>\
+                                                    <div class='col-4'>\
 
+                                                    </div>\
+                                                    <div class='col-4'>\
+                                                        <p class='text-right'>Адрес: ${data['position']}</p>\
+                                                    </div>\
+                                                    <div class='col-2'>\
+                                                    </div>\
+                                                    <div class='col-2'>\
+                                                        <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='showInfoWorkPlace(${data['id']})'>\
+                                                            <label class="btn btn-primary active">\
+                                                            <input type="checkbox" name="options" autocomplete="off" checked> Like\
+                                                        </label>\
+                                                        </div>\
+                                                    </div>
+                                                        `
+                    document.getElementById("filters").after(block_work_place)
+                    
+                });
+    
+                var location =  response.place_info.city + ', ' + $("#id_location").val();
             },
             error : function(response){
                 console.log(response)
             }
         })
-    })
-
-
-    $("#id_relocation_check").click(function(e){
-        var vis = (this.checked) ? "block" : "none";
-        document.getElementById('div_id_region_relocation').style.display = vis;
     })
  })
