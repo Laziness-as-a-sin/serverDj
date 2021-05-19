@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
-{% block script %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     {% load static %}
     {% load crispy_forms_tags %}
-    <link rel="stylesheet" href="{% static 'css/personal_area_firm.css' %}">
-    
-{% endblock %}
 {%block title%}Main zone{%endblock%}
 {%block content%}
     {% if user.is_authenticated %}
@@ -28,7 +23,26 @@
                             <div class="row" id="mapRow">
                                 <div id="map"></div>
                             </div>
-                                
+                            <div class="row py-2" id="filters">
+                                <div class="col-3">
+                                    <a>Убрать людей с включёнными инвалидностями</a>
+                                </div>
+                                <div class="col-1">
+                                    <input class="form-check-input" type="checkbox" value="1" id="check_disability"/>
+                                </div>
+                                <div class="col-3">
+                                    <a>Убрать людей со смежной профессией</a>
+                                </div>
+                                <div class="col-1">
+                                    <input class="form-check-input" type="checkbox" value="1" id="check_proffession"/>
+                                </div>
+                                <div class="col-3">
+                                    <a>Убрать людей с городами требующими переезда</a>
+                                </div>
+                                <div class="col-1">
+                                    <input class="form-check-input" type="checkbox" value="1" id="check_city_move"/>
+                                </div>
+                            </div>    
                             
                         </div>
             </div>
@@ -43,6 +57,14 @@
             {% endif %}
         {% endif %}
     {% endif %}
+    {% comment %} <script type="text/javascript" src="{% static 'js/personal_area_firm.js' %}"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZ017jQqBM2P_cik5YStYuNElXVfiLqr0&callback=initMap&libraries=&v=weekly"></script> {% endcomment %}
+{%endblock%}
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>  
+    <link rel="stylesheet" href="{% static 'css/personal_area_firm.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     <script type="text/javascript" src="{% static 'js/personal_area_firm.js' %}"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZ017jQqBM2P_cik5YStYuNElXVfiLqr0&callback=initMap&libraries=&v=weekly"></script>
-{%endblock%}
+{% endblock %}

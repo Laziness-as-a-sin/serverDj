@@ -212,6 +212,93 @@ def personalAreaFirm(request):
                 skill = request.GET.getlist("id_skill[]")
                 disability = request.GET.getlist("id_disability[]") 
 
+                # if request.GET.get("check_proffession") == None:
+                #     check_proffession = 0 
+                # else:
+                #     check_proffession = 1
+                # if request.GET.get("check_city_move") == None:
+                #     check_city_move = 0 
+                # else:
+                #     check_city_move = 1 
+                # related_professions = []
+                # for x in id_profession:
+                #     for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                #         if y not in related_professions:
+                #             related_professions.append(y)
+                
+                # profile = Profile.objects.get(user=request.user)
+                # work_places = WorkPlace.objects.exclude(Q(disability__in=profile.disability.values_list("id",  flat=True)) |
+                # Q(dysfunctions_body__in=profile.dysfunctions_body.values_list("id",  flat=True)) |
+                # Q(restrictions_categories_life__in=profile.restrictions_categories_life.values_list("id",  flat=True))).filter(
+                # (Q(city=id_city) | Q(city__in=id_city_to_move)) & (Q(profession__in=related_professions) | Q(profession__in=id_profession)))
+
+                # if check_proffession == 1 and check_city_move == 1: #реализация фильтров для инвалида
+                #     work_places = work_places.filter(Q(profession__in=id_profession) & Q(city=id_city))
+                # elif check_proffession == 1:
+                #     work_places = work_places.filter(profession__in=id_profession)
+                # elif check_city_move == 1:
+                #     work_places = work_places.filter(city=id_city)
+
+                # if sort_by == 1: #реализация сортировки рабочих мест
+                #     work_places = work_places.order_by('min_salary') #сортировка по зарплате
+                # elif sort_by == 2:
+                #     work_places = work_places.order_by('name') #сортировка по названию
+
+
+                # temp_dict = {"full_suc":0, "city":0, "profession":0, "city_profession":0}
+                # # number_mismatches_dict = [0] * 6
+                # # work_places_info = []
+                # work_place = []
+                # for place in work_places:
+                #     checkPlace = 0
+                #     educationCheck = 0
+                #     number_mismatches = 0
+
+                #     if place.city_id != int(id_city) and  place.profession.id not in list(map(int, id_profession)):
+                #         temp_dict["city_profession"] += 1
+                #         checkPlace = 4
+                #     elif place.city_id != int(id_city):
+                #         temp_dict["city"] += 1
+                #         checkPlace = 3
+                #     elif place.profession.id not in list(map(int, id_profession)):
+                #         temp_dict["profession"] += 1 
+                #         checkPlace = 2
+                #     else:
+                #         temp_dict["full_suc"] += 1
+                #         checkPlace = 1
+
+                #     work_place.append({"name": place.name, "profession": place.profession.name, "position": f"{place.city}, {place.location}",
+                #     "city": place.city.name, "address": place.location, "min_salary": place.min_salary,
+                #     "max_salary": place.max_salary, "id": place.id, "checkPlace": checkPlace})
+
+                # place_info = {
+                #     "target_mismatches": temp_dict,
+                #     "work_place": work_place
+                # }
+
+                # return JsonResponse({"place_info":place_info}, status=200)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 temp_dict = {"city":0, "education":0, "profession":0, "skill":0, "disability":0} 
                 users = Profile.objects.all()
             
@@ -388,56 +475,11 @@ def personalAreaProfile(request):
                     "city": place.city.name, "address": place.location, "min_salary": place.min_salary,
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": checkPlace})
 
-                #     if not checkIsInclude(list(map(int, disability)), place.disability.values_list("id",  flat=True)) or list(map(int, disability)) == []:
-                #         coincidence = 0
-                #         if city and place.city_id == int(city):
-                #             coincidence += 0.25
-                #         if place.education.id in list(map(int, education)):
-                #             coincidence += 0.25
-                #         if place.profession.id in list(map(int, profession)):
-                #             coincidence += 0.25
-                #         if set(place.skill.values_list("id",  flat=True)).issubset(list(map(int, skill))):
-                #             coincidence += 0.25
-                #         work_places_info.append({"work_place_name": place.name, "work_place_profession": place.profession.name, "work_place_coincidence": coincidence, "work_place_min_salary": place.min_salary, "work_place_max_salary": place.max_salary})
-
-                #     skillNames = list(map(str, place.skill.values_list("name",  flat=True)))
-                #     skillCheck = []
-                #     for el in list(map(int, place.skill.values_list("id",  flat=True))):
-                #         if el in list(map(int, skill)):
-                #             skillCheck.append(1)
-                #         else:
-                #             skillCheck.append(0)
-
-                #     disabilityNames = list(map(str, place.disability.values_list("name",  flat=True)))
-                #     disabilityCheck = []
-                #     for el in list(map(int, place.disability.values_list("id",  flat=True))):
-                #         if el in list(map(int, disability)):
-                #             disabilityCheck.append(1)
-                #         else:
-                #             disabilityCheck.append(0)
-            
-                #     print(skillNames, skillCheck)
-                #     if checkPlace != 0:
-                #         work_place.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, 'checkPlace': checkPlace,
-                #         'city': place.city.name, 'education': place.education.name, 'educationCheck': educationCheck, 'employment_type': place.employment_type.name, 'schedule': place.schedule.name,
-                #         'skill': skillNames, 'skillCheck': skillCheck, 'disability': disabilityNames, 'disabilityCheck': disabilityCheck,
-                #         'min_salary': place.min_salary, "max_salary": place.max_salary, 'place_id': place.id})
-                #     if checkPlace == 2:
-                #         work_place_good.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
-                #     if checkPlace == 1:
-                #         work_place_wrong.append({"name": place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name})
-
                 place_info = {
-                    # "city": City.objects.get(pk= int(city)).name,
-                    # "work_place_good": work_place_good,
-                    # "work_place_wrong": work_place_wrong,
                     "target_mismatches": temp_dict,
-                    # "prof_desc": number_mismatches_dict,
-                    # "work_places_info": work_places_info,
                     "work_place": work_place
                 }
 
-                # print(work_places_info)
                 return JsonResponse({"place_info":place_info}, status=200)
 
             elif request.method == 'GET':
@@ -834,3 +876,45 @@ def addCourseByUniver(request):
     else:
         form = add_course_by_univer_form
     return render(request, 'data/univer_course.html', {'form': form})
+
+def personalAreaProfileShowInfo(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'profile'):
+            if request.method == "GET" and request.is_ajax():
+                id_city = request.GET.get("id_city", "")
+                id_education = request.GET.getlist("id_education[]")
+                id_profession = request.GET.getlist("id_profession[]")
+                id_skill = request.GET.getlist("id_skill[]")
+                profile = Profile.objects.get(user=request.user)
+                work_place = WorkPlace.objects.get(id=request.GET.get("id"))
+                
+                if profile.city.id == int(id_city):
+                    city = f'{work_place.city.name} ✓'
+                else:
+                    city = f'{work_place.city.name} ✗'
+
+                if work_place.education.id in set(list(map(int, id_education))):
+                    education = f'{work_place.education.name} ✓'
+                else:
+                    education = f'{work_place.education.name} ✗'
+
+                if work_place.profession.id in set(list(map(int, id_profession))):
+                    profession = f'{work_place.profession.name} ✓'
+                else:
+                    profession = f'{work_place.profession.name} ✗'
+
+                skills = []
+                for id in work_place.skill.values_list("id",  flat=True):
+                    if id in set(list(map(int, id_skill))):
+                        skills.append(f'{Skill.objects.get(id=id).name} ✓')
+                    else:
+                        skills.append(f'{Skill.objects.get(id=id).name} ✗')
+
+                work_place_info = {"Наименование": [work_place.name], "Фирма": [work_place.firm.name], 
+                "Город": [city], "Адрес": [work_place.location], "Образование": [education], "Профессия": [profession],
+                "Тип занятости": [work_place.employment_type.name], "График работы": [work_place.schedule.name],
+                "Образование": [education], "Компетенции": skills, "Зарплата": [f'{work_place.min_salary} – {work_place.max_salary}']}
+
+                return JsonResponse({"place_info":work_place_info}, status=200)
+    else:
+        return HttpResponse("Как ты сюда попал?!!")

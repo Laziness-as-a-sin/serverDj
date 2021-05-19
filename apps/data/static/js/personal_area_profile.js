@@ -107,58 +107,20 @@ function initMap() {
 
 
 function showInfoWorkPlace(id){
-    $.each(list_workplace, function(key,data){
-        if (data["place_id"] == id){
-            console.log(data)
-
-            list_skill = data['skill']
-            list_skill_check = data['skillCheck']
-            ul_list_skill = `<ul>`
-            $.each(list_skill, function(key,skill){
-                check_box = '-'
-                if (list_skill_check[key]){
-                    check_box = '+'
-                }
-                ul_list_skill +=`<li>${skill} ${check_box}</li>`
-            });
-            ul_list_skill +=`</ul>`
-
-
-            list_disability = data['disability']
-            list_disability_check = data['disabilityCheck']
-            ul_list_disability = `<ul>`
-            $.each(list_disability, function(key,disability){
-                check_box = '+'
-                if (list_skill_check[key]){
-                    check_box = '-'
-                }
-                ul_list_disability +=`<li>${disability} ${check_box}</li>`
-            });
-            ul_list_disability +=`</ul>`
-
-
-
-            if (data['checkPlace']){
-                city_check = true
-            } else{
-                city_check = false
-            }
-
-            if (data['educationCheck']){
-                education_check = true
-            } else{
-                education_check = false
-            }
-
-
-            let Modal = document.createElement('div')
-
-            Modal.className = "modal fade"
-            Modal.id = "myModalBox"
-            Modal.innerHTML =  `<div class="modal-dialog" role="document">
+    var id_city = $("#id_city").val();
+    var id_education = $("#id_education").val();
+    var id_profession = $("#id_profession").val();
+    var id_skill = $("#id_skills").val();
+    data={"id": id, "id_city": id_city, "id_education": id_education, "id_profession": id_profession, "id_skill": id_skill}
+    $.ajax({
+        type : 'GET',
+        url :  '/personal_area/profile/show_info',
+        data : data,
+        success : function(response){
+            tempStr =  `<div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title">${data['name']}</h4>
+                                            <h4 class="modal-title">${response.place_info["Наименование"][0]}</h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -166,81 +128,53 @@ function showInfoWorkPlace(id){
                                         <div class="modal-body">
                                             <table class="table">
                                                 <tbody>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Рабочее место
-                                                    </th>
-                                                    <td>${data['name']}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Должность
-                                                    </th>
-                                                    <td>${data['profession']}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Город
-                                                    </th>
-                                                    <td>${data['city']}</td>
-                                                    <td>${city_check}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Адресс
-                                                    </th>
-                                                    <td>${data['position']}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Образование
-                                                    </th>
-                                                    <td>${data['education']}</td>
-                                                    <td>${education_check}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Тип занятости
-                                                    </th>
-                                                    <td>${data['employment_type']}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        График работы
-                                                    </th>
-                                                    <td>${data['schedule']}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Ключевые навыки
-                                                    </th>
-                                                    <td>${ul_list_skill}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Ограничения
-                                                    </th>
-                                                    <td>${ul_list_disability}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">
-                                                        Зарплата
-                                                    </th>
-                                                    <td>От ${data['min_salary']} до ${data['max_salary']} </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Готов обучиться</button>
-                                        </div>
-                                    </div>
-                                </div>`
+                        `
+                                                
+            $.each(response.place_info, function(key,data){
+                if(data.length == 1){
+                    tempStr += `<tr>
+                        <th scope="row">
+                            ${key}
+                        </th>
+                            <td>${data[0]}</td>
+                        </tr>`            
+                } else {
+                    ul_list = `<ul>`
+                    $.each(data, function(key1,data1){
+                        ul_list +=`<li>${data1}</li>`
+                    })
+                    ul_list +=`</ul>`
+                    tempStr += `<tr>
+                        <th scope="row">
+                            ${key}
+                        </th>
+                            <td>${ul_list}</td>
+                        </tr>` 
+                }
+                
+            });
+            tempStr += `</tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary"  onclick='saveLike(${id}, 3)'>Готов обучиться</button>
+                        </div>
+                    </div>
+                </div>`
+
+            let Modal = document.createElement('div')
+            Modal.className = "modal fade"
+            Modal.id = "myModalBox"
+            Modal.innerHTML = tempStr 
             document.getElementById("chart_div").after(Modal)
             $('#myModalBox').modal('show')
+            console.log(response)
+        },
+        error : function(response){
+            console.log(response)
         }
-    }); 
+    })
 };
 
 var list_workplace
@@ -295,7 +229,7 @@ function updateData(){
                     approach = "Подходит по смежной профессии"
                 }
                 
-                block_work_place.innerHTML =    `<div class='col'><text id=place_${data['id']} onclick='showInfoWorkPlace(${data['id']})'>${data['name']}</text></div>\
+                block_work_place.innerHTML =    `<div class='col'><text id=place_${data['id']} ' >${data['name']}</text></div>\
                                                 <div class='col'>\
                                                     <p class='text-right'>Зарплата: </p>\
                                                 </div>\                                
@@ -315,7 +249,7 @@ function updateData(){
                                                 <div class='col-2'>\
                                                 </div>\
                                                 <div class='col-2'>\
-                                                    <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='saveLike(${data['id']}, 3)'>\
+                                                    <div class="btn-group btn-group-toggle" data-toggle="buttons" onclick='showInfoWorkPlace(${data['id']})'>\
                                                         <label class="btn btn-primary active">\
                                                         <input type="checkbox" name="options" autocomplete="off" checked> Like\
                                                     </label>\

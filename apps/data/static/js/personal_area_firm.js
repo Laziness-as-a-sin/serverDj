@@ -20,8 +20,6 @@ function selectElement(id, valueToSelect) {
     // element.options[valueToSelect].selected= valueToSelect;
 }
 
-
-
 let map;
 var geocoder;
 var markersArray = [];
@@ -226,7 +224,11 @@ function showInfoUser(id){
 
 
 $(document).ready(function(){
+    $('.selectmultiple').toggleClass('selectmultiple selectpicker');
+    // $('.selectmultiple form-control').addClass('selectpicker').removeClass('selectmultiple form-control');
+    // $('.mdb-select').formSelect();
 
+    
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -319,12 +321,15 @@ $(document).ready(function(){
     $(":input").on("change", function(e){
         e.preventDefault();
         var id_disability = $("#id_disability").val();
-        var id_city = $("#id_city").val();
-        
+        var id_city = $("#id_city").val();  
         var id_education = $("#id_education").val();
         var id_profession = $("#id_profession").val();
         var id_skill = $("#id_skill").val();
-        var data = {id_disability, id_city, id_education, id_profession, id_skill};
+        var check_disability = $('#check_disability:checked').val();
+        var check_proffession = $('#check_proffession:checked').val();
+        var check_city_move = $('#check_city_move:checked').val();
+        var id_dysfunctions_body = $('#id_dysfunctions_body').val();
+        var data = {id_disability, id_city, id_education, id_profession, id_skill, check_disability, check_proffession, check_city_move};
         console.log(data)
         $.ajax({
             type : 'GET',
