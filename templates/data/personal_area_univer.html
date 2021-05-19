@@ -3,6 +3,7 @@
     {% load static %}
     {% load crispy_forms_tags %}
     <link rel="stylesheet" href="{% static 'css/personal_area_univer.css' %}">
+    <script type="text/javascript" src="{% static 'js/personal_area_univer.js' %}"></script>
 {% endblock %}
 
 {%block title%}Личный кабинет образовательного учреждения{%endblock%}
@@ -139,7 +140,6 @@
             <a href="{% url 'add_course_by_univer' %}">
                 <button type="button" class="btn btn-primary">Добавить образовательную программу</button>
             </a>
-            <script type="text/javascript" src="{% static 'js/personal_area_univer.js' %}"></script>
         {% endif %}
     {% endif %}
     
