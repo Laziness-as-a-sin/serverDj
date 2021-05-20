@@ -633,9 +633,9 @@ def personalAreaUniver(request):
     
     for course in Course.objects.all():      
         courses.append({'name': course.name, 'skill': course.profession.name, 'univer': Univer.objects.get(course=course).name, 'count': course.count,
-            'price_per_person': course.price, 'price':course.price*course.count ,'forecast': 20})
+            'price_per_person': course.price, 'price':course.price*course.count ,'forecast': 20, 'profiles': course.confirmed_profile.count()})
 
-
+    print('****************', courses)
     recomm_courses = []
     dict_work_count = {}
     for work in WorkPlace.objects.all():
@@ -848,3 +848,11 @@ def notificationProfile(request):
     print(courses)
 
     return render(request, 'data/notification_profile.html', {'courses':json.dumps(courses)})
+
+
+def notificationProfileConfirmation(request):
+    if request.method == "GET" and request.is_ajax():
+        course = Course.objects.get(name=request.GET.get("name"), profession=Profession.objects.get(name=request.GET.get("profession")))
+        course.confirmed_profile.add(request.user.profile.id)
+        course.save()
+        return JsonResponse({'kek':'kek'}, status=200)

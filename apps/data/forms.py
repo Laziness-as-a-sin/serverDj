@@ -147,5 +147,5 @@ class registration_univer_form(forms.Form):
 class add_course_by_univer_form(forms.ModelForm, forms.Form):
     class Meta:
         model = Course
-        exclude = ["profiles"]
+        exclude = ["profiles", 'confirmed_profile']
     

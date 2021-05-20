@@ -52,6 +52,7 @@ $(document).ready(function(){
                                             <td>${data['recomm_count']}</td>\
                                             <td>${data['count_work_place']}</td>\
                                             <td>${data['forecast']}</td>\
+                                            <td>kek</td>\
                                             `
             document.getElementById("recomm_courses").append(block_work_recomm_courses)
             counter += 1
@@ -304,6 +305,8 @@ $(document).ready(function(){
                                         <td>${data['price']}</td>\
                                         <td>${data['price_per_person']}</td>\
                                         <td>${data['forecast']}</td>\
+                                        <td>${data['profiles']}</td>\
+                                        
                                         `
         document.getElementById("courses").append(block_work_course)
     });
