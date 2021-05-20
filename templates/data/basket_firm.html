@@ -2,6 +2,7 @@
 {% block script %}
     {% load static %}
     {% load crispy_forms_tags %}
+    <script type="text/javascript" src="{% static 'js/basket_firm.js' %}"></script>
 {% endblock %}
 
 {%block title%}Корзина{%endblock%}
@@ -15,5 +16,4 @@
             <div id="blockWorkPlace"></div>
         {% endif %}
     {% endif %}
-    <script type="text/javascript" src="{% static 'js/basket_firm.js' %}"></script>
 {%endblock%}

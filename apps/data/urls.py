@@ -21,7 +21,8 @@ urlpatterns = [
     path('personal_area/univer/', views.personalAreaUniver, name='personal_area_univer'),
     path('personal_area/profile/info', views.personalInfoProfile, name='personal_info_profile'),
     path('personal_area/univer/add_course', views.addCourseByUniver, name='add_course_by_univer'),
-    path('personal_area/profile/notification', views.notificationProfile, name='notification_profile')
+    path('personal_area/profile/notification', views.notificationProfile, name='notification_profile'),
+    path('personal_area/firm/show_info', views.personalAreaFirmShowInfo, name='personal_area_firm_show_info')
 ]
 
 urlpatterns += [

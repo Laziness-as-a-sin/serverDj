@@ -223,10 +223,10 @@ function updateData(){
                     approach = "Подходит по смежной профессии"
                 } else if(data["checkPlace"] == 3){
                     block_work_place.className = "row border border-warning mt-1"
-                    approach = "Подходит по смежной профессии"
+                    approach = "Подходит по профессии, но требуется переезд"
                 } else if(data["checkPlace"] == 4){
                     block_work_place.className = "row border border-warning mt-1"
-                    approach = "Подходит по смежной профессии"
+                    approach = "Подходит по смежной профессии, но требуется переезд"
                 }
                 
                 block_work_place.innerHTML =    `<div class='col'><text id=place_${data['id']} ' >${data['name']}</text></div>\
