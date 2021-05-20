@@ -182,22 +182,28 @@ def personalAreaFirm(request):
                     tempWorkPlace.save()
 
                     for temp in form.cleaned_data['employment_type']:
+                        print('1')
                         employment_type = get_object_or_404(EmploymentType, name=temp)
                         tempWorkPlace.employment_type.add(employment_type.id)
 
                     for temp in form.cleaned_data['profile_liked']:
-                        profile_liked = get_object_or_404(EmploymentType, name=temp)
-                        tempWorkPlace.employment_type.add(profile_liked.id)
+                        userTemp = User.objects.get(username = temp)
+                        profile_liked = get_object_or_404(Profile, user=userTemp)
+                        print('profile_liked.id: ', profile_liked.id)
+                        tempWorkPlace.profile_liked.add(profile_liked.id)
 
                     for temp in form.cleaned_data['schedule']:
+                        print('3')
                         schedule = get_object_or_404(Schedule, name=temp)
                         tempWorkPlace.schedule.add(schedule.id)
 
                     for temp in form.cleaned_data['skill']:
+                        print('4')
                         skill = get_object_or_404(Skill, name=temp)
                         tempWorkPlace.skill.add(skill.id)
 
                     for temp in form.cleaned_data['disability']:
+                        print('5')
                         disability = get_object_or_404(Disability, name=temp)
                         tempWorkPlace.disability.add(disability.id)
 
@@ -239,7 +245,7 @@ def personalAreaFirm(request):
                 elif check_proffession == 1:
                     profiles = profiles.filter(profession__in=[id_profession])
                 elif check_city_move == 1:
-                    profiles = profiles.filter(city=[id_city])
+                    profiles = profiles.filter(city=id_city)
 
                 if check_disability == 1:
                     profiles = profiles.exclude(Q(disability__in=id_disability) |
@@ -257,7 +263,7 @@ def personalAreaFirm(request):
                     elif profile.city_id != int(id_city):
                         temp_dict["city"] += 1
                         checkPlace = 3
-                    elif id_profession not in profile.profession.values_list("id",  flat=True):
+                    elif int(id_profession) not in list(map(int, profile.profession.values_list("id",  flat=True))):
                         temp_dict["profession"] += 1 
                         checkPlace = 2
                     else:
@@ -856,3 +862,52 @@ def notificationProfileConfirmation(request):
         course.confirmed_profile.add(request.user.profile.id)
         course.save()
         return JsonResponse({'kek':'kek'}, status=200)
+
+
+def personalAreaFirmShowInfo(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'firm'):
+            if request.method == "GET" and request.is_ajax():
+                id = int(request.GET.get("id"))
+                id_city = request.GET.get("id_city", "")
+                id_education = request.GET.get("id_education")
+                id_profession = request.GET.get("id_profession")
+                id_skill = request.GET.getlist("id_skill[]")
+                id_disability = request.GET.getlist("id_disability[]") 
+                id_dysfunctions_body = request.GET.getlist("id_dysfunctions_body[]")
+                id_restrictions_categories_life= request.GET.getlist("id_restrictions_categories_life[]")
+                profile = Profile.objects.get(id=id)
+
+                if profile.city.id == int(id_city):
+                    city = f'{profile.city.name} ✓'
+                else:
+                    city = f'{profile.city.name} ✗'
+
+                education = []
+                for el in profile.education.all():
+                    if el.id == id_education:
+                        education.append(f'{el.name} ✓')
+                    else:
+                        education.append(f'{el.name} ✗')
+
+                profession = []
+                for el in profile.profession.all():
+                    if el.id == id_profession:
+                        profession.append(f'{el.name} ✓')
+                    else:
+                        profession.append(f'{el.name} ✗')
+
+                skill = []
+                for el in profile.skills.all():
+                    if el.id in id_skill:
+                        skill.append(f'{el.name} ✓')
+                    else:
+                        skill.append(f'{el.name} ✗')
+
+                work_place_info = {"ФИО": [f'{profile.name1} {profile.name2} {profile.name3}'],
+                "Город": [city], "Адрес": [profile.location], "Образование": education, "Профессия": profession,
+                "Образование": education, "Компетенции": skill}
+                print(work_place_info)
+                return JsonResponse({"place_info":work_place_info}, status=200)
+    else:
+        return HttpResponse("Как ты сюда попал?!!")
