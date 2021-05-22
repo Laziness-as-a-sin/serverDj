@@ -54,6 +54,9 @@ def registrationProfile(request):
     return render(request, 'data/registration_profile.html', {'form': form})
 
 
+def registration(request):
+    return render(request, 'data/registration.html')
+
 def getUserInfo(request):
     if request.method == "GET" and request.is_ajax():
 
@@ -966,3 +969,4 @@ def personalAreaProfileBasketShowInfo(request):
                 return JsonResponse({"place_info":work_place_info}, status=200)
     else:
         return HttpResponse("Как ты сюда попал?!!")
+
