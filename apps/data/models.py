@@ -105,7 +105,7 @@ class Profile(models.Model):
     birth_date = models.DateField('дата рождения', null=True, blank=True)
     city = models.ForeignKey(City, on_delete=models.PROTECT, default = 1, verbose_name='город')
     city_to_move = models.ManyToManyField(City, blank=True, related_name='city_to_move', verbose_name='города для переезда')
-    location = models.CharField('адрес', max_length=30, default='Державина 15')
+    location = models.CharField('адрес', max_length=30, default='', blank=True)
     education = models.ManyToManyField(Education, blank=True, verbose_name='образование')
     work_experience = models.ManyToManyField(Profession, blank=True, related_name='work_experience', verbose_name='опыт работы')
     disability_group = models.ForeignKey(DisabilityGroups, verbose_name='группа инвалидности', on_delete=models.PROTECT, blank=True, null=True)
