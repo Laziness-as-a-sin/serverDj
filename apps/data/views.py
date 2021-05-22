@@ -238,8 +238,7 @@ def personalAreaFirm(request):
                         if y not in related_professions:
                             related_professions.append(y)
                 
-                profiles = Profile.objects.filter((Q(city=id_city) | Q(city_to_move__in=[id_city])) & (Q(profession__in=related_professions) | Q(profession__in=[id_profession])))
-
+                profiles = Profile.objects.filter((Q(city=id_city) | Q(city_to_move__in=[id_city])) & (Q(profession__in=related_professions) | Q(profession__in=[id_profession]))).distinct()
                 if check_proffession == 1 and check_city_move == 1: #реализация фильтров для инвалида
                     profiles = profiles.filter(Q(profession__in=[id_profession]) & Q(city=id_city))
                 elif check_proffession == 1:
@@ -279,7 +278,8 @@ def personalAreaFirm(request):
 
                 place_info = {
                     "target_mismatches": temp_dict,
-                    "work_place": work_place
+                    "work_place": work_place,
+                    "city": City.objects.get(id=id_city).name
                 }
                 print('III')
                 return JsonResponse({"place_info":place_info}, status=200)
@@ -322,7 +322,7 @@ def personalAreaProfile(request):
                 work_places = WorkPlace.objects.exclude(Q(disability__in=profile.disability.values_list("id",  flat=True)) |
                 Q(dysfunctions_body__in=profile.dysfunctions_body.values_list("id",  flat=True)) |
                 Q(restrictions_categories_life__in=profile.restrictions_categories_life.values_list("id",  flat=True))).filter(
-                (Q(city=id_city) | Q(city__in=id_city_to_move)) & (Q(profession__in=related_professions) | Q(profession__in=id_profession)))
+                (Q(city=id_city) | Q(city__in=id_city_to_move)) & (Q(profession__in=related_professions) | Q(profession__in=id_profession))).distinct()
 
                 if check_proffession == 1 and check_city_move == 1: #реализация фильтров для инвалида
                     work_places = work_places.filter(Q(profession__in=id_profession) & Q(city=id_city))
@@ -341,6 +341,7 @@ def personalAreaProfile(request):
                 # number_mismatches_dict = [0] * 6
                 # work_places_info = []
                 work_place = []
+                print(work_places)
                 for place in work_places:
                     checkPlace = 0
                     educationCheck = 0
@@ -365,7 +366,8 @@ def personalAreaProfile(request):
 
                 place_info = {
                     "target_mismatches": temp_dict,
-                    "work_place": work_place
+                    "work_place": work_place,
+                    "city": City.objects.get(id=id_city).name
                 }
 
                 return JsonResponse({"place_info":place_info}, status=200)
@@ -452,23 +454,27 @@ def basketProfile(request):
     if request.user.is_authenticated:
         if hasattr(request.user, 'profile'):
             profile = Profile.objects.get(user=request.user)
-            workPlace = WorkPlace.objects.filter(liked_by_profile__id=profile.id)
-            print(workPlace)
             work_places = []
-            for el in workPlace:
-                profile_liked_names = []
-                for el1 in el.profile_liked.all():
-                    profile_liked_names.append(el1.name1 + ' ' + el1.name2)
-                liked_by_profile_names = []
-                for el1 in el.liked_by_profile.all():
-                    liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
 
-                work_places.append({'name': el.name, "position": f"{el.city}, {el.location}", "profession": el.profession.name,
-                'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
-                'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
-                'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
-                'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
-                'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
+            workPlace = WorkPlace.objects.filter(Q(liked_by_profile__id=profile.id) & Q(profile_liked__id=profile.id))            
+            for place in workPlace:
+                work_places.append({'name': place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, "min_salary": place.min_salary,
+                    "max_salary": place.max_salary, "id": place.id, "checkPlace": 1, 
+                    'place_id': place.id})
+
+            workPlace = WorkPlace.objects.filter(liked_by_profile__id=profile.id).exclude(profile_liked__id=profile.id)            
+            for place in workPlace:
+                work_places.append({'name': place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, "min_salary": place.min_salary,
+                    "max_salary": place.max_salary, "id": place.id, "checkPlace": 2, 
+                    'place_id': place.id})
+            
+            workPlace = WorkPlace.objects.exclude(liked_by_profile__id=profile.id).filter(profile_liked__id=profile.id)           
+            for place in workPlace:
+                work_places.append({'name': place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, "min_salary": place.min_salary,
+                    "max_salary": place.max_salary, "id": place.id, "checkPlace": 3, 
+                    'place_id': place.id})
+
+
             print(work_places)
             return render(request, 'data/basket_profile.html', {'work_places': json.dumps(work_places)})
     return HttpResponse("Как ты сюда попал?!!")
@@ -908,6 +914,49 @@ def personalAreaFirmShowInfo(request):
                 "Город": [city], "Адрес": [profile.location], "Образование": education, "Профессия": profession,
                 "Образование": education, "Компетенции": skill}
                 print(work_place_info)
+                return JsonResponse({"place_info":work_place_info}, status=200)
+    else:
+        return HttpResponse("Как ты сюда попал?!!")
+
+
+def personalAreaProfileBasketShowInfo(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'profile'):
+            if request.method == "GET" and request.is_ajax():
+                profile = Profile.objects.get(user=request.user)
+                work_place = WorkPlace.objects.get(id=request.GET.get("id"))
+                id_city = profile.city.id
+                id_education = profile.education.values_list("id",  flat=True)
+                id_profession = profile.profession.values_list("id",  flat=True)
+                id_skill = profile.skills.values_list("id",  flat=True)
+
+                if profile.city.id == int(id_city):
+                    city = f'{work_place.city.name} ✓'
+                else:
+                    city = f'{work_place.city.name} ✗'
+
+                if work_place.education.id in set(list(map(int, id_education))):
+                    education = f'{work_place.education.name} ✓'
+                else:
+                    education = f'{work_place.education.name} ✗'
+
+                if work_place.profession.id in set(list(map(int, id_profession))):
+                    profession = f'{work_place.profession.name} ✓'
+                else:
+                    profession = f'{work_place.profession.name} ✗'
+
+                skills = []
+                for id in work_place.skill.values_list("id",  flat=True):
+                    if id in set(list(map(int, id_skill))):
+                        skills.append(f'{Skill.objects.get(id=id).name} ✓')
+                    else:
+                        skills.append(f'{Skill.objects.get(id=id).name} ✗')
+
+                work_place_info = {"Наименование": [work_place.name], "Фирма": [work_place.firm.name], 
+                "Город": [city], "Адрес": [work_place.location], "Образование": [education], "Профессия": [profession],
+                "Тип занятости": [work_place.employment_type.name], "График работы": [work_place.schedule.name],
+                "Образование": [education], "Компетенции": skills, "Зарплата": [f'{work_place.min_salary} – {work_place.max_salary}']}
+
                 return JsonResponse({"place_info":work_place_info}, status=200)
     else:
         return HttpResponse("Как ты сюда попал?!!")

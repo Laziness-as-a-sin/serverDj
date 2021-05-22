@@ -47,6 +47,101 @@ var myChart = new Chart(ctx, {
     }
 });
 
+
+
+var selectedValuesLiked = [];
+function selectElement(id, valueToSelect) {    
+    console.log(id, valueToSelect)
+    let element = document.getElementById(id);
+
+    id = '#'+id;
+    if (selectedValuesLiked.includes(valueToSelect)){
+        selectedValuesLiked.splice(selectedValuesLiked.indexOf(valueToSelect), 1);
+    }
+    else{
+        selectedValuesLiked.push(valueToSelect);
+    }
+    // $(id).val(selectedValuesLiked).Trigger('change');
+    $.each(selectedValuesLiked, function(i,e){
+        tstr = id + " option[value=" + e + "]"
+        console.log(tstr, selectedValuesLiked)
+        $(tstr).prop("selected", true);
+    });
+    // element.options[valueToSelect].selected= valueToSelect;
+}
+
+let map;
+var geocoder;
+var markersArray = [];
+
+function clearOverlays() {
+    for (var i = 0; i < markersArray.length; i++ ) {
+      markersArray[i].setMap(null);
+    }
+    markersArray.length = 0;
+}
+
+
+function geocodeAddress(geocoder, resultsMap, address, image= "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", size1 = 70, size2 = 70, resultTitle='Noname', description="You Firm place", checkCenter = false) {
+    geocoder.geocode({ address: address }, (results, status) => {
+        if (status === "OK") {
+            if (checkCenter){
+                resultsMap.setCenter(results[0].geometry.location);
+            }            
+            marker = new google.maps.Marker({
+            map: resultsMap,
+            title: resultTitle,  
+            position: results[0].geometry.location,
+            animation: google.maps.Animation.DROP,
+            icon: {url:image, scaledSize: new google.maps.Size(size1, size2)}, 
+            
+            });
+            const contentString =
+                '<div id="content">' +
+                '<div id="siteNotice">' +
+                "</div>" +
+                '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
+                '<div id="bodyContent">' +
+                "<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large " +
+                "sandstone rock formation in the southern part of the " +
+                "Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) " +
+                "south west of the nearest large town, Alice Springs; 450&#160;km " +
+                "(280&#160;mi) by road. Kata Tjuta and Uluru are the two major " +
+                "features of the Uluru - Kata Tjuta National Park. Uluru is " +
+                "sacred to the Pitjantjatjara and Yankunytjatjara, the " +
+                "Aboriginal people of the area. It has many springs, waterholes, " +
+                "rock caves and ancient paintings. Uluru is listed as a World " +
+                "Heritage Site.</p>" +
+                '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
+                "https://en.wikipedia.org/w/index.php?title=Uluru</a> " +
+                "(last visited June 22, 2009).</p>" +
+                "</div>" +
+                "</div>";
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,
+            });
+            marker.addListener("click", () => {
+                infowindow.open(map, marker);
+            });
+            markersArray.push(marker);
+            // map.setCenter(marker);
+        } else {
+            console.log("Geocode was not successful for the following reason: " + status + resultTitle + address);
+        }
+    });
+}
+
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 15,
+    });
+    geocoder = new google.maps.Geocoder();
+    geocodeAddress(geocoder, map, "Владивосток, Державина 15")
+};
+
+
 function updateData(){
     var id_disability = $("#id_disability").val();
     var id_city = $("#id_city").val();  
@@ -85,7 +180,7 @@ function updateData(){
 
             list_workplace = response.place_info.work_place
             $.each(response.place_info.work_place, function(key,data) {
-                // geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+                geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
             
                 let block_work_place = document.createElement('div')
                 block_work_place.id = "boxWork"
@@ -130,8 +225,8 @@ function updateData(){
                 document.getElementById("filters").after(block_work_place)
                 
             });
-
             var location =  response.place_info.city + ', ' + $("#id_location").val();
+            geocodeAddress(geocoder, map, location, "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", 40, 40, data['name'], data, checkCenter=true)
         },
         error : function(response){
             console.log(response)
@@ -139,86 +234,6 @@ function updateData(){
     })
 }
 
-var selectedValuesLiked = [];
-function selectElement(id, valueToSelect) {    
-    console.log(id, valueToSelect)
-    let element = document.getElementById(id);
-
-    id = '#'+id;
-    if (selectedValuesLiked.includes(valueToSelect)){
-        selectedValuesLiked.splice(selectedValuesLiked.indexOf(valueToSelect), 1);
-    }
-    else{
-        selectedValuesLiked.push(valueToSelect);
-    }
-    // $(id).val(selectedValuesLiked).Trigger('change');
-    $.each(selectedValuesLiked, function(i,e){
-        tstr = id + " option[value=" + e + "]"
-        console.log(tstr, selectedValuesLiked)
-        $(tstr).prop("selected", true);
-    });
-    // element.options[valueToSelect].selected= valueToSelect;
-}
-
-let map;
-var geocoder;
-var markersArray = [];
-
-function geocodeAddress(geocoder, resultsMap, address, image= "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", size1 = 70, size2 = 70, resultTitle='Noname', description="You Firm place") {
-    geocoder.geocode({ address: address }, (results, status) => {
-      if (status === "OK") {
-        // resultsMap.setCenter(results[0].geometry.location);
-        marker = new google.maps.Marker({
-          map: resultsMap,
-          title: resultTitle,  
-          position: results[0].geometry.location,
-          animation: google.maps.Animation.DROP,
-          icon: {url:image, scaledSize: new google.maps.Size(size1, size2)}, 
-          
-        });
-        const contentString =
-            '<div id="content">' +
-            '<div id="siteNotice">' +
-            "</div>" +
-            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
-            '<div id="bodyContent">' +
-            "<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large " +
-            "sandstone rock formation in the southern part of the " +
-            "Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) " +
-            "south west of the nearest large town, Alice Springs; 450&#160;km " +
-            "(280&#160;mi) by road. Kata Tjuta and Uluru are the two major " +
-            "features of the Uluru - Kata Tjuta National Park. Uluru is " +
-            "sacred to the Pitjantjatjara and Yankunytjatjara, the " +
-            "Aboriginal people of the area. It has many springs, waterholes, " +
-            "rock caves and ancient paintings. Uluru is listed as a World " +
-            "Heritage Site.</p>" +
-            '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
-            "https://en.wikipedia.org/w/index.php?title=Uluru</a> " +
-            "(last visited June 22, 2009).</p>" +
-            "</div>" +
-            "</div>";
-        const infowindow = new google.maps.InfoWindow({
-            content: contentString,
-        });
-        marker.addListener("click", () => {
-            infowindow.open(map, marker);
-        });
-        markersArray.push(marker);
-      } else {
-        alert("Geocode was not successful for the following reason: " + status);
-      }
-    });
-}
-
-
-function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 15,
-    });
-    geocoder = new google.maps.Geocoder();
-    geocodeAddress(geocoder, map, "Владивосток, Державина 15")
-};
 
 function showInfoWorkPlace(id){
     var id_disability = $("#id_disability").val();
@@ -277,7 +292,7 @@ function showInfoWorkPlace(id){
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary"  onclick='selectElement("id_profile_liked", ${id})'>Готов обучиться</button>
+                            <button type="button" class="btn btn-primary"  onclick='selectElement("id_profile_liked", ${id})'>Принять</button>
                         </div>
                     </div>
                 </div>`
@@ -449,6 +464,7 @@ $(document).ready(function(){
 
     $(":input").on("change", function(e){
         e.preventDefault();
+        clearOverlays();
         updateData();
     })
 

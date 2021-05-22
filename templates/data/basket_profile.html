@@ -12,7 +12,9 @@
             <script>
                 var work_places = JSON.parse('{{ work_places | escapejs }}');
             </script>
-            <div id="blockWorkPlace"></div>
+            <div class="row" id="blockWorkPlaceMutual"><h1>Обоюдно лайкнутые рабочие места</h1></div>
+            <div class="row" id="blockWorkPlaceProfile"><h1>Лайкнутые вами рабочие места</h1></div>
+            <div class="row" id="blockWorkPlaceFirm"><h1>работадатель лайкнул вас</h1></div>
         {% endif %}
     {% endif %}
     
