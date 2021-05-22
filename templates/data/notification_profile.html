@@ -12,11 +12,12 @@
     {% if user.is_authenticated %}
         {% if user.profile %}
             <script>
-                var courses = JSON.parse('{{ courses | escapejs }}');
+                var courses_recomm = JSON.parse('{{ courses_recomm | escapejs }}');
+                var courses_confirmed = JSON.parse('{{ courses_confirmed | escapejs }}');
             </script>
-
+        <p>Предложения присоединиться к курсу</p>
         <div class="row justify-content-center ">
-            <div id = 'table_courses' class="table-wrapper-scroll-y my-custom-scrollbar">
+            <div id = 'table_courses_recomm' class="table-wrapper-scroll-y my-custom-scrollbar">
                 <table class="table table-resposive table-bordered table-striped mb-0">
                     <thead>
                         <tr>
@@ -28,13 +29,33 @@
                             <th scope="col">Стоимость обучения</th>
                         </tr>
                     </thead>
-                    <tbody id="table_courses_body"> 
+                    <tbody id="table_courses_recomm_body"> 
 
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div><br>
 
+        <p>Курсы, к которым вы уже присоединились</p>
+        <div class="row justify-content-center ">
+            <div id = 'table_courses_confirmed' class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-resposive table-bordered table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Образовательная программа</th>
+                            <th scope="col">Компетенция</th>
+                            <th scope="col">Образовательное учреждение</th>
+                            <th scope="col">Количество человек</th>
+                            <th scope="col">Стоимость обучения</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table_courses_confirmed_body"> 
+
+                    </tbody>
+                </table>
+            </div>
+        </div><br>
 
 
         {% endif %}

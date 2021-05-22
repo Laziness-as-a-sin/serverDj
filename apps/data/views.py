@@ -516,7 +516,7 @@ def personalAreaUniver(request):
             
 
             profilesProfession.append({'name': f'{el.name1} {el.name2} {el.name3}', 'profession': f'{work.profession.name} | Переобучение не требуется', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
-                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': 0})
+                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': 1})
 
 
 
@@ -547,14 +547,14 @@ def personalAreaUniver(request):
             else:
                 checkDoubleLike = False
 
-            if (work_places_count == 0):
-                upPlaces = 0
-            else:
-                upPlaces = work_places_related_count/work_places_count
+            # if (work_places_count == 0):
+            #     upPlaces = 0
+            # else:
+            #     upPlaces = work_places_related_count/work_places_count
 
 
-            profilesProfession.append({'name': f'{el.name1} {el.name2} {el.name3}', 'profession': f'{work.profession.name}', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
-                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': f'{upPlaces * 100}%'})
+            profilesProfession.append({'name': f'{el.name1} {el.name2} {el.name3}', 'profession': f'{work.profession.name} | Требуется переобучение', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
+                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': work_places_related_count})
         
         #print(profilesProfession)
 
@@ -847,19 +847,25 @@ def personalAreaProfileShowInfo(request):
 def notificationProfile(request):
     # print(request.user.profile.id)
     print(Course.objects.filter(profiles__id=request.user.profile.id).values_list('name', flat=True))
-    courses = []
+    courses_recomm = []
     for course in Course.objects.filter(profiles__id=request.user.profile.id):
-        courses.append({'name': course.name, 'price': course.price, 'profession': course.profession.name,
+        courses_recomm.append({'name': course.name, 'price': course.price, 'profession': course.profession.name,
             'univer': list(Univer.objects.filter(course=course.id).values_list('name', flat=True)), 'count': course.count})
-    print(courses)
+    print(courses_recomm)
 
-    return render(request, 'data/notification_profile.html', {'courses':json.dumps(courses)})
+    courses_confirmed = []
+    for course in Course.objects.filter(confirmed_profile__id=request.user.profile.id):
+        courses_confirmed.append({'name': course.name, 'price': course.price, 'profession': course.profession.name,
+            'univer': list(Univer.objects.filter(course=course.id).values_list('name', flat=True)), 'count': course.count})
+
+    return render(request, 'data/notification_profile.html', {'courses_recomm':json.dumps(courses_recomm), 'courses_confirmed':json.dumps(courses_confirmed)})
 
 
 def notificationProfileConfirmation(request):
     if request.method == "GET" and request.is_ajax():
         course = Course.objects.get(name=request.GET.get("name"), profession=Profession.objects.get(name=request.GET.get("profession")))
         course.confirmed_profile.add(request.user.profile.id)
+        course.profiles.remove(request.user.profile.id)
         course.save()
         return JsonResponse({'kek':'kek'}, status=200)
 
