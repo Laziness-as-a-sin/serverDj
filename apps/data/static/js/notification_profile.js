@@ -50,6 +50,8 @@ $(document).ready(function(){
                 data : data,
                 success : function(response){
                     row.appendTo('#table_courses_confirmed_body')
+                    counter += 1
+                    document.getElementById(`recomm_courses_row_${target.getAttribute("id")}`).childNodes[0].innerHTML = `<th id=${counter} scope="row">${counter}</th>`    
                 },
                 error : function(response){
                     console.log(response)
