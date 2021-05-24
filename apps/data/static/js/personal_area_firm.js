@@ -178,7 +178,7 @@ function updateData(){
 
             list_workplace = response.place_info.work_place
             $.each(response.place_info.work_place, function(key,data) {
-                geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+                geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/artdesigner/webtoys/64/User-male-icon.png", 40, 40, data['name'], data)
             
                 let block_work_place = document.createElement('div')
                 block_work_place.id = "boxWork"
@@ -227,7 +227,7 @@ function updateData(){
                 
             });
             var location =  response.place_info.city + ', ' + $("#id_location").val();
-            geocodeAddress(geocoder, map, location, "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", 40, 40, data['name'], data, checkCenter=true)
+            geocodeAddress(geocoder, map, location, "https://icons.iconarchive.com/icons/artdesigner/webtoys/64/Home-icon.png", 40, 40, data['name'], data, checkCenter=true)
         },
         error : function(response){
             console.log(response)
@@ -255,7 +255,7 @@ function showInfoWorkPlace(id){
             tempStr =  `<div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h4 class="modal-title">${response.place_info["ФИО"][0]}</h4>
+                                            <h4 class="modal-title">${response.place_info["Наименование"][0]}</h4>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -468,6 +468,14 @@ $(document).ready(function(){
         clearOverlays();
         updateData();
     })
+
+    // $("#id_profession").on("change", function(e){
+    //     e.preventDefault();
+    //     console.log($("#id_profession").val())
+    //     // tstr = id + " option[value=" + e + "]"
+    //     // console.log(tstr, selectedValuesLiked)
+    //     // $(tstr).prop("selected", true);
+    // })
 
 
     // $("#id_profession").on("change", function(e){

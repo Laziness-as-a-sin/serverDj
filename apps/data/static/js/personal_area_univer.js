@@ -52,7 +52,6 @@ $(document).ready(function(){
                                             <td>${data['recomm_count']}</td>\
                                             <td>${data['count_work_place']}</td>\
                                             <td>${data['forecast']}</td>\
-                                            <td>kek</td>\
                                             `
             document.getElementById("recomm_courses").append(block_work_recomm_courses)
             counter += 1

@@ -135,7 +135,7 @@ class WorkPlace(models.Model):
     # work_experience = models.ForeignKey(WorkExperience, verbose_name='опыт работы', on_delete=models.SET_DEFAULT, default=1)
     employment_type = models.ManyToManyField(EmploymentType, verbose_name='тип занятости', blank=True)
     schedule = models.ManyToManyField(Schedule, verbose_name='график работы', blank=True)
-    skill = models.ManyToManyField(Skill, verbose_name='навыки', blank=True)
+    skill = models.ManyToManyField(Skill, verbose_name='компетенции', blank=True)
     # disability_group = models.ForeignKey(DisabilityGroups, verbose_name='группа инвалидности', on_delete=models.PROTECT, blank=True, null=True)
     dysfunctions_body = models.ManyToManyField(DysfunctionsBody, blank=True, verbose_name='физические ограничения')
     restrictions_categories_life = models.ManyToManyField(RestrictionsCategoriesLife, blank=True, verbose_name='ограничение категорий жизнедеятельности')

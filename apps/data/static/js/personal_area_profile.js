@@ -230,7 +230,7 @@ function updateData(){
 
             list_workplace = response.place_info.work_place
             $.each(response.place_info.work_place, function(key,data) {
-                geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/chanut/role-playing/128/Food-icon.png", 40, 40, data['name'], data)
+                geocodeAddress(geocoder, map, data['position'], "https://icons.iconarchive.com/icons/artdesigner/webtoys/64/Home-icon.png", 40, 40, data['name'], data)
             
                 let block_work_place = document.createElement('div')
                 block_work_place.id = "boxWork"
@@ -280,7 +280,7 @@ function updateData(){
             });
 
             var location =  response.place_info.city + ', ' + $("#id_location").val();
-            geocodeAddress(geocoder, map, location, "https://icons.iconarchive.com/icons/chanut/role-playing/128/King-icon.png", 40, 40, 'Вы', data, checkCenter=true)
+            geocodeAddress(geocoder, map, location, "https://icons.iconarchive.com/icons/artdesigner/webtoys/64/User-male-icon.png", 40, 40, 'Вы', data, checkCenter=true)
         },
         error : function(response){
             console.log(response)

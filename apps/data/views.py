@@ -278,7 +278,7 @@ def personalAreaFirm(request):
                         temp_dict["full_suc"] += 1
                         checkPlace = 1                   
 
-                    work_place.append({"name": f'{profile.name1} {profile.name2}', "position": f"{profile.city.name}, {profile.location}",
+                    work_place.append({"name": f'Соискатель {profile.id}', "position": f"{profile.city.name}, {profile.location}",
                     "city": profile.city.name, "address": profile.location, "id": profile.id, "checkPlace": checkPlace})
 
                 place_info = {
@@ -440,14 +440,14 @@ def basketFirm(request):
                 # temp2 = list(el.liked_by_profile.values_list("name2",  flat=True))
                 profile_liked_names = []
                 for el1 in el.profile_liked.all():
-                    profile_liked_names.append(el1.name1 + ' ' + el1.name2)
+                    profile_liked_names.append(f'Соискатель {el1.id}')
                 liked_by_profile_names = []
                 mutual_liked_names = []
                 for el1 in el.liked_by_profile.all():
-                    liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+                    liked_by_profile_names.append(f'Соискатель {el1.id}')
                     for el2 in el.profile_liked.all(): 
                         if el2 == el1:
-                            mutual_liked_names.append(el1.name1 + ' ' + el1.name2)
+                            mutual_liked_names.append(f'Соискатель {el1.id}')
 
                 work_places.append({'name': el.name, "position": f"{el.city}, {el.location}", "profession": el.profession.name,
                 'city': el.city.name, 'education': el.education.name, 'employment_type': list(el.employment_type.values_list("name",  flat=True)), 'schedule': list(el.schedule.values_list("name",  flat=True)),
@@ -471,13 +471,13 @@ def basketProfile(request):
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": 1, 
                     'place_id': place.id})
 
-            workPlace = WorkPlace.objects.filter(liked_by_profile__id=profile.id).exclude(profile_liked__id=profile.id)            
+            workPlace = WorkPlace.objects.filter(liked_by_profile__id=profile.id)            
             for place in workPlace:
                 work_places.append({'name': place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, "min_salary": place.min_salary,
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": 2, 
                     'place_id': place.id})
             
-            workPlace = WorkPlace.objects.exclude(liked_by_profile__id=profile.id).filter(profile_liked__id=profile.id)           
+            workPlace = WorkPlace.objects.exclude(liked_by_profile__id=profile.id)           
             for place in workPlace:
                 work_places.append({'name': place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, "min_salary": place.min_salary,
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": 3, 
@@ -834,26 +834,26 @@ def personalAreaProfileShowInfo(request):
                 work_place = WorkPlace.objects.get(id=request.GET.get("id"))
                 
                 if profile.city.id == int(id_city):
-                    city = f'{work_place.city.name} ✓'
+                    city = f'{work_place.city.name} <font class="text-success">✓</font>✓'
                 else:
-                    city = f'{work_place.city.name} ✗'
+                    city = f'{work_place.city.name} <font class="text-danger">✗</font>'
 
                 if work_place.education.id in set(list(map(int, id_education))):
-                    education = f'{work_place.education.name} ✓'
+                    education = f'{work_place.education.name} <font class="text-success">✓</font>'
                 else:
-                    education = f'{work_place.education.name} ✗'
+                    education = f'{work_place.education.name} <font class="text-danger">✗</font>'
 
                 if work_place.profession.id in set(list(map(int, id_profession))):
-                    profession = f'{work_place.profession.name} ✓'
+                    profession = f'{work_place.profession.name} <font class="text-success">✓</font>'
                 else:
-                    profession = f'{work_place.profession.name} ✗'
+                    profession = f'{work_place.profession.name} <font class="text-danger">✗</font>'
 
                 skills = []
                 for id in work_place.skill.values_list("id",  flat=True):
                     if id in set(list(map(int, id_skill))):
-                        skills.append(f'{Skill.objects.get(id=id).name} ✓')
+                        skills.append(f'{Skill.objects.get(id=id).name} <font class="text-success">✓</font>')
                     else:
-                        skills.append(f'{Skill.objects.get(id=id).name} ✗')
+                        skills.append(f'{Skill.objects.get(id=id).name} <font class="text-danger">✗</font>')
 
                 work_place_info = {"Наименование": [work_place.name], "Фирма": [work_place.firm.name], 
                 "Город": [city], "Адрес": [work_place.location], "Образование": [education], "Профессия": [profession],
@@ -906,32 +906,33 @@ def personalAreaFirmShowInfo(request):
                 profile = Profile.objects.get(id=id)
 
                 if profile.city.id == int(id_city):
-                    city = f'{profile.city.name} ✓'
+                    city = f'{profile.city.name} <font class="text-success">✓</font>'
                 else:
-                    city = f'{profile.city.name} ✗'
+                    city = f'{profile.city.name} <font class="text-danger">✗</font>'
 
                 education = []
                 for el in profile.education.all():
                     if el.id == id_education:
-                        education.append(f'{el.name} ✓')
+                        education.append(f'{el.name} <font class="text-success">✓</font>')
                     else:
-                        education.append(f'{el.name} ✗')
+                        education.append(f'{el.name} <font class="text-danger">✗</font>')
 
                 profession = []
                 for el in profile.profession.all():
-                    if el.id == id_profession:
-                        profession.append(f'{el.name} ✓')
+                    print('id_profession', el.id, int(id_profession))
+                    if el.id == int(id_profession):
+                        profession.append(f'{el.name} <font class="text-success">✓</font>')
                     else:
-                        profession.append(f'{el.name} ✗')
+                        profession.append(f'{el.name} <font class="text-danger">✗</font>')
 
                 skill = []
                 for el in profile.skills.all():
-                    if el.id in id_skill:
-                        skill.append(f'{el.name} ✓')
+                    if el.id in int(id_skill):
+                        skill.append(f'{el.name} <font class="text-success">✓</font>')
                     else:
-                        skill.append(f'{el.name} ✗')
+                        skill.append(f'{el.name} <font class="text-danger">✗</font>')
 
-                work_place_info = {"ФИО": [f'{profile.name1} {profile.name2} {profile.name3}'],
+                work_place_info = {"Наименование": [f'Соискатель {profile.id}'],
                 "Город": [city], "Адрес": [profile.location], "Образование": education, "Профессия": profession,
                 "Образование": education, "Компетенции": skill}
                 print(work_place_info)
@@ -952,31 +953,32 @@ def personalAreaProfileBasketShowInfo(request):
                 id_skill = profile.skills.values_list("id",  flat=True)
 
                 if profile.city.id == int(id_city):
-                    city = f'{work_place.city.name} ✓'
+                    city = f'{work_place.city.name} <font class="text-success">✓</font>'
                 else:
-                    city = f'{work_place.city.name} ✗'
+                    city = f'{work_place.city.name} <font class="text-danger">✗</font>'
 
                 if work_place.education.id in set(list(map(int, id_education))):
-                    education = f'{work_place.education.name} ✓'
+                    education = f'{work_place.education.name} <font class="text-success">✓</font>'
                 else:
-                    education = f'{work_place.education.name} ✗'
+                    education = f'{work_place.education.name} <font class="text-danger">✗</font>'
 
                 if work_place.profession.id in set(list(map(int, id_profession))):
-                    profession = f'{work_place.profession.name} ✓'
+                    profession = f'{work_place.profession.name} <font class="text-success">✓</font>'
                 else:
-                    profession = f'{work_place.profession.name} ✗'
+                    profession = f'{work_place.profession.name} <font class="text-danger">✗</font>'
 
                 skills = []
                 for id in work_place.skill.values_list("id",  flat=True):
                     if id in set(list(map(int, id_skill))):
-                        skills.append(f'{Skill.objects.get(id=id).name} ✓')
+                        skills.append(f'{Skill.objects.get(id=id).name} <font class="text-success">✓</font>')
                     else:
-                        skills.append(f'{Skill.objects.get(id=id).name} ✗')
+                        skills.append(f'{Skill.objects.get(id=id).name} <font class="text-danger">✗</font>')
 
                 work_place_info = {"Наименование": [work_place.name], "Фирма": [work_place.firm.name], 
                 "Город": [city], "Адрес": [work_place.location], "Образование": [education], "Профессия": [profession],
                 "Тип занятости": [work_place.employment_type.name], "График работы": [work_place.schedule.name],
-                "Образование": [education], "Компетенции": skills, "Зарплата": [f'{work_place.min_salary} – {work_place.max_salary}']}
+                "Образование": [education], "Компетенции": skills, "Люди поставили лайк": [work_place.liked_by_profile.count()],
+                "Людей лайкнули": [work_place.profile_liked.count()], "Зарплата": [f'{work_place.min_salary} – {work_place.max_salary}']}
 
                 return JsonResponse({"place_info":work_place_info}, status=200)
     else:
