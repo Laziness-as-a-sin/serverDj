@@ -177,42 +177,46 @@ def personalAreaFirm(request):
                     
                     tempWorkPlace.firm = request.user.firm
                     tempWorkPlace.city = form.cleaned_data['city']
+                    tempWorkPlace.location = form.cleaned_data['location']
                     tempWorkPlace.education = form.cleaned_data['education']
                     tempWorkPlace.profession = form.cleaned_data['profession']
-                    # tempWorkPlace.work_experience = form.cleaned_data['work_experience']
                     tempWorkPlace.min_salary = form.cleaned_data['min_salary']
                     tempWorkPlace.max_salary = form.cleaned_data['max_salary']
+                    tempWorkPlace.count = form.cleaned_data['count']
                     tempWorkPlace.save()
 
                     for temp in form.cleaned_data['employment_type']:
-                        print('1')
                         employment_type = get_object_or_404(EmploymentType, name=temp)
                         tempWorkPlace.employment_type.add(employment_type.id)
 
                     for temp in form.cleaned_data['profile_liked']:
                         userTemp = User.objects.get(username = temp)
                         profile_liked = get_object_or_404(Profile, user=userTemp)
-                        print('profile_liked.id: ', profile_liked.id)
                         tempWorkPlace.profile_liked.add(profile_liked.id)
 
                     for temp in form.cleaned_data['schedule']:
-                        print('3')
                         schedule = get_object_or_404(Schedule, name=temp)
                         tempWorkPlace.schedule.add(schedule.id)
 
                     for temp in form.cleaned_data['skill']:
-                        print('4')
                         skill = get_object_or_404(Skill, name=temp)
                         tempWorkPlace.skill.add(skill.id)
 
                     for temp in form.cleaned_data['disability']:
-                        print('5')
                         disability = get_object_or_404(Disability, name=temp)
                         tempWorkPlace.disability.add(disability.id)
 
+                    for temp in form.cleaned_data['dysfunctions_body']:
+                        dysfunctions_body = get_object_or_404(DysfunctionsBody, name=temp)
+                        tempWorkPlace.dysfunctions_body.add(dysfunctions_body.id)
+
+                    for temp in form.cleaned_data['restrictions_categories_life']:
+                        restrictions_categories_life = get_object_or_404(RestrictionsCategoriesLife, name=temp)
+                        tempWorkPlace.restrictions_categories_life.add(restrictions_categories_life.id)
+
                     tempWorkPlace.save()
                     
-                    return HttpResponse("Save, sucsessfull!")
+                    return redirect('/personal_area/firm/basket/')
             
 
             if request.method == "GET" and request.is_ajax():
@@ -220,9 +224,9 @@ def personalAreaFirm(request):
                 id_education = request.GET.get("id_education")
                 id_profession = request.GET.get("id_profession")
                 id_skill = request.GET.getlist("id_skill[]")
-                id_disability = request.GET.getlist("id_disability[]") 
-                id_dysfunctions_body = request.GET.getlist("id_dysfunctions_body[]")
-                id_restrictions_categories_life= request.GET.getlist("id_restrictions_categories_life[]")
+                id_disability = list(map(int, request.GET.getlist("id_disability[]")))
+                id_dysfunctions_body = list(map(int, request.GET.getlist("id_dysfunctions_body[]")))
+                id_restrictions_categories_life= list(map(int, request.GET.getlist("id_restrictions_categories_life[]")))
                 if request.GET.get("check_proffession") == None:
                     check_proffession = 0 
                 else:
@@ -258,8 +262,10 @@ def personalAreaFirm(request):
                 work_place = []
                 for profile in profiles:
                     checkPlace = 1
-
-                    if profile.city_id != int(id_city) and int(id_profession) not in profile.profession.values_list("id",  flat=True):
+                    if checkIsInclude(list(map(int, profile.disability.values_list("id",  flat=True))), id_disability) or checkIsInclude(list(map(int, (profile.dysfunctions_body.values_list("id",  flat=True)))), id_dysfunctions_body) or checkIsInclude(list(map(int, (profile.restrictions_categories_life.values_list("id",  flat=True)))), id_restrictions_categories_life):
+                        temp_dict["disability"] += 1
+                        checkPlace = 5
+                    elif profile.city_id != int(id_city) and int(id_profession) not in list(map(int, profile.profession.values_list("id",  flat=True))):
                         temp_dict["city_profession"] += 1
                         checkPlace = 4
                     elif profile.city_id != int(id_city):
@@ -270,11 +276,7 @@ def personalAreaFirm(request):
                         checkPlace = 2
                     else:
                         temp_dict["full_suc"] += 1
-                        checkPlace = 1
-                    
-                    if checkIsInclude(profile.disability.values_list("id",  flat=True), id_disability) or checkIsInclude(profile.dysfunctions_body.values_list("id",  flat=True), id_dysfunctions_body) or checkIsInclude(profile.restrictions_categories_life.values_list("id",  flat=True), id_restrictions_categories_life):
-                        temp_dict["disability"] += 1
-                        checkPlace = 5
+                        checkPlace = 1                   
 
                     work_place.append({"name": f'{profile.name1} {profile.name2}', "position": f"{profile.city.name}, {profile.location}",
                     "city": profile.city.name, "address": profile.location, "id": profile.id, "checkPlace": checkPlace})
@@ -440,14 +442,18 @@ def basketFirm(request):
                 for el1 in el.profile_liked.all():
                     profile_liked_names.append(el1.name1 + ' ' + el1.name2)
                 liked_by_profile_names = []
+                mutual_liked_names = []
                 for el1 in el.liked_by_profile.all():
                     liked_by_profile_names.append(el1.name1 + ' ' + el1.name2)
+                    for el2 in el.profile_liked.all(): 
+                        if el2 == el1:
+                            mutual_liked_names.append(el1.name1 + ' ' + el1.name2)
 
                 work_places.append({'name': el.name, "position": f"{el.city}, {el.location}", "profession": el.profession.name,
-                'city': el.city.name, 'education': el.education.name, 'employment_type': el.employment_type.name, 'schedule': el.schedule.name,
+                'city': el.city.name, 'education': el.education.name, 'employment_type': list(el.employment_type.values_list("name",  flat=True)), 'schedule': list(el.schedule.values_list("name",  flat=True)),
                 'skill': list(el.skill.values_list("name",  flat=True)),  'disability': list(el.disability.values_list("name",  flat=True)),
                 'profile_liked_id': list(el.profile_liked.values_list("id",  flat=True)), 'liked_by_profile_id': list(el.liked_by_profile.values_list("id",  flat=True)), 
-                'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names,
+                'profile_liked_names': profile_liked_names, 'liked_by_profile_names': liked_by_profile_names, 'mutual_liked_names': mutual_liked_names,
                 'min_salary': el.min_salary, "max_salary": el.max_salary, 'place_id': el.id})
             return render(request, 'data/basket_firm.html', {'work_places': json.dumps(work_places)})
     return HttpResponse("Как ты сюда попал?!!")

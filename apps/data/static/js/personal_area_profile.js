@@ -118,9 +118,10 @@ function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 15,
+        mapId: '4c6f35280440418d'
     });
     geocoder = new google.maps.Geocoder();
-    geocodeAddress(geocoder, map, "Владивосток, Державина 15")
+    // geocodeAddress(geocoder, map, "Владивосток, Державина 15")
 };
 
 function showInfoWorkPlace(id){

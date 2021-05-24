@@ -150,21 +150,21 @@ $(document).ready(function(){
         counter += 1
         
         if (data['checkLProfileLike']){
-            checkLProfileLike = "+"
+            checkLProfileLike = "✓"
         } else{
-            checkLProfileLike = "-"
+            checkLProfileLike = "✗"
         }
 
         if (data['checkLikeByProfile']){
-            checkLikeByProfile = "+"
+            checkLikeByProfile = "✓"
         } else{
-            checkLikeByProfile = "-"
+            checkLikeByProfile = "✗"
         }
 
         if (data['checkDoubleLike']){
-            checkDoubleLike = "+"
+            checkDoubleLike = "✓"
         } else{
-            checkDoubleLike = "-"
+            checkDoubleLike = "✗"
         }
 
         block_profile = document.createElement('tr')
