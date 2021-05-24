@@ -33,6 +33,12 @@ function showInfoWorkPlace(id){
             });
             ul_list_liked_by_profile_names +=`</ul>`
 
+            list_mutual_liked_names = data['mutual_liked_names']
+            ul_list_mutual_liked_names = `<ul>`
+            $.each(list_mutual_liked_names, function(key,profile){
+                ul_list_mutual_liked_names +=`<li>${profile}</li>`
+            });
+            ul_list_mutual_liked_names +=`</ul>`
 
             let Modal = document.createElement('div')
 
@@ -93,7 +99,7 @@ function showInfoWorkPlace(id){
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">
-                                                        Ключевые навыки
+                                                        Ключевые компетенции
                                                     </th>
                                                     <td>${ul_list_skill}</td>
                                                 </tr>
@@ -120,6 +126,12 @@ function showInfoWorkPlace(id){
                                                         Пользователи, которые лайкнули
                                                     </th>
                                                     <td>${ul_list_liked_by_profile_names}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">
+                                                        Обоюдно лайкнутые пользователи
+                                                    </th>
+                                                    <td>${ul_list_mutual_liked_names}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
