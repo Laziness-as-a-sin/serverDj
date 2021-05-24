@@ -671,15 +671,12 @@ def personalAreaUniver(request):
     for key, value in dict_work_count.items():
         unique_users = []
         for el in WorkPlace.objects.filter(profession__name=key):
-            for x in list(el.liked_by_profile.values_list('id', flat=True)):
+
+            for x in list(set(el.liked_by_profile.values_list('id', flat=True)) & set(el.profile_liked.values_list('id', flat=True))):
                 if x not in unique_users:
                     unique_users.append(x)
 
-    # for el in Course.objects.filter(profession__name=key):
-    #     courses.append({'name': el.name, 'skill': el.profession.name, 'univer': Univer.objects.get(course=el).name, 'count': el.count,
-    #         'price_per_person': el.price, 'price':el.price*el.count ,'forecast': len(unique_users), 'profiles': el.confirmed_profile.count()})
-
-        recomm_courses.append({'name': key, 'count_work_place': value, 'profession': key, 'recomm_count': value, 'forecast': len(unique_users)})
+        recomm_courses.append({'name': key, 'count_work_place': value, 'profession': key, 'recomm_count': value, 'forecast': min(len(unique_users), value)})
     print(recomm_courses)
     
     form = add_course_by_univer_form
