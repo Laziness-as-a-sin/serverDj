@@ -652,9 +652,10 @@ def personalAreaUniver(request):
 
     courses = []
     
-    for course in Course.objects.all():      
+    for course in Course.objects.all():
+        # print(list(course.confirmed_profile.values_list('id', flat=True)))
         courses.append({'name': course.name, 'skill': course.profession.name, 'univer': Univer.objects.get(course=course).name, 'count': course.count,
-            'price_per_person': course.price, 'price':course.price*course.count ,'forecast': 20, 'profiles': course.confirmed_profile.count()})
+            'price_per_person': course.price, 'price':course.price*course.count ,'forecast': course.count, 'profiles': course.confirmed_profile.count()})
 
     print('****************', courses)
     recomm_courses = []
@@ -673,6 +674,11 @@ def personalAreaUniver(request):
             for x in list(el.liked_by_profile.values_list('id', flat=True)):
                 if x not in unique_users:
                     unique_users.append(x)
+
+    # for el in Course.objects.filter(profession__name=key):
+    #     courses.append({'name': el.name, 'skill': el.profession.name, 'univer': Univer.objects.get(course=el).name, 'count': el.count,
+    #         'price_per_person': el.price, 'price':el.price*el.count ,'forecast': len(unique_users), 'profiles': el.confirmed_profile.count()})
+
         recomm_courses.append({'name': key, 'count_work_place': value, 'profession': key, 'recomm_count': value, 'forecast': len(unique_users)})
     print(recomm_courses)
     
