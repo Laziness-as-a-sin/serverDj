@@ -509,22 +509,24 @@ def personalAreaUniver(request):
     info = []
     for el in Profile.objects.all():
         work_places_count = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)).count()
-        print(WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)))
+        print('WorkPlace', WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)))
         for work in WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True)):
 
-            work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True))
-            if el.id in list(work_places.values_list("liked_by_profile",  flat=True).values_list("id",  flat=True)):
+            # work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True))
+            if el.id in list(work.liked_by_profile.values_list("id",  flat=True)):
                 checkLikeByProfile = True
             else:
                 checkLikeByProfile = False
             
-            
-            if work.id in list(work_places.values_list("profile_liked",  flat=True).values_list("id",  flat=True)):
+            print('ID: ', el.id, 'work_places: ', list(work.profile_liked.values_list("id",  flat=True)))
+            if el.id in list(work.profile_liked.values_list("id",  flat=True)):
+                print('AAAA')
                 checkLProfileLike = True
             else:
                 checkLProfileLike = False
 
             if checkLProfileLike and checkLikeByProfile:
+                print('BBBB')
                 checkDoubleLike = True
             else:
                 checkDoubleLike = False
@@ -542,7 +544,8 @@ def personalAreaUniver(request):
                     related_professions.append(y)
         work_related_places_count = WorkPlace.objects.filter(profession__in=related_professions).count()
 
-        for work in WorkPlace.objects.filter(profession__in=related_professions):
+        print('related_professions: ', related_professions, WorkPlace.objects.filter(profession__in=related_professions))
+        for work in WorkPlace.objects.filter(profession__in=related_professions).exclude(profession__in=el.profession.values_list("id",  flat=True)):
             work_places_related_count = WorkPlace.objects.filter(profession__in=[work.profession]).count()
 
             work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True))
@@ -550,7 +553,6 @@ def personalAreaUniver(request):
                 checkLikeByProfile = True
             else:
                 checkLikeByProfile = False
-            
             
             if work.id in list(work_places.values_list("profile_liked",  flat=True).values_list("id",  flat=True)):
                 checkLProfileLike = True
@@ -593,7 +595,6 @@ def personalAreaUniver(request):
         ready_to_educate = []
         user_doublelikes = []
         for work in WorkPlace.objects.filter(liked_by_profile__in=[el.id]):
-            print('---', work.name)
             if work.profession.id in  el.profession.values_list("id",  flat=True):
                 liked_vacancies.append(work.name)
             else:
@@ -831,7 +832,7 @@ def personalAreaProfileShowInfo(request):
                 work_place = WorkPlace.objects.get(id=request.GET.get("id"))
                 
                 if profile.city.id == int(id_city):
-                    city = f'{work_place.city.name} <font class="text-success">✓</font>✓'
+                    city = f'{work_place.city.name} <font class="text-success">✓</font>'
                 else:
                     city = f'{work_place.city.name} <font class="text-danger">✗</font>'
 
@@ -924,7 +925,7 @@ def personalAreaFirmShowInfo(request):
 
                 skill = []
                 for el in profile.skills.all():
-                    if el.id in int(id_skill):
+                    if el.id in id_skill:
                         skill.append(f'{el.name} <font class="text-success">✓</font>')
                     else:
                         skill.append(f'{el.name} <font class="text-danger">✗</font>')
