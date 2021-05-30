@@ -477,7 +477,7 @@ def basketProfile(request):
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": 2, 
                     'place_id': place.id})
             
-            workPlace = WorkPlace.objects.exclude(liked_by_profile__id=profile.id)           
+            workPlace = WorkPlace.objects.filter(profile_liked__id=profile.id)           
             for place in workPlace:
                 work_places.append({'name': place.name, "position": f"{place.city}, {place.location}", "profession": place.profession.name, "min_salary": place.min_salary,
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": 3, 
