@@ -115,4 +115,39 @@ $(document).ready(function(){
         }
                 
     });
+
+    var counter = 0
+    $.each(tabl1, function(key,data) {
+        counter += 1
+        
+        if (data['checkLProfileLike']){
+            checkLProfileLike = "✓"
+        } else{
+            checkLProfileLike = "✗"
+        }
+
+        if (data['checkLikeByProfile']){
+            checkLikeByProfile = "✓"
+        } else{
+            checkLikeByProfile = "✗"
+        }
+
+        if (data['checkDoubleLike']){
+            checkDoubleLike = "✓"
+        } else{
+            checkDoubleLike = "✗"
+        }
+
+        block_profile = document.createElement('tr')
+        block_profile.innerHTML =    `<th scope="row">${counter}</th>\
+                                        <td>${data['profession']}</td>\
+                                        <td>${data['work']}</td>\
+                                        <td>${checkLProfileLike}</td>\
+                                        <td>${checkLikeByProfile}</td>\
+                                        <td>${checkDoubleLike}</td>\
+                                        <td>${data['firm']}</td>\
+                                        <td>${data['upPlaces']}</td>
+                                        `
+        document.getElementById("tabl1").append(block_profile)
+    });
 });

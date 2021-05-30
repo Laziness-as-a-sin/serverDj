@@ -483,9 +483,66 @@ def basketProfile(request):
                     "max_salary": place.max_salary, "id": place.id, "checkPlace": 3, 
                     'place_id': place.id})
 
+            profilesProfession = []
+            for work in WorkPlace.objects.filter(profession__in=profile.profession.values_list("id",  flat=True)):
+            # work_places = WorkPlace.objects.filter(profession__in=el.profession.values_list("id",  flat=True))
+                if profile.id in list(work.liked_by_profile.values_list("id",  flat=True)):
+                    checkLikeByProfile = True
+                else:
+                    checkLikeByProfile = False
+            
+            if profile.id in list(work.profile_liked.values_list("id",  flat=True)):
+                checkLProfileLike = True
+            else:
+                checkLProfileLike = False
 
-            print(work_places)
-            return render(request, 'data/basket_profile.html', {'work_places': json.dumps(work_places)})
+            if checkLProfileLike and checkLikeByProfile:
+                checkDoubleLike = True
+            else:
+                checkDoubleLike = False
+            
+
+            profilesProfession.append({'profession': f'{work.profession.name} | Переобучение не требуется', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
+                'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': 0})
+
+
+
+            related_professions = []
+            for x in profile.profession.values_list("id",  flat=True):
+                for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                    if y not in related_professions:
+                        related_professions.append(y)
+        
+            work_related_places_count = WorkPlace.objects.filter(profession__in=related_professions).count()
+            for work in WorkPlace.objects.filter(profession__in=related_professions).exclude(profession__in=profile.profession.values_list("id",  flat=True)):
+                work_places_related_count = WorkPlace.objects.filter(profession__in=[work.profession]).count()
+
+                work_places = WorkPlace.objects.filter(profession__in=profile.profession.values_list("id",  flat=True))
+                if profile.id in list(work_places.values_list("liked_by_profile",  flat=True).values_list("id",  flat=True)):
+                    checkLikeByProfile = True
+                else:
+                    checkLikeByProfile = False
+                
+                if work.id in list(work_places.values_list("profile_liked",  flat=True).values_list("id",  flat=True)):
+                    checkLProfileLike = True
+                else:
+                    checkLProfileLike = False
+
+                if checkLProfileLike and checkLikeByProfile:
+                    checkDoubleLike = True
+                else:
+                    checkDoubleLike = False
+
+                # if (work_places_count == 0):
+                #     upPlaces = 0
+                # else:
+                #     upPlaces = work_places_related_count/work_places_count
+
+
+                profilesProfession.append({'profession': f'{work.profession.name} | Требуется переобучение', 'work': work.name, 'checkLProfileLike': checkLProfileLike,
+                    'checkLikeByProfile': checkLikeByProfile, 'checkDoubleLike': checkDoubleLike, 'firm': work.firm.name, 'upPlaces': work_places_related_count})
+            print(profilesProfession)
+            return render(request, 'data/basket_profile.html', {'work_places': json.dumps(work_places), 'tabl1': json.dumps(profilesProfession)})
     return HttpResponse("Как ты сюда попал?!!")
 
 

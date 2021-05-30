@@ -11,10 +11,31 @@
         {% if user.profile %}
             <script>
                 var work_places = JSON.parse('{{ work_places | escapejs }}');
+                var tabl1 = JSON.parse('{{ tabl1 | escapejs }}');
             </script>
             <div class="row" id="blockWorkPlaceMutual"><h1>Обоюдно лайкнутые рабочие места:</h1></div>
             <div class="row" id="blockWorkPlaceProfile"><h1>Лайкнутые вами рабочие места:</h1></div>
             <div class="row" id="blockWorkPlaceFirm"><h1>Работадатель лайкнул вас:</h1></div>
+            <h1>Работадатель лайкнул вас:</h1>
+            <div id = 'table1' class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table class="table table-resposive table-bordered table-striped mb-0">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Обр. программа</th>
+                            <th scope="col">Вакансия</th>
+                            <th scope="col">Лайк от пользователя</th>
+                            <th scope="col">Лайк от фирмы</th>
+                            <th scope="col">Взаимный лайк</th>
+                            <th scope="col">Компания</th>
+                            <th scope="col">Прирост кол-ва рабочих мест</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabl1">  <tbody>
+    
+                        </tbody>
+                    </table>
+                </div><br>
         {% endif %}
     {% endif %}
     
