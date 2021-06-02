@@ -241,7 +241,7 @@ def personalAreaFirm(request):
                     check_disability = 1 
                 related_professions = []
                 for x in id_profession:
-                    for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                    for y in set(list(map(int, Profession.objects.get(id=x).boundprofession.values_list("id",  flat=True)))):
                         if y not in related_professions:
                             related_professions.append(y)
                 
@@ -319,7 +319,7 @@ def personalAreaProfile(request):
                     check_city_move = 1 
                 related_professions = []
                 for x in id_profession:
-                    for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                    for y in set(list(map(int, Profession.objects.get(id=x).boundprofession.values_list("id",  flat=True)))):
                         if y not in related_professions:
                             related_professions.append(y)
                 
@@ -509,7 +509,7 @@ def basketProfile(request):
 
             related_professions = []
             for x in profile.profession.values_list("id",  flat=True):
-                for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+                for y in set(list(map(int, Profession.objects.get(id=x).boundprofession.values_list("id",  flat=True)))):
                     if y not in related_professions:
                         related_professions.append(y)
         
@@ -596,7 +596,7 @@ def personalAreaUniver(request):
 
         related_professions = []
         for x in el.profession.values_list("id",  flat=True):
-            for y in set(list(map(int, Profession.objects.get(id=x).boundProfession.values_list("id",  flat=True)))):
+            for y in set(list(map(int, Profession.objects.get(id=x).boundprofession.values_list("id",  flat=True)))):
                 if y not in related_professions:
                     related_professions.append(y)
         work_related_places_count = WorkPlace.objects.filter(profession__in=related_professions).count()
@@ -1039,3 +1039,15 @@ def personalAreaProfileBasketShowInfo(request):
     else:
         return HttpResponse("Как ты сюда попал?!!")
 
+
+def deleteWorkPlace(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'firm'):
+            if request.method == "POST":
+                id = int(request.POST['id'])
+                WorkPlace.objects.filter(id=id).delete()
+                return redirect('/personal_area/firm/basket/')
+        else:
+            return HttpResponse("Как ты сюда попал?!!")        
+    else:
+        return HttpResponse("Как ты сюда попал?!!")

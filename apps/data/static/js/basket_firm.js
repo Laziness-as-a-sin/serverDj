@@ -1,3 +1,17 @@
+function deleteWorkplace(id){
+    data = {'id': id}
+    $.ajax({
+        type : 'GET',
+        url :  '/delete/workplace',
+        data : data,
+        success : function(response){
+        },
+        error : function(response){
+            console.log(response)
+        }
+    })
+}
+
 function showInfoWorkPlace(id){
     $.each(work_places, function(key,data){
         if (data["place_id"] == id){
@@ -139,6 +153,11 @@ function showInfoWorkPlace(id){
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="button" class="btn btn-primary">Изменить</button>
+                                            <form action="/delete/workplace" method="post">
+                                                <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
+                                                <input id="id" type="hidden" name="id" value="${id}">
+                                                <input type="submit" class="btn btn-primary" value="Удалить">
+
                                         </div>
                                     </div>
                                 </div>`

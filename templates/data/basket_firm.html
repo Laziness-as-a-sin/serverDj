@@ -2,6 +2,9 @@
 {% block script %}
     {% load static %}
     {% load crispy_forms_tags %}
+    <script>
+        var csrftoken = '{{ csrf_token }}';
+    </script>
     <script type="text/javascript" src="{% static 'js/basket_firm.js' %}"></script>
 {% endblock %}
 

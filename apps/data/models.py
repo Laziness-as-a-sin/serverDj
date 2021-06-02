@@ -36,7 +36,7 @@ class Profession(models.Model):
         return ""
 
     name = models.CharField('название профессии', max_length=200)
-    boundProfession = models.ManyToManyField('self', blank=True, verbose_name='связанные профессии')
+    boundprofession = models.ManyToManyField('self', blank=True, verbose_name='связанные профессии')
     description = models.TextField('описание профессии', default=contact_default)
     disability = models.ManyToManyField(Disability)
     education = models.ManyToManyField(Education)
