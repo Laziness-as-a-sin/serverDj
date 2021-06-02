@@ -1051,3 +1051,24 @@ def deleteWorkPlace(request):
             return HttpResponse("Как ты сюда попал?!!")        
     else:
         return HttpResponse("Как ты сюда попал?!!")
+
+
+def basketUniver(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'univer'):
+            courses = []
+            for course in Univer.objects.get(id=request.user.univer.id).course.all():
+                print(course.profession)
+                courses.append({'id': course.id, 'name': course.name, 'profession': course.profession.name, 'count': course.count,
+                    'price': course.price, 'confirmed_profile': course.confirmed_profile.count(), 'description':course.description})
+            return render(request, 'data/basket_univer.html', {'courses': json.dumps(courses)})
+    return HttpResponse("Как ты сюда попал?!!")
+
+
+def deleteCourseByUniver(request):
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'univer'):
+            if request.method == "GET" and request.is_ajax():
+                course = Course.objects.get(id=request.GET.get("id")).delete()
+                return HttpResponse(status=200)
+    return HttpResponse("Как ты сюда попал?!!")

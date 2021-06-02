@@ -21,8 +21,11 @@ urlpatterns = [
     path('personal_area/profile/basket/show_info', views.personalAreaProfileBasketShowInfo, name='personal_area_profile_basket_show_info'),
     path('personal_area/profile/like', views.usersLike, name='users_like'),
     path('personal_area/univer/', views.personalAreaUniver, name='personal_area_univer'),
-    path('personal_area/profile/info', views.personalInfoProfile, name='personal_info_profile'),
+    path('personal_area/univer/basket', views.basketUniver, name='basket_univer'),
     path('personal_area/univer/add_course', views.addCourseByUniver, name='add_course_by_univer'),
+    path('personal_area/univer/delete_course', views.deleteCourseByUniver, name='delete_course_by_univer'),
+    path('personal_area/profile/info', views.personalInfoProfile, name='personal_info_profile'),
+    
     path('personal_area/profile/notification', views.notificationProfile, name='notification_profile'),
     path('personal_area/profile/notification/confirmation', views.notificationProfileConfirmation, name='notification_profile_confirmation'),
     path('personal_area/firm/show_info', views.personalAreaFirmShowInfo, name='personal_area_firm_show_info'),

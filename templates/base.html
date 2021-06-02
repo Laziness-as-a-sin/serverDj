@@ -47,6 +47,9 @@
                                     <a class="nav-link " data-value="personal_info" href="{% url 'personal_info_profile' %}">{{user.profile.name1}}</a>
                             {% elif user.univer %}
                                 <li class="nav-item"> 
+                                    <a class="nav-link " data-value="basketUniver" href="{% url 'basket_univer' %}">Корзина</a>
+                                <li>
+                                <li class="nav-item"> 
                                     <a class="nav-link " data-value="personal_area" href="{% url 'personal_area_univer' %}">{{user.univer.name}}</a>
                                 <li>
                             {% endif %}
