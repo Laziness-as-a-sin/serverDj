@@ -26,9 +26,9 @@ sys.path.insert(0, os.path.join(PROJECT_ROOT, 'apps'))
 SECRET_KEY = '!%r+w+(rwb5q^u1_=x%_ly6iy1%9b1b(a#nrm%czcvqnbqu*@4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['www.xn----7sbfcoti7aviee.xn--p1ai']
 
 
 # Application definition
@@ -85,12 +85,10 @@ WSGI_APPLICATION = 'serverDj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dbKS',
-        'USER': 'root',
-        'PASSWORD': 'admin'
-        
- #       'ENGINE': 'django.db.backends.sqlite3',
- #       'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'u1392407_dbks',
+        'USER': 'u1392407_default',
+        'PASSWORD': 'MH54gKZ9NK5bGzy2',
+        'HOST': 'localhost',
     }
 }
 
